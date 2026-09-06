@@ -1,0 +1,29 @@
+{
+  "cli_version": "0.10.5",
+  "checkpoint_id": "dfd5e863eaed",
+  "strategy": "manual-commit",
+  "branch": "new_branch",
+  "checkpoints_count": 1,
+  "files_touched": [
+    "internal/fidelity/calibration.go",
+    "internal/fidelity/calibration_test.go",
+    "internal/fidelity/databricks.go",
+    "internal/fidelity/databricks_test.go"
+  ],
+  "sessions": [
+    {
+      "metadata": "/df/d5e863eaed/0/metadata.json",
+      "transcript": "/df/d5e863eaed/0/full.jsonl",
+      "compact_transcript": "/df/d5e863eaed/0/transcript.jsonl",
+      "content_hash": "/df/d5e863eaed/0/content_hash.txt",
+      "prompt": "/df/d5e863eaed/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 20,
+    "cache_creation_tokens": 15870,
+    "cache_read_tokens": 5399876,
+    "output_tokens": 14013,
+    "api_call_count": 10
+  }
+}
