@@ -1,0 +1,29 @@
+# Fidelity's local verification policy. This deliberately maps graph relation
+# confidence into two consumer-defined buckets; Entire Graph itself emits a
+# numeric confidence plus a resolution and evidence, not a tri-state class.
+blast_radius_hops: 2
+edge_classes:
+  deterministic_confidence_gte: 0.9
+  advisory_below_confidence: 0.9
+tiers:
+  confirmed: {}
+  declared_unimplemented: {}
+  expected_blast_radius:
+    max_hops: 2
+  undeclared_scope_creep: {}
+  advisory_low_confidence: {}
+extraction:
+  fallback_llm: true
+  llm_vocabulary_source: graph_snapshot
+module_granularity: true
+verdict_thresholds:
+  review_required_if_scope_creep_gte: 1
+databricks:
+  calibration_enabled: false
+  score_source: batch
+  gate:
+    mode: fallback
+    alpha_target: 0.05
+  ai_search:
+    enabled: false
+    index_name: null
