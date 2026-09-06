@@ -1,0 +1,42 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+::selection {
+  background: #ff4500;
+  color: #fff;
+}
+
+body {
+  margin: 0;
+  background: #050505;
+  color: #ededed;
+}
+
+/* Film-grain overlay: an inline SVG feTurbulence data URI, not an external
+   image fetch -- the same choice made in dashboard.go's Go-rendered
+   single-file version, for the same reason: no network dependency for the
+   page's own chrome. */
+.noise-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.05;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* Reveal-on-scroll base state; useReveal (hooks/useReveal.ts) adds
+   data-active="true" via IntersectionObserver, with a mount-time fallback so
+   an observer that never fires (the exact bug found in the Go-rendered
+   version) cannot permanently hide content -- see that hook's comment. */
+.reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: all 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.reveal[data-active='true'] {
+  opacity: 1;
+  transform: translateY(0);
+}
