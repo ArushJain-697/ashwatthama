@@ -37,6 +37,7 @@ type verifyIntentResponse struct {
 	Verdict          fidelity.Verdict         `json:"verdict"`
 	VerdictPath      string                   `json:"verdict_path"`
 	ReportPath       string                   `json:"report_path"`
+	DashboardPath    string                   `json:"dashboard_path"`
 	Message          string                   `json:"message"`
 }
 
@@ -161,6 +162,14 @@ func runVerifyIntentWithAdapter(ctx context.Context, opts Options, args []string
 	if err := writeTextFile(reportPath, fidelity.RenderMarkdown(verdict)); err != nil {
 		return err
 	}
+	dashboardHTML, err := fidelity.RenderDashboard(verdict)
+	if err != nil {
+		return err
+	}
+	dashboardPath := filepath.Join(outputDirectory, "dashboard.html")
+	if err := writeTextFile(dashboardPath, dashboardHTML); err != nil {
+		return err
+	}
 	// opts.Stdout is the JSON response contract; the human-readable terminal
 	// report goes to stderr so scripted callers still get clean JSON on stdout.
 	fmt.Fprint(opts.Stderr, fidelity.RenderTerminal(verdict))
@@ -170,8 +179,8 @@ func runVerifyIntentWithAdapter(ctx context.Context, opts Options, args []string
 		BaseCheckpointID: flags.BaseCheckpointID, ConfigPath: configPath,
 		OutputDirectory: flags.OutputDirectory, Stages: runner.stages,
 		Preflight: preflight, Verification: verification,
-		Verdict: verdict, VerdictPath: verdictPath, ReportPath: reportPath,
-		Message: "capture, declaration, semantic-diff observation, six-tier reconciliation (including coverage-confidence), and verdict/report rendering are complete",
+		Verdict: verdict, VerdictPath: verdictPath, ReportPath: reportPath, DashboardPath: dashboardPath,
+		Message: "capture, declaration, semantic-diff observation, six-tier reconciliation (including coverage-confidence), and verdict/report/dashboard rendering are complete",
 	}
 	encoder := json.NewEncoder(termsafe.NewJSONWriter(opts.Stdout))
 	encoder.SetEscapeHTML(false)

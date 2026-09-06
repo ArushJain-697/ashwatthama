@@ -1,6 +1,6 @@
 # Fidelity Verdict Report
 
-Checkpoint `af04126413fd` (base `caefd603ffcd`) — generated 2026-09-06T08:18:27Z — **REVIEW_REQUIRED**
+Checkpoint `af04126413fd` (base `caefd603ffcd`) — generated 2026-09-06T08:45:53Z — **REVIEW_REQUIRED**
 
 | Tier | Visual category | Count |
 |---|---|---|
@@ -9,7 +9,7 @@ Checkpoint `af04126413fd` (base `caefd603ffcd`) — generated 2026-09-06T08:18:2
 | advisory_low_confidence | HEURISTIC / INCOMPLETE EVIDENCE | 19 |
 | unverifiable_coverage | NEEDS SOURCE/TEST VERIFICATION | 73 |
 | undeclared_scope_creep | DRIFT FROM STATED INTENT | 1 |
-| declared_unimplemented | DRIFT FROM STATED INTENT | 582 |
+| declared_unimplemented | DRIFT FROM STATED INTENT | 620 |
 
 ## ✅ CONFIRMED STRUCTURAL EVIDENCE
 
@@ -179,7 +179,7 @@ Checkpoint `af04126413fd` (base `caefd603ffcd`) — generated 2026-09-06T08:18:2
 
 ## 🔴 DRIFT FROM STATED INTENT
 
-- `Config.Coverage` at internal/fidelity/config.go:28 — changed, not reachable from any confirmed entity within 2 hops — coverage: `full`
+- `Config.Coverage` at internal/fidelity/config.go:28 — changed, not reachable from any confirmed entity within 2 hops — coverage: `full` [community: internal/fidelity]
 - `.gitignore` — named in intent, no matching graph change detected
 - `AISearch` — named in intent, no matching graph change detected
 - `ASYNC_CALLS` — named in intent, no matching graph change detected
@@ -210,6 +210,7 @@ Checkpoint `af04126413fd` (base `caefd603ffcd`) — generated 2026-09-06T08:18:2
 - `CapabilityReport` — named in intent, no matching graph change detected
 - `ChangedEntity` — named in intent, no matching graph change detected
 - `CheckReadableSchemaVersion` — named in intent, no matching graph change detected
+- `Checkpoints` — named in intent, no matching graph change detected
 - `ClassifyRelation` — named in intent, no matching graph change detected
 - `Commands` — named in intent, no matching graph change detected
 - `CompactSnapshotIndex` — named in intent, no matching graph change detected
@@ -244,6 +245,7 @@ Checkpoint `af04126413fd` (base `caefd603ffcd`) — generated 2026-09-06T08:18:2
 - `ExtractedEntity` — named in intent, no matching graph change detected
 - `Extraction` — named in intent, no matching graph change detected
 - `FallbackResolver` — named in intent, no matching graph change detected
+- `Fidelity` — named in intent, no matching graph change detected
 - `File` — named in intent, no matching graph change detected
 - `FileChange` — named in intent, no matching graph change detected
 - `FileRecord` — named in intent, no matching graph change detected
@@ -409,6 +411,8 @@ Checkpoint `af04126413fd` (base `caefd603ffcd`) — generated 2026-09-06T08:18:2
 - `addedChange` — named in intent, no matching graph change detected
 - `admitChangedFiles` — named in intent, no matching graph change detected
 - `advance` — named in intent, no matching graph change detected
+- `advisory_edge_count` — named in intent, no matching graph change detected
+- `advisory_low_confidence` — named in intent, no matching graph change detected
 - `agent` — named in intent, no matching graph change detected
 - `aggregate` — named in intent, no matching graph change detected
 - `amount` — named in intent, no matching graph change detected
@@ -419,8 +423,10 @@ Checkpoint `af04126413fd` (base `caefd603ffcd`) — generated 2026-09-06T08:18:2
 - `appendFailureClause` — named in intent, no matching graph change detected
 - `argDoc` — named in intent, no matching graph change detected
 - `argument` — named in intent, no matching graph change detected
+- `attempted` — named in intent, no matching graph change detected
 - `author` — named in intent, no matching graph change detected
 - `automation` — named in intent, no matching graph change detected
+- `base_checkpoint_id` — named in intent, no matching graph change detected
 - `bestRename` — named in intent, no matching graph change detected
 - `blast_radius_hops` — named in intent, no matching graph change detected
 - `block` — named in intent, no matching graph change detected
@@ -440,6 +446,7 @@ Checkpoint `af04126413fd` (base `caefd603ffcd`) — generated 2026-09-06T08:18:2
 - `changedFileScan` — named in intent, no matching graph change detected
 - `changedFilesMayBeVendored` — named in intent, no matching graph change detected
 - `checkout` — named in intent, no matching graph change detected
+- `checkpoint_id` — named in intent, no matching graph change detected
 - `class` — named in intent, no matching graph change detected
 - `clean` — named in intent, no matching graph change detected
 - `command` — named in intent, no matching graph change detected
@@ -452,12 +459,19 @@ Checkpoint `af04126413fd` (base `caefd603ffcd`) — generated 2026-09-06T08:18:2
 - `completenessScope` — named in intent, no matching graph change detected
 - `completenessScopeOrAll` — named in intent, no matching graph change detected
 - `component` — named in intent, no matching graph change detected
+- `confidence` — named in intent, no matching graph change detected
+- `confirmed` — named in intent, no matching graph change detected
+- `conformal_gate_passed` — named in intent, no matching graph change detected
 - `connect` — named in intent, no matching graph change detected
 - `contains` — named in intent, no matching graph change detected
 - `containsSymbolMention` — named in intent, no matching graph change detected
 - `contractSearchResponse` — named in intent, no matching graph change detected
+- `corroboration` — named in intent, no matching graph change detected
 - `coverageNoteResponse` — named in intent, no matching graph change detected
+- `coverage_confidence` — named in intent, no matching graph change detected
+- `coverage_reason` — named in intent, no matching graph change detected
 - `create` — named in intent, no matching graph change detected
+- `declared_unimplemented` — named in intent, no matching graph change detected
 - `deny` — named in intent, no matching graph change detected
 - `dependencies` — named in intent, no matching graph change detected
 - `depends` — named in intent, no matching graph change detected
@@ -488,16 +502,21 @@ Checkpoint `af04126413fd` (base `caefd603ffcd`) — generated 2026-09-06T08:18:2
 - `distinct` — named in intent, no matching graph change detected
 - `edge` — named in intent, no matching graph change detected
 - `edgeForRelation` — named in intent, no matching graph change detected
+- `edge_class` — named in intent, no matching graph change detected
 - `edge_classes` — named in intent, no matching graph change detected
 - `enabled` — named in intent, no matching graph change detected
 - `endpointForExternal` — named in intent, no matching graph change detected
 - `endpointForFile` — named in intent, no matching graph change detected
 - `endpointForSymbol` — named in intent, no matching graph change detected
 - `entire-graph` — named in intent, no matching graph change detected
+- `entity` — named in intent, no matching graph change detected
 - `entry` — named in intent, no matching graph change detected
 - `env` — named in intent, no matching graph change detected
 - `event` — named in intent, no matching graph change detected
+- `evidence_snippet` — named in intent, no matching graph change detected
+- `expected_blast_radius` — named in intent, no matching graph change detected
 - `extensionUnsupported` — named in intent, no matching graph change detected
+- `extracted_entities` — named in intent, no matching graph change detected
 - `extraction` — named in intent, no matching graph change detected
 - `fail` — named in intent, no matching graph change detected
 - `features` — named in intent, no matching graph change detected
@@ -515,8 +534,10 @@ Checkpoint `af04126413fd` (base `caefd603ffcd`) — generated 2026-09-06T08:18:2
 - `formatNeighborEndpoint` — named in intent, no matching graph change detected
 - `formatNeighborFocus` — named in intent, no matching graph change detected
 - `function` — named in intent, no matching graph change detected
+- `generated_at` — named in intent, no matching graph change detected
 - `git` — named in intent, no matching graph change detected
 - `go` — named in intent, no matching graph change detected
+- `graph_capabilities_verified` — named in intent, no matching graph change detected
 - `grepFixedStringMatches` — named in intent, no matching graph change detected
 - `grepTreePaths` — named in intent, no matching graph change detected
 - `grow` — named in intent, no matching graph change detected
@@ -540,6 +561,7 @@ Checkpoint `af04126413fd` (base `caefd603ffcd`) — generated 2026-09-06T08:18:2
 - `indexPolicyChangedWarning` — named in intent, no matching graph change detected
 - `indexed` — named in intent, no matching graph change detected
 - `init` — named in intent, no matching graph change detected
+- `intent` — named in intent, no matching graph change detected
 - `interface` — named in intent, no matching graph change detected
 - `isCallRelation` — named in intent, no matching graph change detected
 - `isConventionalTestPath` — named in intent, no matching graph change detected
@@ -555,6 +577,7 @@ Checkpoint `af04126413fd` (base `caefd603ffcd`) — generated 2026-09-06T08:18:2
 - `languages` — named in intent, no matching graph change detected
 - `layout` — named in intent, no matching graph change detected
 - `ledger` — named in intent, no matching graph change detected
+- `line` — named in intent, no matching graph change detected
 - `lineForSort` — named in intent, no matching graph change detected
 - `lineReader` — named in intent, no matching graph change detected
 - `loadExplicitIgnoreMatcher` — named in intent, no matching graph change detected
@@ -622,7 +645,10 @@ Checkpoint `af04126413fd` (base `caefd603ffcd`) — generated 2026-09-06T08:18:2
 - `prune` — named in intent, no matching graph change detected
 - `qualify` — named in intent, no matching graph change detected
 - `rankedLanguageNames` — named in intent, no matching graph change detected
+- `raw_prompt_excerpt` — named in intent, no matching graph change detected
+- `reason` — named in intent, no matching graph change detected
 - `reconcileMoves` — named in intent, no matching graph change detected
+- `reconciliation` — named in intent, no matching graph change detected
 - `recordingFidelityStages` — named in intent, no matching graph change detected
 - `ref` — named in intent, no matching graph change detected
 - `refresh` — named in intent, no matching graph change detected
@@ -675,6 +701,7 @@ Checkpoint `af04126413fd` (base `caefd603ffcd`) — generated 2026-09-06T08:18:2
 - `scope` — named in intent, no matching graph change detected
 - `scopeLanguageFileCount` — named in intent, no matching graph change detected
 - `scopeLanguageLabel` — named in intent, no matching graph change detected
+- `scope_creep_count` — named in intent, no matching graph change detected
 - `scored` — named in intent, no matching graph change detected
 - `scripts` — named in intent, no matching graph change detected
 - `searchSnapshotKey` — named in intent, no matching graph change detected
@@ -716,6 +743,7 @@ Checkpoint `af04126413fd` (base `caefd603ffcd`) — generated 2026-09-06T08:18:2
 - `store` — named in intent, no matching graph change detected
 - `struct` — named in intent, no matching graph change detected
 - `stub` — named in intent, no matching graph change detected
+- `summary` — named in intent, no matching graph change detected
 - `symbolByte` — named in intent, no matching graph change detected
 - `symbolID` — named in intent, no matching graph change detected
 - `symbolMatchBody` — named in intent, no matching graph change detected
@@ -737,12 +765,22 @@ Checkpoint `af04126413fd` (base `caefd603ffcd`) — generated 2026-09-06T08:18:2
 - `tool_use` — named in intent, no matching graph change detected
 - `tools` — named in intent, no matching graph change detected
 - `total` — named in intent, no matching graph change detected
+- `total_changed_entities` — named in intent, no matching graph change detected
 - `trait` — named in intent, no matching graph change detected
 - `treeBlobMembersBatch` — named in intent, no matching graph change detected
 - `treeVendorIgnoreRules` — named in intent, no matching graph change detected
 - `type` — named in intent, no matching graph change detected
+- `undeclared_scope_creep` — named in intent, no matching graph change detected
+- `unimplemented_count` — named in intent, no matching graph change detected
+- `unresolved_fragments` — named in intent, no matching graph change detected
+- `unverifiable_coverage` — named in intent, no matching graph change detected
+- `unverifiable_coverage_count` — named in intent, no matching graph change detected
 - `usage` — named in intent, no matching graph change detected
 - `vendorIgnoreRules` — named in intent, no matching graph change detected
+- `verbal_confidence` — named in intent, no matching graph change detected
+- `verdict_label` — named in intent, no matching graph change detected
+- `verification_path` — named in intent, no matching graph change detected
+- `verified` — named in intent, no matching graph change detected
 - `verify` — named in intent, no matching graph change detected
 - `verifyIntentFlags` — named in intent, no matching graph change detected
 - `wantsHelp` — named in intent, no matching graph change detected

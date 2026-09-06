@@ -1,7 +1,7 @@
 {
   "checkpoint_id": "af04126413fd",
   "base_checkpoint_id": "caefd603ffcd",
-  "generated_at": "2026-09-06T08:18:27Z",
+  "generated_at": "2026-09-06T08:45:53Z",
   "graph_capabilities_verified": [
     "ACCESSES",
     "ASYNC_CALLS",
@@ -204,6 +204,11 @@
       },
       {
         "name": "CheckReadableSchemaVersion",
+        "method": "regex",
+        "confidence": 1
+      },
+      {
+        "name": "Checkpoints",
         "method": "regex",
         "confidence": 1
       },
@@ -419,6 +424,11 @@
       },
       {
         "name": "FallbackResolver",
+        "method": "regex",
+        "confidence": 1
+      },
+      {
+        "name": "Fidelity",
         "method": "regex",
         "confidence": 1
       },
@@ -1368,6 +1378,16 @@
         "confidence": 1
       },
       {
+        "name": "advisory_edge_count",
+        "method": "regex",
+        "confidence": 1
+      },
+      {
+        "name": "advisory_low_confidence",
+        "method": "regex",
+        "confidence": 1
+      },
+      {
         "name": "agent",
         "method": "regex",
         "confidence": 1
@@ -1423,12 +1443,22 @@
         "confidence": 1
       },
       {
+        "name": "attempted",
+        "method": "regex",
+        "confidence": 1
+      },
+      {
         "name": "author",
         "method": "regex",
         "confidence": 1
       },
       {
         "name": "automation",
+        "method": "regex",
+        "confidence": 1
+      },
+      {
+        "name": "base_checkpoint_id",
         "method": "regex",
         "confidence": 1
       },
@@ -1528,6 +1558,11 @@
         "confidence": 1
       },
       {
+        "name": "checkpoint_id",
+        "method": "regex",
+        "confidence": 1
+      },
+      {
         "name": "class",
         "method": "regex",
         "confidence": 1
@@ -1588,6 +1623,21 @@
         "confidence": 1
       },
       {
+        "name": "confidence",
+        "method": "regex",
+        "confidence": 1
+      },
+      {
+        "name": "confirmed",
+        "method": "regex",
+        "confidence": 1
+      },
+      {
+        "name": "conformal_gate_passed",
+        "method": "regex",
+        "confidence": 1
+      },
+      {
         "name": "connect",
         "method": "regex",
         "confidence": 1
@@ -1608,6 +1658,11 @@
         "confidence": 1
       },
       {
+        "name": "corroboration",
+        "method": "regex",
+        "confidence": 1
+      },
+      {
         "name": "countGraphEdges",
         "method": "regex",
         "confidence": 1
@@ -1623,12 +1678,27 @@
         "confidence": 1
       },
       {
+        "name": "coverage_confidence",
+        "method": "regex",
+        "confidence": 1
+      },
+      {
+        "name": "coverage_reason",
+        "method": "regex",
+        "confidence": 1
+      },
+      {
         "name": "create",
         "method": "regex",
         "confidence": 1
       },
       {
         "name": "databricks",
+        "method": "regex",
+        "confidence": 1
+      },
+      {
+        "name": "declared_unimplemented",
         "method": "regex",
         "confidence": 1
       },
@@ -1783,6 +1853,11 @@
         "confidence": 1
       },
       {
+        "name": "edge_class",
+        "method": "regex",
+        "confidence": 1
+      },
+      {
         "name": "edge_classes",
         "method": "regex",
         "confidence": 1
@@ -1813,6 +1888,11 @@
         "confidence": 1
       },
       {
+        "name": "entity",
+        "method": "regex",
+        "confidence": 1
+      },
+      {
         "name": "entry",
         "method": "regex",
         "confidence": 1
@@ -1828,12 +1908,27 @@
         "confidence": 1
       },
       {
+        "name": "evidence_snippet",
+        "method": "regex",
+        "confidence": 1
+      },
+      {
         "name": "excerpt",
         "method": "regex",
         "confidence": 1
       },
       {
+        "name": "expected_blast_radius",
+        "method": "regex",
+        "confidence": 1
+      },
+      {
         "name": "extensionUnsupported",
+        "method": "regex",
+        "confidence": 1
+      },
+      {
+        "name": "extracted_entities",
         "method": "regex",
         "confidence": 1
       },
@@ -1933,12 +2028,22 @@
         "confidence": 1
       },
       {
+        "name": "generated_at",
+        "method": "regex",
+        "confidence": 1
+      },
+      {
         "name": "git",
         "method": "regex",
         "confidence": 1
       },
       {
         "name": "go",
+        "method": "regex",
+        "confidence": 1
+      },
+      {
+        "name": "graph_capabilities_verified",
         "method": "regex",
         "confidence": 1
       },
@@ -2063,6 +2168,11 @@
         "confidence": 1
       },
       {
+        "name": "intent",
+        "method": "regex",
+        "confidence": 1
+      },
+      {
         "name": "interface",
         "method": "regex",
         "confidence": 1
@@ -2139,6 +2249,11 @@
       },
       {
         "name": "ledger",
+        "method": "regex",
+        "confidence": 1
+      },
+      {
+        "name": "line",
         "method": "regex",
         "confidence": 1
       },
@@ -2498,6 +2613,11 @@
         "confidence": 1
       },
       {
+        "name": "raw_prompt_excerpt",
+        "method": "regex",
+        "confidence": 1
+      },
+      {
         "name": "reachabilityHit",
         "method": "regex",
         "confidence": 1
@@ -2508,7 +2628,17 @@
         "confidence": 1
       },
       {
+        "name": "reason",
+        "method": "regex",
+        "confidence": 1
+      },
+      {
         "name": "reconcileMoves",
+        "method": "regex",
+        "confidence": 1
+      },
+      {
+        "name": "reconciliation",
         "method": "regex",
         "confidence": 1
       },
@@ -2778,6 +2908,11 @@
         "confidence": 1
       },
       {
+        "name": "scope_creep_count",
+        "method": "regex",
+        "confidence": 1
+      },
+      {
         "name": "scored",
         "method": "regex",
         "confidence": 1
@@ -2993,6 +3128,11 @@
         "confidence": 1
       },
       {
+        "name": "summary",
+        "method": "regex",
+        "confidence": 1
+      },
+      {
         "name": "symbolByte",
         "method": "regex",
         "confidence": 1
@@ -3108,6 +3248,11 @@
         "confidence": 1
       },
       {
+        "name": "total_changed_entities",
+        "method": "regex",
+        "confidence": 1
+      },
+      {
         "name": "trait",
         "method": "regex",
         "confidence": 1
@@ -3133,6 +3278,31 @@
         "confidence": 1
       },
       {
+        "name": "undeclared_scope_creep",
+        "method": "regex",
+        "confidence": 1
+      },
+      {
+        "name": "unimplemented_count",
+        "method": "regex",
+        "confidence": 1
+      },
+      {
+        "name": "unresolved_fragments",
+        "method": "regex",
+        "confidence": 1
+      },
+      {
+        "name": "unverifiable_coverage",
+        "method": "regex",
+        "confidence": 1
+      },
+      {
+        "name": "unverifiable_coverage_count",
+        "method": "regex",
+        "confidence": 1
+      },
+      {
         "name": "usage",
         "method": "regex",
         "confidence": 1
@@ -3148,7 +3318,27 @@
         "confidence": 1
       },
       {
+        "name": "verbal_confidence",
+        "method": "regex",
+        "confidence": 1
+      },
+      {
+        "name": "verdict_label",
+        "method": "regex",
+        "confidence": 1
+      },
+      {
         "name": "verdict_thresholds",
+        "method": "regex",
+        "confidence": 1
+      },
+      {
+        "name": "verification_path",
+        "method": "regex",
+        "confidence": 1
+      },
+      {
+        "name": "verified",
         "method": "regex",
         "confidence": 1
       },
@@ -3790,6 +3980,10 @@
         "reason": "named in intent, no matching graph change detected"
       },
       {
+        "entity": "Checkpoints",
+        "reason": "named in intent, no matching graph change detected"
+      },
+      {
         "entity": "ClassifyRelation",
         "reason": "named in intent, no matching graph change detected"
       },
@@ -3923,6 +4117,10 @@
       },
       {
         "entity": "FallbackResolver",
+        "reason": "named in intent, no matching graph change detected"
+      },
+      {
+        "entity": "Fidelity",
         "reason": "named in intent, no matching graph change detected"
       },
       {
@@ -4586,6 +4784,14 @@
         "reason": "named in intent, no matching graph change detected"
       },
       {
+        "entity": "advisory_edge_count",
+        "reason": "named in intent, no matching graph change detected"
+      },
+      {
+        "entity": "advisory_low_confidence",
+        "reason": "named in intent, no matching graph change detected"
+      },
+      {
         "entity": "agent",
         "reason": "named in intent, no matching graph change detected"
       },
@@ -4626,11 +4832,19 @@
         "reason": "named in intent, no matching graph change detected"
       },
       {
+        "entity": "attempted",
+        "reason": "named in intent, no matching graph change detected"
+      },
+      {
         "entity": "author",
         "reason": "named in intent, no matching graph change detected"
       },
       {
         "entity": "automation",
+        "reason": "named in intent, no matching graph change detected"
+      },
+      {
+        "entity": "base_checkpoint_id",
         "reason": "named in intent, no matching graph change detected"
       },
       {
@@ -4710,6 +4924,10 @@
         "reason": "named in intent, no matching graph change detected"
       },
       {
+        "entity": "checkpoint_id",
+        "reason": "named in intent, no matching graph change detected"
+      },
+      {
         "entity": "class",
         "reason": "named in intent, no matching graph change detected"
       },
@@ -4758,6 +4976,18 @@
         "reason": "named in intent, no matching graph change detected"
       },
       {
+        "entity": "confidence",
+        "reason": "named in intent, no matching graph change detected"
+      },
+      {
+        "entity": "confirmed",
+        "reason": "named in intent, no matching graph change detected"
+      },
+      {
+        "entity": "conformal_gate_passed",
+        "reason": "named in intent, no matching graph change detected"
+      },
+      {
         "entity": "connect",
         "reason": "named in intent, no matching graph change detected"
       },
@@ -4774,11 +5004,27 @@
         "reason": "named in intent, no matching graph change detected"
       },
       {
+        "entity": "corroboration",
+        "reason": "named in intent, no matching graph change detected"
+      },
+      {
         "entity": "coverageNoteResponse",
         "reason": "named in intent, no matching graph change detected"
       },
       {
+        "entity": "coverage_confidence",
+        "reason": "named in intent, no matching graph change detected"
+      },
+      {
+        "entity": "coverage_reason",
+        "reason": "named in intent, no matching graph change detected"
+      },
+      {
         "entity": "create",
+        "reason": "named in intent, no matching graph change detected"
+      },
+      {
+        "entity": "declared_unimplemented",
         "reason": "named in intent, no matching graph change detected"
       },
       {
@@ -4902,6 +5148,10 @@
         "reason": "named in intent, no matching graph change detected"
       },
       {
+        "entity": "edge_class",
+        "reason": "named in intent, no matching graph change detected"
+      },
+      {
         "entity": "edge_classes",
         "reason": "named in intent, no matching graph change detected"
       },
@@ -4926,6 +5176,10 @@
         "reason": "named in intent, no matching graph change detected"
       },
       {
+        "entity": "entity",
+        "reason": "named in intent, no matching graph change detected"
+      },
+      {
         "entity": "entry",
         "reason": "named in intent, no matching graph change detected"
       },
@@ -4938,7 +5192,19 @@
         "reason": "named in intent, no matching graph change detected"
       },
       {
+        "entity": "evidence_snippet",
+        "reason": "named in intent, no matching graph change detected"
+      },
+      {
+        "entity": "expected_blast_radius",
+        "reason": "named in intent, no matching graph change detected"
+      },
+      {
         "entity": "extensionUnsupported",
+        "reason": "named in intent, no matching graph change detected"
+      },
+      {
+        "entity": "extracted_entities",
         "reason": "named in intent, no matching graph change detected"
       },
       {
@@ -5010,11 +5276,19 @@
         "reason": "named in intent, no matching graph change detected"
       },
       {
+        "entity": "generated_at",
+        "reason": "named in intent, no matching graph change detected"
+      },
+      {
         "entity": "git",
         "reason": "named in intent, no matching graph change detected"
       },
       {
         "entity": "go",
+        "reason": "named in intent, no matching graph change detected"
+      },
+      {
+        "entity": "graph_capabilities_verified",
         "reason": "named in intent, no matching graph change detected"
       },
       {
@@ -5110,6 +5384,10 @@
         "reason": "named in intent, no matching graph change detected"
       },
       {
+        "entity": "intent",
+        "reason": "named in intent, no matching graph change detected"
+      },
+      {
         "entity": "interface",
         "reason": "named in intent, no matching graph change detected"
       },
@@ -5167,6 +5445,10 @@
       },
       {
         "entity": "ledger",
+        "reason": "named in intent, no matching graph change detected"
+      },
+      {
+        "entity": "line",
         "reason": "named in intent, no matching graph change detected"
       },
       {
@@ -5438,7 +5720,19 @@
         "reason": "named in intent, no matching graph change detected"
       },
       {
+        "entity": "raw_prompt_excerpt",
+        "reason": "named in intent, no matching graph change detected"
+      },
+      {
+        "entity": "reason",
+        "reason": "named in intent, no matching graph change detected"
+      },
+      {
         "entity": "reconcileMoves",
+        "reason": "named in intent, no matching graph change detected"
+      },
+      {
+        "entity": "reconciliation",
         "reason": "named in intent, no matching graph change detected"
       },
       {
@@ -5650,6 +5944,10 @@
         "reason": "named in intent, no matching graph change detected"
       },
       {
+        "entity": "scope_creep_count",
+        "reason": "named in intent, no matching graph change detected"
+      },
+      {
         "entity": "scored",
         "reason": "named in intent, no matching graph change detected"
       },
@@ -5814,6 +6112,10 @@
         "reason": "named in intent, no matching graph change detected"
       },
       {
+        "entity": "summary",
+        "reason": "named in intent, no matching graph change detected"
+      },
+      {
         "entity": "symbolByte",
         "reason": "named in intent, no matching graph change detected"
       },
@@ -5898,6 +6200,10 @@
         "reason": "named in intent, no matching graph change detected"
       },
       {
+        "entity": "total_changed_entities",
+        "reason": "named in intent, no matching graph change detected"
+      },
+      {
         "entity": "trait",
         "reason": "named in intent, no matching graph change detected"
       },
@@ -5914,11 +6220,47 @@
         "reason": "named in intent, no matching graph change detected"
       },
       {
+        "entity": "undeclared_scope_creep",
+        "reason": "named in intent, no matching graph change detected"
+      },
+      {
+        "entity": "unimplemented_count",
+        "reason": "named in intent, no matching graph change detected"
+      },
+      {
+        "entity": "unresolved_fragments",
+        "reason": "named in intent, no matching graph change detected"
+      },
+      {
+        "entity": "unverifiable_coverage",
+        "reason": "named in intent, no matching graph change detected"
+      },
+      {
+        "entity": "unverifiable_coverage_count",
+        "reason": "named in intent, no matching graph change detected"
+      },
+      {
         "entity": "usage",
         "reason": "named in intent, no matching graph change detected"
       },
       {
         "entity": "vendorIgnoreRules",
+        "reason": "named in intent, no matching graph change detected"
+      },
+      {
+        "entity": "verbal_confidence",
+        "reason": "named in intent, no matching graph change detected"
+      },
+      {
+        "entity": "verdict_label",
+        "reason": "named in intent, no matching graph change detected"
+      },
+      {
+        "entity": "verification_path",
+        "reason": "named in intent, no matching graph change detected"
+      },
+      {
+        "entity": "verified",
         "reason": "named in intent, no matching graph change detected"
       },
       {
@@ -6005,7 +6347,8 @@
         "file": "internal/fidelity/config.go",
         "line": 28,
         "reason": "changed, not reachable from any confirmed entity within 2 hops",
-        "coverage_confidence": "full"
+        "coverage_confidence": "full",
+        "community_label": "internal/fidelity"
       }
     ],
     "advisory_low_confidence": [
@@ -7250,7 +7593,7 @@
   "summary": {
     "total_changed_entities": 158,
     "scope_creep_count": 1,
-    "unimplemented_count": 582,
+    "unimplemented_count": 620,
     "advisory_edge_count": 19,
     "unverifiable_coverage_count": 73,
     "verdict_label": "REVIEW_REQUIRED"

@@ -97,14 +97,17 @@ func TestVerifyIntentReportsPartialPipeline(t *testing.T) {
 	if len(response.Verification.Reconciliation.Confirmed) != 1 || len(response.Verification.Reconciliation.DeclaredUnimplemented) != 1 {
 		t.Fatalf("response did not include direct reconciliation: %#v", response.Verification)
 	}
-	if response.VerdictPath == "" || response.ReportPath == "" {
-		t.Fatalf("response did not report where verdict.json/VERIFY_REPORT.md were written: %#v", response)
+	if response.VerdictPath == "" || response.ReportPath == "" || response.DashboardPath == "" {
+		t.Fatalf("response did not report where verdict.json/VERIFY_REPORT.md/dashboard.html were written: %#v", response)
 	}
 	if _, err := os.Stat(response.VerdictPath); err != nil {
 		t.Fatalf("verdict.json was not written: %v", err)
 	}
 	if _, err := os.Stat(response.ReportPath); err != nil {
 		t.Fatalf("VERIFY_REPORT.md was not written: %v", err)
+	}
+	if _, err := os.Stat(response.DashboardPath); err != nil {
+		t.Fatalf("dashboard.html was not written: %v", err)
 	}
 	if errOutput.Len() == 0 {
 		t.Fatal("terminal report was not printed to stderr")
