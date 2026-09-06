@@ -1,0 +1,46 @@
+{
+  "cli_version": "0.10.5",
+  "checkpoint_id": "af04126413fd",
+  "strategy": "manual-commit",
+  "branch": "main",
+  "checkpoints_count": 4,
+  "files_touched": [
+    "BUILDATHON.md",
+    "docs/fidelity-phase-0.md",
+    "fidelity.config.yaml",
+    "internal/cli/verify_intent.go",
+    "internal/cli/verify_intent_test.go",
+    "internal/fidelity/adapter.go",
+    "internal/fidelity/adapter_test.go",
+    "internal/fidelity/config.go",
+    "internal/fidelity/config_test.go",
+    "internal/fidelity/coverage.go",
+    "internal/fidelity/curveball_fixture_test.go",
+    "internal/fidelity/pipeline.go",
+    "internal/fidelity/pipeline_test.go",
+    "internal/fidelity/preflight.go",
+    "internal/fidelity/reachability.go",
+    "internal/fidelity/reconcile.go",
+    "internal/fidelity/reconcile_test.go",
+    "internal/fidelity/render.go",
+    "internal/fidelity/render_test.go",
+    "internal/fidelity/verdict.go",
+    "internal/fidelity/verdict_test.go"
+  ],
+  "sessions": [
+    {
+      "metadata": "/af/04126413fd/0/metadata.json",
+      "transcript": "/af/04126413fd/0/full.jsonl",
+      "compact_transcript": "/af/04126413fd/0/transcript.jsonl",
+      "content_hash": "/af/04126413fd/0/content_hash.txt",
+      "prompt": "/af/04126413fd/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 324,
+    "cache_creation_tokens": 601766,
+    "cache_read_tokens": 42207171,
+    "output_tokens": 132254,
+    "api_call_count": 162
+  }
+}
