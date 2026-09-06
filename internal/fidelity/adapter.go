@@ -6,6 +6,7 @@ import (
 	"os/exec"
 	"strings"
 
+	"github.com/entireio/entire-graph/internal/gitutil"
 	"github.com/entireio/entire-graph/internal/sem"
 )
 
@@ -16,6 +17,7 @@ import (
 // that distinction leaking into reconciliation and rendering.
 type Adapter interface {
 	CheckpointTranscript(context.Context, string) (string, error)
+	CheckpointCommit(context.Context, string) (string, error)
 	SymbolDictionary(context.Context) ([]Symbol, error)
 	ChangedEntities(context.Context, string, string) ([]ChangedEntity, error)
 }
@@ -60,6 +62,20 @@ func (adapter NativeGraphAdapter) CheckpointTranscript(ctx context.Context, chec
 		return "", fmt.Errorf("checkpoint transcript %q was empty", checkpointID)
 	}
 	return string(output), nil
+}
+
+// CheckpointCommit resolves the checkpoint trailer before Stage 3 passes a
+// concrete, local Git range to the semantic diff engine. The checkpoint ID is
+// intentionally never treated as a Git revision directly.
+func (adapter NativeGraphAdapter) CheckpointCommit(ctx context.Context, checkpointID string) (string, error) {
+	if strings.TrimSpace(checkpointID) == "" {
+		return "", fmt.Errorf("checkpoint commit requires a checkpoint ID")
+	}
+	commit, err := gitutil.FindCommitWithCheckpoint(ctx, adapter.Repo, checkpointID)
+	if err != nil {
+		return "", fmt.Errorf("resolve checkpoint %q to commit: %w", checkpointID, err)
+	}
+	return commit, nil
 }
 
 func (adapter NativeGraphAdapter) SymbolDictionary(ctx context.Context) ([]Symbol, error) {
@@ -108,6 +124,10 @@ type UnavailableAdapter struct{}
 
 func (UnavailableAdapter) CheckpointTranscript(_ context.Context, checkpointID string) (string, error) {
 	return "", fmt.Errorf("checkpoint transcript %q is unavailable: Entire Graph resolves checkpoint trailers to commits but does not expose transcript content", checkpointID)
+}
+
+func (UnavailableAdapter) CheckpointCommit(_ context.Context, checkpointID string) (string, error) {
+	return "", fmt.Errorf("checkpoint commit %q is unavailable: Entire Graph needs the checkpoint trailer mapping", checkpointID)
 }
 
 func (UnavailableAdapter) SymbolDictionary(context.Context) ([]Symbol, error) {

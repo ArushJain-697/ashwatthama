@@ -11,9 +11,7 @@ import (
 	"github.com/entireio/entire-graph/internal/termsafe"
 )
 
-// verifyIntentFlags intentionally keeps the initial command surface small and
-// stable. Transcript capture is not guessed here: the later Entire/Brain
-// adapter will provide that capability behind internal/fidelity.Adapter.
+// verifyIntentFlags intentionally keeps the command surface small and stable.
 type verifyIntentFlags struct {
 	BaseCheckpointID string
 	ConfigPath       string
@@ -30,6 +28,7 @@ type verifyIntentResponse struct {
 	OutputDirectory  string                   `json:"output_directory"`
 	Stages           []fidelity.Stage         `json:"stages"`
 	Preflight        fidelity.PreflightReport `json:"preflight"`
+	Verification     fidelity.Verification    `json:"verification"`
 	Message          string                   `json:"message"`
 }
 
@@ -82,6 +81,10 @@ func (runner *recordingFidelityStages) RunStage(_ context.Context, stage fidelit
 }
 
 func runVerifyIntent(ctx context.Context, opts Options, args []string) error {
+	return runVerifyIntentWithAdapter(ctx, opts, args, fidelity.NativeGraphAdapter{})
+}
+
+func runVerifyIntentWithAdapter(ctx context.Context, opts Options, args []string, adapter fidelity.Adapter) error {
 	flags, checkpointID, err := parseVerifyIntentFlags(args)
 	if err != nil {
 		return err
@@ -103,15 +106,22 @@ func runVerifyIntent(ctx context.Context, opts Options, args []string) error {
 		CheckpointID: checkpointID, BaseCheckpointID: flags.BaseCheckpointID,
 		Config: config, OutputDirectory: flags.OutputDirectory,
 	}
-	if err := fidelity.RunSkeleton(ctx, runner, request); err != nil {
+	if native, ok := adapter.(fidelity.NativeGraphAdapter); ok && native.Repo == "" {
+		native.Repo = repo
+		native.ProviderVersion = opts.Version
+		adapter = native
+	}
+	verification, err := (fidelity.Pipeline{Adapter: adapter, Runner: runner}).Run(ctx, request)
+	if err != nil {
 		return err
 	}
 	response := verifyIntentResponse{
-		FormatVersion: 1, Status: "skeleton", CheckpointID: checkpointID,
+		FormatVersion: 1, Status: "partial", CheckpointID: checkpointID,
 		BaseCheckpointID: flags.BaseCheckpointID, ConfigPath: configPath,
 		OutputDirectory: flags.OutputDirectory, Stages: runner.stages,
-		Preflight: fidelity.CurrentPreflightReport(),
-		Message:   "command surface and pipeline order are ready; checkpoint transcript and graph adapters are intentionally not wired yet",
+		Preflight:    fidelity.CurrentPreflightReport(),
+		Verification: verification,
+		Message:      "transcript capture, graph-grounded declaration, and direct reconciliation are complete; reachability tiers and verdict file rendering are not yet implemented",
 	}
 	encoder := json.NewEncoder(termsafe.NewJSONWriter(opts.Stdout))
 	encoder.SetEscapeHTML(false)

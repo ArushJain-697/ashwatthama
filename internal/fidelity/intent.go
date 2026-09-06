@@ -21,6 +21,35 @@ type Intent struct {
 	RawText             string            `json:"raw_text"`
 	ExtractedEntities   []ExtractedEntity `json:"extracted_entities"`
 	UnresolvedFragments []string          `json:"unresolved_fragments"`
+	InheritedIntent     bool              `json:"inherited_intent"`
+	NoBaseline          bool              `json:"no_baseline"`
+}
+
+// FallbackResolver is the only permitted extension point for resolving prose
+// that direct graph-grounded matching cannot identify. Implementations receive
+// the fragment and the complete allowed vocabulary; they must return either an
+// exact vocabulary member or an empty string to abstain.
+type FallbackResolver interface {
+	Resolve(fragment string, vocabulary []string) (name string, confidence float64, err error)
+}
+
+// ResolveFallback fails closed. A model/provider answer outside the supplied
+// graph vocabulary is represented as an unresolved fragment, never as an
+// invented entity in the manifest.
+func ResolveFallback(fragment string, vocabulary []string, resolver FallbackResolver) (ExtractedEntity, string, error) {
+	if resolver == nil {
+		return ExtractedEntity{}, fragment, nil
+	}
+	name, confidence, err := resolver.Resolve(fragment, vocabulary)
+	if err != nil {
+		return ExtractedEntity{}, fragment, err
+	}
+	for _, candidate := range vocabulary {
+		if name == candidate && confidence >= 0 && confidence <= 1 {
+			return ExtractedEntity{Name: name, Method: "llm_fallback", Confidence: confidence}, "", nil
+		}
+	}
+	return ExtractedEntity{}, fragment, nil
 }
 
 // ExtractDirectMentions finds exact, token-bounded qualified-symbol mentions
@@ -43,6 +72,32 @@ func ExtractDirectMentions(text string, symbols []Symbol) Intent {
 	return Intent{RawText: text, ExtractedEntities: entities, UnresolvedFragments: []string{}}
 }
 
+// DeclareIntent recognizes the deliberately narrow class of follow-up prompts
+// that contain no actionable declaration by themselves. When a caller has
+// supplied the immediately preceding checkpoint transcript, it can preserve
+// the graph-grounded declaration while recording that it was inherited. It
+// never silently searches arbitrary older sessions for a plausible claim.
+func DeclareIntent(text, baselineText string, symbols []Symbol, noBaseline bool) Intent {
+	intent := ExtractDirectMentions(text, symbols)
+	intent.NoBaseline = noBaseline
+	if len(intent.ExtractedEntities) != 0 || !isVagueFollowUp(text) || baselineText == "" {
+		return intent
+	}
+	inherited := ExtractDirectMentions(baselineText, symbols)
+	if len(inherited.ExtractedEntities) == 0 {
+		return intent
+	}
+	inherited.RawText = text
+	inherited.InheritedIntent = true
+	inherited.NoBaseline = noBaseline
+	return inherited
+}
+
+func isVagueFollowUp(text string) bool {
+	normalized := strings.Trim(strings.ToLower(strings.TrimSpace(text)), ".!?")
+	return normalized == "continue" || normalized == "fix it"
+}
+
 func containsSymbolMention(text, symbol string) bool {
 	for offset := 0; ; {
 		index := strings.Index(text[offset:], symbol)
@@ -52,7 +107,8 @@ func containsSymbolMention(text, symbol string) bool {
 		index += offset
 		end := index + len(symbol)
 		beforeOK := index == 0 || !symbolByte(text[index-1])
-		afterOK := end == len(text) || !symbolByte(text[end])
+		afterOK := end == len(text) || !symbolByte(text[end]) ||
+			(text[end] == '.' && (end+1 == len(text) || !symbolByte(text[end+1])))
 		if beforeOK && afterOK {
 			return true
 		}

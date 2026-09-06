@@ -380,10 +380,10 @@ var commandDocs = []commandDoc{
 	{
 		name:    "verify-intent",
 		group:   groupAnalyze,
-		summary: "Initialize an intent-versus-implementation verification run",
+		summary: "Verify checkpoint intent against its implementation",
 		usage:   []string{"entire graph verify-intent <checkpoint-id> [--base <checkpoint-id>] [--config fidelity.config.yaml] [--out fidelity-out] [--repo path]"},
-		long: "Starts Fidelity's five-stage pipeline (capture, declare, observe, reconcile, manifest) using a checked policy file. The initial command deliberately reports its skeleton status: Entire Graph can resolve a checkpoint trailer to a commit, but the parent Entire/Brain layer must supply checkpoint transcript content before intent capture can run. This explicit seam prevents a semantic diff from being misrepresented as stated agent intent.",
-		args: []argDoc{{name: "<checkpoint-id>", desc: "Checkpoint whose implementation Fidelity will verify"}},
+		long:    "Runs Fidelity's five-stage pipeline (capture, declare, observe, reconcile, manifest) using a checked policy file. It reads the checkpoint transcript through the parent Entire CLI, grounds direct mentions in the local graph symbol dictionary, resolves checkpoint trailers to commits, and compares the resulting semantic diff. The JSON response is deliberately partial until reachability tiers and verdict-file rendering are implemented.",
+		args:    []argDoc{{name: "<checkpoint-id>", desc: "Checkpoint whose implementation Fidelity will verify"}},
 		flags: []flagDoc{
 			{name: "--base", arg: "checkpoint-id", desc: "Optional baseline checkpoint"},
 			{name: "--config", arg: "path", def: "fidelity.config.yaml", desc: "Fidelity policy file"},

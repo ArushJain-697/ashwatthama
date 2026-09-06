@@ -2,6 +2,7 @@ package cli
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
 	"os"
 	"path/filepath"
@@ -49,13 +50,34 @@ func TestParseVerifyIntentFlags(t *testing.T) {
 	}
 }
 
-func TestVerifyIntentSkeletonReportsOrderedStages(t *testing.T) {
+type testFidelityAdapter struct{}
+
+func (testFidelityAdapter) CheckpointTranscript(_ context.Context, _ string) (string, error) {
+	return "Implement cli.VerifyIntent and cli.Missing.", nil
+}
+
+func (testFidelityAdapter) CheckpointCommit(_ context.Context, checkpoint string) (string, error) {
+	if checkpoint == "checkpoint-0" {
+		return "base", nil
+	}
+	return "head", nil
+}
+
+func (testFidelityAdapter) SymbolDictionary(context.Context) ([]fidelity.Symbol, error) {
+	return []fidelity.Symbol{{QualifiedName: "cli.VerifyIntent"}, {QualifiedName: "cli.Missing"}}, nil
+}
+
+func (testFidelityAdapter) ChangedEntities(_ context.Context, _, _ string) ([]fidelity.ChangedEntity, error) {
+	return []fidelity.ChangedEntity{{Name: "VerifyIntent", FilePath: "internal/cli/verify_intent.go", StartLine: 1}}, nil
+}
+
+func TestVerifyIntentReportsPartialPipeline(t *testing.T) {
 	repo := t.TempDir()
 	if err := os.WriteFile(filepath.Join(repo, "fidelity.config.yaml"), []byte(verifyIntentConfig), 0o600); err != nil {
 		t.Fatal(err)
 	}
 	var output bytes.Buffer
-	err := Run(t.Context(), Options{Env: EntireEnv{RepoRoot: repo}, Stdout: &output}, []string{"verify-intent", "checkpoint-1"})
+	err := runVerifyIntentWithAdapter(t.Context(), Options{Env: EntireEnv{RepoRoot: repo}, Stdout: &output}, []string{"checkpoint-1", "--base", "checkpoint-0"}, testFidelityAdapter{})
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -64,10 +86,13 @@ func TestVerifyIntentSkeletonReportsOrderedStages(t *testing.T) {
 		t.Fatal(err)
 	}
 	want := []fidelity.Stage{fidelity.StageCapture, fidelity.StageDeclare, fidelity.StageObserve, fidelity.StageReconcile, fidelity.StageManifest}
-	if response.Status != "skeleton" || !reflect.DeepEqual(response.Stages, want) {
-		t.Fatalf("response = %#v, want ordered skeleton stages %#v", response, want)
+	if response.Status != "partial" || !reflect.DeepEqual(response.Stages, want) {
+		t.Fatalf("response = %#v, want ordered pipeline stages %#v", response, want)
 	}
 	if !response.Preflight.RequiredRelationsAvailable || response.Preflight.ConfidenceModel == "" {
 		t.Fatalf("response did not include a usable preflight report: %#v", response.Preflight)
+	}
+	if len(response.Verification.Reconciliation.Confirmed) != 1 || len(response.Verification.Reconciliation.DeclaredUnimplemented) != 1 {
+		t.Fatalf("response did not include direct reconciliation: %#v", response.Verification)
 	}
 }
