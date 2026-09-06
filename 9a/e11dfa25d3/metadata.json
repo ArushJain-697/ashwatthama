@@ -1,0 +1,27 @@
+{
+  "cli_version": "0.10.5",
+  "checkpoint_id": "9ae11dfa25d3",
+  "strategy": "manual-commit",
+  "branch": "main",
+  "checkpoints_count": 4,
+  "files_touched": [
+    "BUILDATHON.md",
+    "internal/cli/help.go"
+  ],
+  "sessions": [
+    {
+      "metadata": "/9a/e11dfa25d3/0/metadata.json",
+      "transcript": "/9a/e11dfa25d3/0/full.jsonl",
+      "compact_transcript": "/9a/e11dfa25d3/0/transcript.jsonl",
+      "content_hash": "/9a/e11dfa25d3/0/content_hash.txt",
+      "prompt": "/9a/e11dfa25d3/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 64,
+    "cache_creation_tokens": 27848,
+    "cache_read_tokens": 13023289,
+    "output_tokens": 15197,
+    "api_call_count": 32
+  }
+}

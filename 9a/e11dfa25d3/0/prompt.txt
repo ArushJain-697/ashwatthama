@@ -1,0 +1,7 @@
+<task-notification>
+<task-id>bcgtfj0fm</task-id>
+<tool-use-id>REDACTED</tool-use-id>
+<output-file>/private/tmp/claude-501/-Users-arushjain-Downloads-ashwatthama/ae5ef5b1-44c0-42d1-9830-b1a595898010/tasks/bcgtfj0fm.output</output-file>
+<status>completed</status>
+<summary>Background command "Run verify-intent in background against real checkpoint" completed (exit code 0)</summary>
+</task-notification>
