@@ -1,0 +1,1 @@
+Create a local Entire checkpoint and commit the existing Fidelity work. Do not push. Do not include .claude/settings.json.
