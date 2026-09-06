@@ -1,0 +1,37 @@
+{
+  "cli_version": "0.10.5",
+  "checkpoint_id": "84ac908c94f6",
+  "strategy": "manual-commit",
+  "branch": "new_branch",
+  "checkpoints_count": 1,
+  "files_touched": [
+    "frontend/index.html",
+    "frontend/src/App.tsx",
+    "frontend/src/components/GraphView.tsx",
+    "frontend/src/components/Header.tsx",
+    "frontend/src/components/Inspector.tsx",
+    "frontend/src/components/Legend.tsx",
+    "frontend/src/components/SummaryTab.tsx",
+    "frontend/src/components/TabNav.tsx",
+    "frontend/src/components/TierCard.tsx",
+    "frontend/src/components/TierList.tsx",
+    "frontend/src/index.css",
+    "frontend/tailwind.config.js"
+  ],
+  "sessions": [
+    {
+      "metadata": "/84/ac908c94f6/0/metadata.json",
+      "transcript": "/84/ac908c94f6/0/full.jsonl",
+      "compact_transcript": "/84/ac908c94f6/0/transcript.jsonl",
+      "content_hash": "/84/ac908c94f6/0/content_hash.txt",
+      "prompt": "/84/ac908c94f6/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 44,
+    "cache_creation_tokens": 29914,
+    "cache_read_tokens": 17178837,
+    "output_tokens": 15974,
+    "api_call_count": 22
+  }
+}
