@@ -1,0 +1,1 @@
+ok leave databricks for now make frontend the things and attached them so that demo is working
