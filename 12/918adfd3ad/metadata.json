@@ -1,0 +1,32 @@
+{
+  "cli_version": "0.10.5",
+  "checkpoint_id": "12918adfd3ad",
+  "strategy": "manual-commit",
+  "branch": "main",
+  "checkpoints_count": 1,
+  "files_touched": [
+    "BUILDATHON.md",
+    "internal/cli/verify_intent.go",
+    "internal/fidelity/community.go",
+    "internal/fidelity/community_test.go",
+    "internal/fidelity/reconcile.go",
+    "internal/fidelity/render.go",
+    "scripts/leiden_communities.py"
+  ],
+  "sessions": [
+    {
+      "metadata": "/12/918adfd3ad/0/metadata.json",
+      "transcript": "/12/918adfd3ad/0/full.jsonl",
+      "compact_transcript": "/12/918adfd3ad/0/transcript.jsonl",
+      "content_hash": "/12/918adfd3ad/0/content_hash.txt",
+      "prompt": "/12/918adfd3ad/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 72,
+    "cache_creation_tokens": 31087,
+    "cache_read_tokens": 15909587,
+    "output_tokens": 22750,
+    "api_call_count": 36
+  }
+}
