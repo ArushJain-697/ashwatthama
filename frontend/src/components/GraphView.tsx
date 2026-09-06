@@ -41,23 +41,17 @@ export function GraphView({ verdict }: { verdict: Verdict }) {
   }
 
   return (
-    <section className="px-7 pb-16 relative z-[1] bg-charcoal">
-      <div className="relative w-full h-[78vh] border-2 border-black shadow-hard-lg bg-[#020305] overflow-hidden">
-        <div className="absolute top-3 left-3 flex gap-2 z-20">
-          <button
-            className="brutal-btn bg-white text-black border-2 border-black shadow-hard-sm px-3.5 py-1.5 text-[11px] font-sans font-medium"
-            onClick={toggleSpin}
-          >
+    <div className="enter">
+      <div className="gv-wrap">
+        <div className="gv-toolbar">
+          <button className="gv-btn" onClick={toggleSpin}>
             {autoRotateWanted ? '⏸ pause spin' : '▶ resume spin'}
           </button>
-          <button
-            className="brutal-btn bg-white text-black border-2 border-black shadow-hard-sm px-3.5 py-1.5 text-[11px] font-sans font-medium"
-            onClick={() => setResetSignal((n) => n + 1)}
-          >
+          <button className="gv-btn" onClick={() => setResetSignal((n) => n + 1)}>
             ⟲ reset view
           </button>
         </div>
-        <div className="absolute top-3 right-3 text-[11px] text-black bg-accent border-2 border-black px-3.5 py-1.5 z-20 font-mono">
+        <div className="gv-stats">
           {nodes.length} nodes · {edges.length} real edges
         </div>
 
@@ -77,7 +71,7 @@ export function GraphView({ verdict }: { verdict: Verdict }) {
 
       <Legend visibleZones={visibleZones} onToggle={toggleZones} />
 
-      <p className="text-xs text-sage/80 font-sans mt-3 leading-relaxed max-w-3xl">
+      <p className="gv-note">
         Distance from center is a real graph fact ONLY inside the green blast radius (hop count from a confirmed
         change, connected by real traversed edges, shown as pulsing lines). The uncertain/fog/outside rings are
         fixed layout zones, not measured distances — advisory evidence sits in a ring, unverifiable-coverage
@@ -85,6 +79,6 @@ export function GraphView({ verdict }: { verdict: Verdict }) {
         and scope-creep sits outside it all: confirmed drift, not uncertainty. Drag to orbit, scroll to zoom, click
         a node to inspect it.
       </p>
-    </section>
+    </div>
   )
 }

@@ -16,16 +16,15 @@ export function Legend({
   onToggle: (zones: Zone[], checked: boolean) => void
 }) {
   return (
-    <div className="flex gap-4 mt-3.5 text-xs text-sage font-sans flex-wrap items-center">
+    <div className="gv-legend">
       {ITEMS.map((item) => (
-        <label key={item.text} className="inline-flex items-center gap-1.5 cursor-pointer select-none">
+        <label key={item.text}>
           <input
             type="checkbox"
             checked={item.zones.every((zone) => visibleZones.has(zone))}
             onChange={(event) => onToggle(item.zones, event.target.checked)}
-            style={{ accentColor: '#ffe17c' }}
           />
-          <i className="w-2.5 h-2.5 border border-black inline-block" style={{ background: item.color }} />
+          <i style={{ background: item.color }} />
           {item.text}
         </label>
       ))}
