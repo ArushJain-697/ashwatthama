@@ -79,11 +79,12 @@ mise exec -- go test ./internal/fidelity/... ./internal/cli/...
    Checkpoint; see the honest note in "Checkpoint content, stated honestly"
    below.
 2. **Pre-noon stable state** — `caefd603ffcd` (commit `bb61095`).
-3. **Response to the Curveball** / **final implementation** —
-   `af04126413fd` (commit `1e334ab`), covering both milestones 3 and 4: this
-   session's own transcript is the checkpoint content, and it captures the
-   fresh-session reconstruction, the pre-edit `impact` run, the Curveball
-   response, and this record.
+3. **Response to the Curveball** — `af04126413fd` (commit `1e334ab`): the
+   fresh-session reconstruction, the pre-edit `impact` run, and the full
+   six-tier/coverage-confidence implementation.
+4. **Final implementation and verification** — `9ae11dfa25d3` (commit
+   `6cd3d05`): the whole-repo test pass, the live end-to-end
+   `verify-intent` run, the third graph demonstration, and this record.
 
 **Checkpoint content, stated honestly.** `caefd603ffcd`'s actual transcript
 content is a single mechanical instruction ("create a checkpoint and commit")
