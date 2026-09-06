@@ -1,4 +1,99 @@
-# Fidelity Buildathon Record
+# Fidelity
+
+**Fidelity is an intent-versus-implementation verifier for AI coding agents.**
+It reads an Entire Checkpoint's stated intent, reads Entire Graph's actual
+structural change, and produces a tiered, `file:line`-cited reconciliation a
+reviewer can check in seconds — a computed verdict, not a chat summary.
+
+## Problem, user, and why Entire
+
+**User:** the person who has to approve an AI agent's work before it
+merges — a tech lead reviewing a teammate's agent session, or an engineer
+reviewing their own agent's output before pushing.
+
+**Problem:** agents are fast, but a reviewer has no reliable way to know
+whether an agent did *exactly* what was asked, *more* (silent scope creep), or
+*less* (task left half-done) without re-reading the whole diff by hand or
+trusting an LLM's narrative summary of the transcript.
+
+**Why Entire specifically:** a Checkpoint is the only ground-truth stated
+intent tied to one atomic change; Entire Graph's semantic diff is the only
+structural ground truth for what actually changed. Neither alone answers the
+question; Fidelity is the reconciliation between them.
+
+**Track:** E2 — Build with Graph Intelligence.
+
+**"Isn't this just `review`/`explainskill`/`what-happened`?"** Those tools
+retrieve and narrate why a change exists by reading session context with an
+LLM. Fidelity checks whether the claimed intent matches the structural code
+change — a computed, tiered reconciliation backed by graph reachability over
+classified edges, not a narrative judgment. They compose: `review` could use
+Fidelity's `verdict.json` as structured evidence.
+
+**"Why not Genie Ontology?"** Its 200-snippet cap and SQL-only traversal are a
+poor fit for code graph structure. Entire Graph stays the structural source of
+truth; Databricks, where used, is an optional confidence/corroboration layer,
+never the graph store.
+
+**"Isn't this just Graphify's tri-state model?"** See
+`docs/fidelity-phase-0.md` — Graphify's tagging routes an agent's *attention*
+during exploration; Fidelity's signal drives a deterministic *verdict* after
+the fact. Reconciliation, not retrieval.
+
+## Architecture
+
+Five stages, each a clean interface boundary (`internal/fidelity/adapter.go`'s
+`Stage` enum), with every `entire`/graph call routed through one `Adapter`
+seam so a later API convergence is a config/adapter change, not a rewrite:
+
+```
+1. CAPTURE    read checkpoint transcript (via Entire's checkpoint CLI)
+2. DECLARE    ground direct symbol mentions against one graph snapshot
+3. OBSERVE    entire graph diff -> changed entities
+4. RECONCILE  six-tier reachability + coverage-confidence tiering
+5. MANIFEST   verdict.json, terminal report, VERIFY_REPORT.md
+```
+
+Stage 4 produces six tiers: `confirmed`, `declared_unimplemented`,
+`expected_blast_radius` (N-hop reachability over deterministic edges only),
+`undeclared_scope_creep`, `advisory_low_confidence` (reachable only via a
+low-confidence edge), and `unverifiable_coverage` — the Curveball response,
+see below. All three renderers are pure functions of `verdict.json`.
+
+## Setup, run, and test
+
+```sh
+mise exec -- go build -o entire-graph ./cmd/entire-graph
+mise exec -- go test ./internal/fidelity/... ./internal/cli/...
+
+# Run against a real checkpoint pair:
+./entire-graph verify-intent <checkpoint-id> --base <base-checkpoint-id> \
+    --repo . --config fidelity.config.yaml --out fidelity-out
+# writes fidelity-out/verdict.json and fidelity-out/VERIFY_REPORT.md,
+# prints the terminal report to stderr, and the JSON response to stdout.
+```
+
+## Checkpoints
+
+1. **Initial understanding / architecture** — not captured as a dedicated
+   Checkpoint; see the honest note in "Checkpoint content, stated honestly"
+   below.
+2. **Pre-noon stable state** — `caefd603ffcd` (commit `bb61095`).
+3. **Response to the Curveball** / **final implementation** —
+   `af04126413fd` (commit `1e334ab`), covering both milestones 3 and 4: this
+   session's own transcript is the checkpoint content, and it captures the
+   fresh-session reconstruction, the pre-edit `impact` run, the Curveball
+   response, and this record.
+
+**Checkpoint content, stated honestly.** `caefd603ffcd`'s actual transcript
+content is a single mechanical instruction ("create a checkpoint and commit")
+executed by an unrelated agent session — it has no architecture decision
+content. No dedicated Checkpoint 1 was ever written. The real architectural
+reasoning (the adapter-layer firewall, the tri-state correction, the
+coverage-confidence design) lives in this session's transcript
+(`af04126413fd`) and in `docs/fidelity-phase-0.md`, not in a separate
+checkpoint per milestone. Recorded here plainly rather than smoothed over,
+per house style.
 
 ## Phase 1 pre-flight evidence
 
@@ -101,3 +196,93 @@ pure-function-of-`verdict.json` property both hold. This was a Stage 4
 reconciliation-logic change plus a schema addition, exactly where the
 pre-noon structural firewall (adapter layer, config-driven tiers) said a
 "what counts as drift" change should land.
+
+## Third required graph demonstration: final semantic diff
+
+`entire graph diff --repo . --base bb61095 --head 1e334ab` was run against
+this response's own final commit (checkpoint `af04126413fd`) versus the
+pre-noon stable commit. 202 lines of entity-level changes across 21 files,
+including `Pipeline.Run body changed (565 dependents)` — the tool's own
+heuristic dependent count flagging exactly the kind of signature change that
+should not ship untested. It did not: `go test ./internal/fidelity/...
+./internal/cli/...` passed in full both before this commit and after,
+including the mandatory fixture test and the six-tier reconciliation test
+against a real synthetic graph. Full diff output committed at
+`docs/evidence/2026-09-06-final-semantic-diff.txt`.
+
+## Live end-to-end run
+
+`entire graph verify-intent af04126413fd --base caefd603ffcd --repo . --out
+fidelity-out` was run against this response's own real checkpoints — not a
+unit-test fixture — reading this whole session's actual transcript as intent
+and this repository's real graph as evidence. Committed at `fidelity-out/`.
+
+```
+158 changed entities: 65 confirmed, 0 expected blast radius, 1 scope creep,
+19 advisory, 73 unverifiable coverage, 582 declared unimplemented
+verdict_label: REVIEW_REQUIRED
+```
+
+One `unverifiable_coverage` entry worth pointing at directly in a demo: a
+Markdown section header was correctly tiered `coverage_confidence: partial`
+with reason *"this file's language (Markdown) is inventory-only: the graph
+records file/symbol structure but does not attempt relationship extraction
+for it"* — the coverage-confidence signal firing correctly on a real
+inventory-only-language case, not a synthetic one.
+
+## Three required graph demonstrations, named
+
+1. **Symbol dictionary load** — Stage 2's `adapter.Graph()` calling `entire
+   graph snapshot` (via `sem.BuildProviderSnapshotWithOptions`), now also
+   grounding Stage 4's reachability and coverage-confidence from the same
+   build.
+2. **Pre-edit impact analysis** — `entire graph impact --symbol
+   ReconcileDirectClaims`, run before any Curveball-response edit, surfacing
+   the false-positive transitive-caller finding recorded above.
+3. **Final semantic diff** — the `entire graph diff` run immediately above,
+   against this response's own final checkpoint.
+
+## Databricks use
+
+**Opted in** (a special prize was offered for the best use). **Not
+implemented in this build window.** This machine has no `databricks` CLI, no
+`~/.databrickscfg`, and no `mlflow` — no workspace credentials were reachable
+inside the remaining time, and the honest choice was to say so rather than
+write calibration/AI-Search glue code that cannot actually reach a workspace
+and call it "meaningful use." The schema (`fidelity.config.yaml`'s
+`databricks:` block, `verdict.json`'s `verbal_confidence` /
+`conformal_gate_passed` / `calibrated_confidence` / `corroboration` fields) is
+already wired end-to-end and stable either way — every advisory and
+`unverifiable_coverage` entry carries those fields as `null`/`false`, exactly
+as the schema promises when Databricks is disabled. The nearest reachable
+tier if a workspace becomes available is §12.7's fallback (a local logistic
+regression writing `calibrated_confidence`, `gate.mode: fallback`) — legitimate
+per the Bible, and schema-compatible with the fuller I-CALM/CRC/AI-Search
+chain if that is built later.
+
+## Known limitations and next steps
+
+- **No organizer-supplied partial-analysis fixture was available** for the
+  mandatory Track 2 test; a real, empirically-verified substitute was built
+  instead (`internal/fidelity/curveball_fixture_test.go`). Replace it if the
+  actual fixture surfaces.
+- **Databricks is schema-ready but not implemented**, per the section above.
+- **Issue #32's boundary panic was never reproduced** against this
+  repository; a general defensive `recover()` wrapper was added at the one
+  seam Fidelity controls regardless, since it is correct with or without a
+  reproducer, but no targeted fix is claimed.
+- **The LLM fallback extraction path (`ResolveFallback`) has no model wired
+  up** — it fails closed (returns `unresolved_fragment`) by construction, so
+  disabling it costs recall, not correctness. Only direct, exact symbol
+  mentions are currently extracted.
+- **No fork/mirror work was done post-curveball** — the remaining window was
+  spent entirely on the local pipeline per team direction; a demo/deployment
+  owner has not yet been named.
+- **`entire-judge` self-audit (§13.4) was not run** against this checkpoint
+  history — worth doing before submission if time allows.
+- **Community-aware scope-creep clustering (Leiden), the dashboard renderer,
+  and Lakebase** were not attempted — correctly triaged as stretch/optional
+  against this window, not silently dropped from the plan.
+- **A fallback demo recording does not exist yet** — this needs a human to
+  actually run the live demo and capture it; recorded here as an open item
+  for submission, not something this session can produce.

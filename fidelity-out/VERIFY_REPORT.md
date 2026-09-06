@@ -1,0 +1,765 @@
+# Fidelity Verdict Report
+
+Checkpoint `af04126413fd` (base `caefd603ffcd`) — generated 2026-09-06T08:18:27Z — **REVIEW_REQUIRED**
+
+| Tier | Visual category | Count |
+|---|---|---|
+| confirmed | CONFIRMED STRUCTURAL EVIDENCE | 65 |
+| expected_blast_radius | CONFIRMED STRUCTURAL EVIDENCE | 0 |
+| advisory_low_confidence | HEURISTIC / INCOMPLETE EVIDENCE | 19 |
+| unverifiable_coverage | NEEDS SOURCE/TEST VERIFICATION | 73 |
+| undeclared_scope_creep | DRIFT FROM STATED INTENT | 1 |
+| declared_unimplemented | DRIFT FROM STATED INTENT | 582 |
+
+## ✅ CONFIRMED STRUCTURAL EVIDENCE
+
+- `Adapter` at internal/fidelity/adapter.go:18 — coverage: `full`
+- `AdvisoryEntity` at internal/fidelity/reconcile.go:52 — coverage: `partial`
+- `BlastRadiusEntity` at internal/fidelity/reconcile.go:25 — coverage: `partial`
+- `BuildVerdict` at internal/fidelity/verdict.go:47 — coverage: `full`
+- `ComputeCoverage` at internal/fidelity/coverage.go:34 — coverage: `full`
+- `Config` at internal/fidelity/config.go:18 — coverage: `full`
+- `Corroboration` at internal/fidelity/reconcile.go:87 — coverage: `partial`
+- `Coverage` at internal/fidelity/config.go:32 — coverage: `full`
+- `CoverageConfidence` at internal/fidelity/coverage.go:13 — coverage: `full`
+- `CurrentPreflightReport` at internal/fidelity/preflight.go:21 — coverage: `full`
+- `Databricks` at internal/fidelity/config.go:64 — coverage: `full`
+- `DefaultConfig` at internal/fidelity/config.go:86 — coverage: `full`
+- `EntityLocation` at internal/fidelity/reconcile.go:8 — coverage: `full`
+- `GraphSnapshot` at internal/fidelity/adapter.go:40 — coverage: `full`
+- `NativeGraphAdapter.Graph` at internal/fidelity/adapter.go:130 — coverage: `full`
+- `Pipeline.Run` at internal/fidelity/pipeline.go:30 — coverage: `full`
+- `Reconcile` at internal/fidelity/reconcile.go:144 — coverage: `full`
+- `Reconciliation` at internal/fidelity/reconcile.go:94 — coverage: `full`
+- `RenderMarkdown` at internal/fidelity/render.go:102 — coverage: `full`
+- `RenderTerminal` at internal/fidelity/render.go:40 — coverage: `full`
+- `ScopeCreepEntity` at internal/fidelity/reconcile.go:40 — coverage: `partial`
+- `TestBuildVerdictLabelsReviewRequiredOnScopeCreep` at internal/fidelity/verdict_test.go:31 — coverage: `full`
+- `TestLoadConfig` at internal/fidelity/config_test.go:45 — coverage: `full`
+- `TestNativeGraphAdapterLoadsSymbolsAndChanges` at internal/fidelity/adapter_test.go:22 — coverage: `full`
+- `TestPartialAnalysisFixtureNeverMisfilesReflectionDispatchAsScopeCreep` at internal/fidelity/curveball_fixture_test.go:107 — coverage: `full`
+- `TestReconcileNeverUpgradesPartialCoverageToScopeCreep` at internal/fidelity/reconcile_test.go:92 — coverage: `full`
+- `TestReconcileSixTiers` at internal/fidelity/reconcile_test.go:41 — coverage: `full`
+- `TestRenderersAgreeOnCountsAndSatisfyThreeWayDistinctness` at internal/fidelity/render_test.go:15 — coverage: `full`
+- `TestVerifyIntentReportsPartialPipeline` at internal/cli/verify_intent_test.go:76 — coverage: `full`
+- `TestWriteVerdictProducesValidJSON` at internal/fidelity/verdict_test.go:44 — coverage: `full`
+- `UnverifiableCoverageEntity` at internal/fidelity/reconcile.go:71 — coverage: `partial`
+- `Verdict` at internal/fidelity/verdict.go:16 — coverage: `full`
+- `VerdictIntent` at internal/fidelity/verdict.go:26 — coverage: `partial`
+- `VerdictSummary` at internal/fidelity/verdict.go:32 — coverage: `partial`
+- `VerdictThresholds` at internal/fidelity/config.go:59 — coverage: `full`
+- `Verification` at internal/fidelity/pipeline.go:11 — coverage: `full`
+- `WriteVerdict` at internal/fidelity/verdict.go:108 — coverage: `full`
+- `assignConfigValue` at internal/fidelity/config.go:162 — coverage: `full`
+- `countGraphEdges` at internal/fidelity/coverage.go:88 — coverage: `full`
+- `coverage` at fidelity.config.yaml:22 — coverage: `partial`
+- `databricks` at fidelity.config.yaml:26 — coverage: `partial`
+- `excerpt` at internal/fidelity/verdict.go:97 — coverage: `full`
+- `fixtureGraph` at internal/fidelity/reconcile_test.go:17 — coverage: `full`
+- `fixtureVerification` at internal/fidelity/verdict_test.go:11 — coverage: `full`
+- `hopsWord` at internal/fidelity/reconcile.go:252 — coverage: `full`
+- `isConfirmedChange` at internal/fidelity/reconcile.go:243 — coverage: `full`
+- `location` at internal/fidelity/render.go:90 — coverage: `full`
+- `markdownSection` at internal/fidelity/render.go:149 — coverage: `full`
+- `mustWrite` at internal/fidelity/curveball_fixture_test.go:87 — coverage: `full`
+- `queued` at internal/fidelity/reachability.go:58 — coverage: `full`
+- `reachabilityHit` at internal/fidelity/reachability.go:13 — coverage: `full`
+- `reachable` at internal/fidelity/reachability.go:38 — coverage: `full`
+- `runVerifyIntentWithAdapter` at internal/cli/verify_intent.go:92 — coverage: `full`
+- `stampConfirmedCoverage` at internal/fidelity/reconcile.go:226 — coverage: `full`
+- `step` at internal/fidelity/reachability.go:39 — coverage: `partial`
+- `symbolIDForEntity` at internal/fidelity/reachability.go:24 — coverage: `full`
+- `terminalSection` at internal/fidelity/render.go:81 — coverage: `full`
+- `trimmed` at internal/fidelity/curveball_fixture_test.go:94 — coverage: `full`
+- `validateConfig` at internal/fidelity/config.go:255 — coverage: `full`
+- `verdict_thresholds` at fidelity.config.yaml:19 — coverage: `partial`
+- `verifiedRelationTypes` at internal/fidelity/verdict.go:86 — coverage: `full`
+- `verifyIntentResponse` at internal/cli/verify_intent.go:24 — coverage: `partial`
+- `writeCurveballFixtureRepo` at internal/fidelity/curveball_fixture_test.go:23 — coverage: `full`
+- `writeTextFile` at internal/cli/verify_intent.go:155 — coverage: `full`
+- `zeroEdgeCoverage` at internal/fidelity/coverage.go:70 — coverage: `full`
+
+## 🟡 HEURISTIC / INCOMPLETE EVIDENCE
+
+- `testFidelityAdapter.Graph` at internal/cli/verify_intent_test.go:66 — reachable from a confirmed entity within 1 hop only via an inferred/ambiguous edge — coverage: `full`
+- `Adapter.Graph` at internal/fidelity/adapter.go:25 — reachable from a confirmed entity within 1 hop only via an inferred/ambiguous edge — coverage: `full`
+- `GraphSnapshot.Symbols` at internal/fidelity/adapter.go:41 — reachable from a confirmed entity within 1 hop only via an inferred/ambiguous edge — coverage: `full`
+- `GraphSnapshot.Relations` at internal/fidelity/adapter.go:44 — reachable from a confirmed entity within 1 hop only via an inferred/ambiguous edge — coverage: `full`
+- `GraphSnapshot.FileLanguages` at internal/fidelity/adapter.go:47 — reachable from a confirmed entity within 1 hop only via an inferred/ambiguous edge — coverage: `full`
+- `GraphSnapshot.LanguageTiers` at internal/fidelity/adapter.go:52 — reachable from a confirmed entity within 1 hop only via an inferred/ambiguous edge — coverage: `full`
+- `GraphSnapshot.PartialFailureFiles` at internal/fidelity/adapter.go:56 — reachable from a confirmed entity within 1 hop only via an inferred/ambiguous edge — coverage: `full`
+- `UnavailableAdapter.Graph` at internal/fidelity/adapter.go:208 — reachable from a confirmed entity within 1 hop only via an inferred/ambiguous edge — coverage: `full`
+- `Verification.Reconciliation` at internal/fidelity/pipeline.go:19 — reachable from a confirmed entity within 1 hop only via an inferred/ambiguous edge — coverage: `full`
+- `pipelineAdapter.Graph` at internal/fidelity/pipeline_test.go:26 — reachable from a confirmed entity within 1 hop only via an inferred/ambiguous edge — coverage: `full`
+- `Reconciliation.ExpectedBlastRadius` at internal/fidelity/reconcile.go:97 — reachable from a confirmed entity within 1 hop only via an inferred/ambiguous edge — coverage: `full`
+- `Reconciliation.UndeclaredScopeCreep` at internal/fidelity/reconcile.go:98 — reachable from a confirmed entity within 1 hop only via an inferred/ambiguous edge — coverage: `full`
+- `Reconciliation.AdvisoryLowConfidence` at internal/fidelity/reconcile.go:99 — reachable from a confirmed entity within 1 hop only via an inferred/ambiguous edge — coverage: `full`
+- `Reconciliation.UnverifiableCoverage` at internal/fidelity/reconcile.go:100 — reachable from a confirmed entity within 1 hop only via an inferred/ambiguous edge — coverage: `full`
+- `Verdict.CheckpointID` at internal/fidelity/verdict.go:17 — reachable from a confirmed entity within 1 hop only via an inferred/ambiguous edge — coverage: `full`
+- `Verdict.BaseCheckpointID` at internal/fidelity/verdict.go:18 — reachable from a confirmed entity within 1 hop only via an inferred/ambiguous edge — coverage: `full`
+- `Verdict.GeneratedAt` at internal/fidelity/verdict.go:19 — reachable from a confirmed entity within 1 hop only via an inferred/ambiguous edge — coverage: `full`
+- `Verdict.Reconciliation` at internal/fidelity/verdict.go:22 — reachable from a confirmed entity within 1 hop only via an inferred/ambiguous edge — coverage: `full`
+- `Verdict.Summary` at internal/fidelity/verdict.go:23 — reachable from a confirmed entity within 1 hop only via an inferred/ambiguous edge — coverage: `full`
+
+## ❓ NEEDS SOURCE/TEST VERIFICATION
+
+- `The-Noon-Curveball:-Track-2-Graph-Is-Evidence-Not-an-Oracle` at BUILDATHON.md:38 — this file's language (Markdown) is inventory-only: the graph records file/symbol structure but does not attempt relationship extraction for it — `manual_review_recommended`
+- `Isn-t-this-just-Graphify-s-tri-state-model` at docs/fidelity-phase-0.md:60 — this file's language (Markdown) is inventory-only: the graph records file/symbol structure but does not attempt relationship extraction for it — `manual_review_recommended`
+- `verifyIntentResponse.Verdict` at internal/cli/verify_intent.go:34 — zero graph edges detected for this symbol despite real code presence; static analysis may not have resolved dynamic dispatch, generated code, or reflection here — `manual_review_recommended`
+- `verifyIntentResponse.VerdictPath` at internal/cli/verify_intent.go:35 — zero graph edges detected for this symbol despite real code presence; static analysis may not have resolved dynamic dispatch, generated code, or reflection here — `manual_review_recommended`
+- `verifyIntentResponse.ReportPath` at internal/cli/verify_intent.go:36 — zero graph edges detected for this symbol despite real code presence; static analysis may not have resolved dynamic dispatch, generated code, or reflection here — `manual_review_recommended`
+- `testFidelityAdapter.SymbolDictionary` at internal/cli/verify_intent_test.go:66 — entity could not be grounded to a symbol in the graph snapshot; it may be dynamically dispatched, generated, or otherwise unresolvable to static analysis — `manual_review_recommended`
+- `Adapter.SymbolDictionary` at internal/fidelity/adapter.go:21 — entity could not be grounded to a symbol in the graph snapshot; it may be dynamically dispatched, generated, or otherwise unresolvable to static analysis — `manual_review_recommended`
+- `GraphSnapshot.CompletenessLevel` at internal/fidelity/adapter.go:59 — zero graph edges detected for this symbol despite real code presence; static analysis may not have resolved dynamic dispatch, generated code, or reflection here — `manual_review_recommended`
+- `NativeGraphAdapter.SymbolDictionary` at internal/fidelity/adapter.go:81 — entity could not be grounded to a symbol in the graph snapshot; it may be dynamically dispatched, generated, or otherwise unresolvable to static analysis — `manual_review_recommended`
+- `UnavailableAdapter.SymbolDictionary` at internal/fidelity/adapter.go:133 — entity could not be grounded to a symbol in the graph snapshot; it may be dynamically dispatched, generated, or otherwise unresolvable to static analysis — `manual_review_recommended`
+- `Coverage.DetectVia` at internal/fidelity/config.go:38 — zero graph edges detected for this symbol despite real code presence; static analysis may not have resolved dynamic dispatch, generated code, or reflection here — `manual_review_recommended`
+- `Coverage.TreatZeroEdgeAs` at internal/fidelity/config.go:42 — zero graph edges detected for this symbol despite real code presence; static analysis may not have resolved dynamic dispatch, generated code, or reflection here — `manual_review_recommended`
+- `Coverage.FallbackVerificationPath` at internal/fidelity/config.go:46 — zero graph edges detected for this symbol despite real code presence; static analysis may not have resolved dynamic dispatch, generated code, or reflection here — `manual_review_recommended`
+- `VerdictThresholds.ReviewRequiredIfUnverifiableCoverageGTE` at internal/fidelity/config.go:61 — zero graph edges detected for this symbol despite real code presence; static analysis may not have resolved dynamic dispatch, generated code, or reflection here — `manual_review_recommended`
+- `Databricks.CoverageCorroborationEnabled` at internal/fidelity/config.go:73 — zero graph edges detected for this symbol despite real code presence; static analysis may not have resolved dynamic dispatch, generated code, or reflection here — `manual_review_recommended`
+- `pipelineAdapter.SymbolDictionary` at internal/fidelity/pipeline_test.go:26 — entity could not be grounded to a symbol in the graph snapshot; it may be dynamically dispatched, generated, or otherwise unresolvable to static analysis — `manual_review_recommended`
+- `reachabilityHit.Hops` at internal/fidelity/reachability.go:14 — zero graph edges detected for this symbol despite real code presence; static analysis may not have resolved dynamic dispatch, generated code, or reflection here — `manual_review_recommended`
+- `reachabilityHit.Path` at internal/fidelity/reachability.go:15 — zero graph edges detected for this symbol despite real code presence; static analysis may not have resolved dynamic dispatch, generated code, or reflection here — `manual_review_recommended`
+- `reachabilityHit.EdgeTypesTraversed` at internal/fidelity/reachability.go:16 — zero graph edges detected for this symbol despite real code presence; static analysis may not have resolved dynamic dispatch, generated code, or reflection here — `manual_review_recommended`
+- `reachabilityHit.MinEdgeClass` at internal/fidelity/reachability.go:17 — zero graph edges detected for this symbol despite real code presence; static analysis may not have resolved dynamic dispatch, generated code, or reflection here — `manual_review_recommended`
+- `step.edgeType` at internal/fidelity/reachability.go:40 — zero graph edges detected for this symbol despite real code presence; static analysis may not have resolved dynamic dispatch, generated code, or reflection here — `manual_review_recommended`
+- `step.id` at internal/fidelity/reachability.go:40 — zero graph edges detected for this symbol despite real code presence; static analysis may not have resolved dynamic dispatch, generated code, or reflection here — `manual_review_recommended`
+- `queued.id` at internal/fidelity/reachability.go:59 — zero graph edges detected for this symbol despite real code presence; static analysis may not have resolved dynamic dispatch, generated code, or reflection here — `manual_review_recommended`
+- `queued.depth` at internal/fidelity/reachability.go:60 — zero graph edges detected for this symbol despite real code presence; static analysis may not have resolved dynamic dispatch, generated code, or reflection here — `manual_review_recommended`
+- `queued.path` at internal/fidelity/reachability.go:61 — zero graph edges detected for this symbol despite real code presence; static analysis may not have resolved dynamic dispatch, generated code, or reflection here — `manual_review_recommended`
+- `queued.edgeTypesTraversed` at internal/fidelity/reachability.go:62 — zero graph edges detected for this symbol despite real code presence; static analysis may not have resolved dynamic dispatch, generated code, or reflection here — `manual_review_recommended`
+- `EntityLocation.CoverageConfidence` at internal/fidelity/reconcile.go:14 — zero graph edges detected for this symbol despite real code presence; static analysis may not have resolved dynamic dispatch, generated code, or reflection here — `manual_review_recommended`
+- `BlastRadiusEntity.Entity` at internal/fidelity/reconcile.go:26 — zero graph edges detected for this symbol despite real code presence; static analysis may not have resolved dynamic dispatch, generated code, or reflection here — `manual_review_recommended`
+- `BlastRadiusEntity.File` at internal/fidelity/reconcile.go:27 — zero graph edges detected for this symbol despite real code presence; static analysis may not have resolved dynamic dispatch, generated code, or reflection here — `manual_review_recommended`
+- `BlastRadiusEntity.Line` at internal/fidelity/reconcile.go:28 — zero graph edges detected for this symbol despite real code presence; static analysis may not have resolved dynamic dispatch, generated code, or reflection here — `manual_review_recommended`
+- `BlastRadiusEntity.PathFromConfirmed` at internal/fidelity/reconcile.go:29 — zero graph edges detected for this symbol despite real code presence; static analysis may not have resolved dynamic dispatch, generated code, or reflection here — `manual_review_recommended`
+- `BlastRadiusEntity.Hops` at internal/fidelity/reconcile.go:30 — zero graph edges detected for this symbol despite real code presence; static analysis may not have resolved dynamic dispatch, generated code, or reflection here — `manual_review_recommended`
+- `BlastRadiusEntity.EdgeTypesTraversed` at internal/fidelity/reconcile.go:31 — zero graph edges detected for this symbol despite real code presence; static analysis may not have resolved dynamic dispatch, generated code, or reflection here — `manual_review_recommended`
+- `BlastRadiusEntity.MinEdgeClass` at internal/fidelity/reconcile.go:32 — zero graph edges detected for this symbol despite real code presence; static analysis may not have resolved dynamic dispatch, generated code, or reflection here — `manual_review_recommended`
+- `BlastRadiusEntity.CoverageConfidence` at internal/fidelity/reconcile.go:33 — zero graph edges detected for this symbol despite real code presence; static analysis may not have resolved dynamic dispatch, generated code, or reflection here — `manual_review_recommended`
+- `ScopeCreepEntity.Entity` at internal/fidelity/reconcile.go:41 — zero graph edges detected for this symbol despite real code presence; static analysis may not have resolved dynamic dispatch, generated code, or reflection here — `manual_review_recommended`
+- `ScopeCreepEntity.File` at internal/fidelity/reconcile.go:42 — zero graph edges detected for this symbol despite real code presence; static analysis may not have resolved dynamic dispatch, generated code, or reflection here — `manual_review_recommended`
+- `ScopeCreepEntity.Line` at internal/fidelity/reconcile.go:43 — zero graph edges detected for this symbol despite real code presence; static analysis may not have resolved dynamic dispatch, generated code, or reflection here — `manual_review_recommended`
+- `ScopeCreepEntity.Reason` at internal/fidelity/reconcile.go:44 — zero graph edges detected for this symbol despite real code presence; static analysis may not have resolved dynamic dispatch, generated code, or reflection here — `manual_review_recommended`
+- `ScopeCreepEntity.CoverageConfidence` at internal/fidelity/reconcile.go:45 — zero graph edges detected for this symbol despite real code presence; static analysis may not have resolved dynamic dispatch, generated code, or reflection here — `manual_review_recommended`
+- `AdvisoryEntity.Entity` at internal/fidelity/reconcile.go:53 — zero graph edges detected for this symbol despite real code presence; static analysis may not have resolved dynamic dispatch, generated code, or reflection here — `manual_review_recommended`
+- `AdvisoryEntity.File` at internal/fidelity/reconcile.go:54 — zero graph edges detected for this symbol despite real code presence; static analysis may not have resolved dynamic dispatch, generated code, or reflection here — `manual_review_recommended`
+- `AdvisoryEntity.Line` at internal/fidelity/reconcile.go:55 — zero graph edges detected for this symbol despite real code presence; static analysis may not have resolved dynamic dispatch, generated code, or reflection here — `manual_review_recommended`
+- `AdvisoryEntity.EdgeClass` at internal/fidelity/reconcile.go:56 — zero graph edges detected for this symbol despite real code presence; static analysis may not have resolved dynamic dispatch, generated code, or reflection here — `manual_review_recommended`
+- `AdvisoryEntity.Reason` at internal/fidelity/reconcile.go:57 — zero graph edges detected for this symbol despite real code presence; static analysis may not have resolved dynamic dispatch, generated code, or reflection here — `manual_review_recommended`
+- `AdvisoryEntity.CoverageConfidence` at internal/fidelity/reconcile.go:58 — zero graph edges detected for this symbol despite real code presence; static analysis may not have resolved dynamic dispatch, generated code, or reflection here — `manual_review_recommended`
+- `AdvisoryEntity.VerbalConfidence` at internal/fidelity/reconcile.go:59 — zero graph edges detected for this symbol despite real code presence; static analysis may not have resolved dynamic dispatch, generated code, or reflection here — `manual_review_recommended`
+- `AdvisoryEntity.ConformalGatePassed` at internal/fidelity/reconcile.go:60 — zero graph edges detected for this symbol despite real code presence; static analysis may not have resolved dynamic dispatch, generated code, or reflection here — `manual_review_recommended`
+- `AdvisoryEntity.CalibratedConfidence` at internal/fidelity/reconcile.go:61 — zero graph edges detected for this symbol despite real code presence; static analysis may not have resolved dynamic dispatch, generated code, or reflection here — `manual_review_recommended`
+- `AdvisoryEntity.Corroboration` at internal/fidelity/reconcile.go:62 — zero graph edges detected for this symbol despite real code presence; static analysis may not have resolved dynamic dispatch, generated code, or reflection here — `manual_review_recommended`
+- `UnverifiableCoverageEntity.Entity` at internal/fidelity/reconcile.go:72 — zero graph edges detected for this symbol despite real code presence; static analysis may not have resolved dynamic dispatch, generated code, or reflection here — `manual_review_recommended`
+- `UnverifiableCoverageEntity.File` at internal/fidelity/reconcile.go:73 — zero graph edges detected for this symbol despite real code presence; static analysis may not have resolved dynamic dispatch, generated code, or reflection here — `manual_review_recommended`
+- `UnverifiableCoverageEntity.Line` at internal/fidelity/reconcile.go:74 — zero graph edges detected for this symbol despite real code presence; static analysis may not have resolved dynamic dispatch, generated code, or reflection here — `manual_review_recommended`
+- `UnverifiableCoverageEntity.CoverageConfidence` at internal/fidelity/reconcile.go:75 — zero graph edges detected for this symbol despite real code presence; static analysis may not have resolved dynamic dispatch, generated code, or reflection here — `manual_review_recommended`
+- `UnverifiableCoverageEntity.CoverageReason` at internal/fidelity/reconcile.go:76 — zero graph edges detected for this symbol despite real code presence; static analysis may not have resolved dynamic dispatch, generated code, or reflection here — `manual_review_recommended`
+- `UnverifiableCoverageEntity.VerificationPath` at internal/fidelity/reconcile.go:79 — zero graph edges detected for this symbol despite real code presence; static analysis may not have resolved dynamic dispatch, generated code, or reflection here — `manual_review_recommended`
+- `UnverifiableCoverageEntity.Corroboration` at internal/fidelity/reconcile.go:80 — zero graph edges detected for this symbol despite real code presence; static analysis may not have resolved dynamic dispatch, generated code, or reflection here — `manual_review_recommended`
+- `Corroboration.Attempted` at internal/fidelity/reconcile.go:88 — zero graph edges detected for this symbol despite real code presence; static analysis may not have resolved dynamic dispatch, generated code, or reflection here — `manual_review_recommended`
+- `Corroboration.Verified` at internal/fidelity/reconcile.go:89 — zero graph edges detected for this symbol despite real code presence; static analysis may not have resolved dynamic dispatch, generated code, or reflection here — `manual_review_recommended`
+- `Corroboration.EvidenceSnippet` at internal/fidelity/reconcile.go:90 — zero graph edges detected for this symbol despite real code presence; static analysis may not have resolved dynamic dispatch, generated code, or reflection here — `manual_review_recommended`
+- `Reconciliation.Confirmed` at internal/fidelity/reconcile.go:95 — zero graph edges detected for this symbol despite real code presence; static analysis may not have resolved dynamic dispatch, generated code, or reflection here — `manual_review_recommended`
+- `Reconciliation.DeclaredUnimplemented` at internal/fidelity/reconcile.go:96 — zero graph edges detected for this symbol despite real code presence; static analysis may not have resolved dynamic dispatch, generated code, or reflection here — `manual_review_recommended`
+- `Verdict.GraphCapabilitiesVerified` at internal/fidelity/verdict.go:20 — zero graph edges detected for this symbol despite real code presence; static analysis may not have resolved dynamic dispatch, generated code, or reflection here — `manual_review_recommended`
+- `Verdict.Intent` at internal/fidelity/verdict.go:21 — zero graph edges detected for this symbol despite real code presence; static analysis may not have resolved dynamic dispatch, generated code, or reflection here — `manual_review_recommended`
+- `VerdictIntent.RawPromptExcerpt` at internal/fidelity/verdict.go:27 — zero graph edges detected for this symbol despite real code presence; static analysis may not have resolved dynamic dispatch, generated code, or reflection here — `manual_review_recommended`
+- `VerdictIntent.ExtractedEntities` at internal/fidelity/verdict.go:28 — zero graph edges detected for this symbol despite real code presence; static analysis may not have resolved dynamic dispatch, generated code, or reflection here — `manual_review_recommended`
+- `VerdictIntent.UnresolvedFragments` at internal/fidelity/verdict.go:29 — zero graph edges detected for this symbol despite real code presence; static analysis may not have resolved dynamic dispatch, generated code, or reflection here — `manual_review_recommended`
+- `VerdictSummary.TotalChangedEntities` at internal/fidelity/verdict.go:33 — zero graph edges detected for this symbol despite real code presence; static analysis may not have resolved dynamic dispatch, generated code, or reflection here — `manual_review_recommended`
+- `VerdictSummary.ScopeCreepCount` at internal/fidelity/verdict.go:34 — zero graph edges detected for this symbol despite real code presence; static analysis may not have resolved dynamic dispatch, generated code, or reflection here — `manual_review_recommended`
+- `VerdictSummary.UnimplementedCount` at internal/fidelity/verdict.go:35 — zero graph edges detected for this symbol despite real code presence; static analysis may not have resolved dynamic dispatch, generated code, or reflection here — `manual_review_recommended`
+- `VerdictSummary.AdvisoryEdgeCount` at internal/fidelity/verdict.go:36 — zero graph edges detected for this symbol despite real code presence; static analysis may not have resolved dynamic dispatch, generated code, or reflection here — `manual_review_recommended`
+- `VerdictSummary.UnverifiableCoverageCount` at internal/fidelity/verdict.go:37 — zero graph edges detected for this symbol despite real code presence; static analysis may not have resolved dynamic dispatch, generated code, or reflection here — `manual_review_recommended`
+- `VerdictSummary.VerdictLabel` at internal/fidelity/verdict.go:38 — zero graph edges detected for this symbol despite real code presence; static analysis may not have resolved dynamic dispatch, generated code, or reflection here — `manual_review_recommended`
+
+## 🔴 DRIFT FROM STATED INTENT
+
+- `Config.Coverage` at internal/fidelity/config.go:28 — changed, not reachable from any confirmed entity within 2 hops — coverage: `full`
+- `.gitignore` — named in intent, no matching graph change detected
+- `AISearch` — named in intent, no matching graph change detected
+- `ASYNC_CALLS` — named in intent, no matching graph change detected
+- `Add` — named in intent, no matching graph change detected
+- `Aggregate` — named in intent, no matching graph change detected
+- `AnalyzeCheckpoint` — named in intent, no matching graph change detected
+- `AnalyzeGitRange` — named in intent, no matching graph change detected
+- `AnalyzeGitRangeWithOptions` — named in intent, no matching graph change detected
+- `AnalyzeOptions` — named in intent, no matching graph change detected
+- `AnalyzeProgressEvent` — named in intent, no matching graph change detected
+- `Architecture` — named in intent, no matching graph change detected
+- `Base` — named in intent, no matching graph change detected
+- `Bash` — named in intent, no matching graph change detected
+- `Benchmarks` — named in intent, no matching graph change detected
+- `Build` — named in intent, no matching graph change detected
+- `BuildProviderSnapshot` — named in intent, no matching graph change detected
+- `BuildProviderSnapshotWithOptions` — named in intent, no matching graph change detected
+- `Bytes` — named in intent, no matching graph change detected
+- `C` — named in intent, no matching graph change detected
+- `CALLS` — named in intent, no matching graph change detected
+- `CONFIGURES` — named in intent, no matching graph change detected
+- `CONSTRUCTS` — named in intent, no matching graph change detected
+- `CONTAINS` — named in intent, no matching graph change detected
+- `CUE` — named in intent, no matching graph change detected
+- `Cache` — named in intent, no matching graph change detected
+- `CalibrationGate` — named in intent, no matching graph change detected
+- `Capabilities` — named in intent, no matching graph change detected
+- `CapabilityReport` — named in intent, no matching graph change detected
+- `ChangedEntity` — named in intent, no matching graph change detected
+- `CheckReadableSchemaVersion` — named in intent, no matching graph change detected
+- `ClassifyRelation` — named in intent, no matching graph change detected
+- `Commands` — named in intent, no matching graph change detected
+- `CompactSnapshotIndex` — named in intent, no matching graph change detected
+- `Compare` — named in intent, no matching graph change detected
+- `CompletenessReport` — named in intent, no matching graph change detected
+- `Consequences` — named in intent, no matching graph change detected
+- `Context` — named in intent, no matching graph change detected
+- `DATA_FLOWS` — named in intent, no matching graph change detected
+- `DEFINES` — named in intent, no matching graph change detected
+- `Decision` — named in intent, no matching graph change detected
+- `DeclareIntent` — named in intent, no matching graph change detected
+- `Design` — named in intent, no matching graph change detected
+- `DirectReconciliation` — named in intent, no matching graph change detected
+- `Dockerfile` — named in intent, no matching graph change detected
+- `Documentation` — named in intent, no matching graph change detected
+- `EMITS` — named in intent, no matching graph change detected
+- `EXTENDS` — named in intent, no matching graph change detected
+- `EdgeClass` — named in intent, no matching graph change detected
+- `EdgeClasses` — named in intent, no matching graph change detected
+- `Elixir` — named in intent, no matching graph change detected
+- `EntireEnv` — named in intent, no matching graph change detected
+- `Entity` — named in intent, no matching graph change detected
+- `Entity.bodyless` — named in intent, no matching graph change detected
+- `Entity.cLinkage` — named in intent, no matching graph change detected
+- `EntityChange` — named in intent, no matching graph change detected
+- `EnvFromOS` — named in intent, no matching graph change detected
+- `Evidence` — named in intent, no matching graph change detected
+- `Execute` — named in intent, no matching graph change detected
+- `Export` — named in intent, no matching graph change detected
+- `ExternalRecord` — named in intent, no matching graph change detected
+- `ExtractDirectMentions` — named in intent, no matching graph change detected
+- `ExtractedEntity` — named in intent, no matching graph change detected
+- `Extraction` — named in intent, no matching graph change detected
+- `FallbackResolver` — named in intent, no matching graph change detected
+- `File` — named in intent, no matching graph change detected
+- `FileChange` — named in intent, no matching graph change detected
+- `FileRecord` — named in intent, no matching graph change detected
+- `FindCommitWithCheckpoint` — named in intent, no matching graph change detected
+- `Formats` — named in intent, no matching graph change detected
+- `Go` — named in intent, no matching graph change detected
+- `Goal` — named in intent, no matching graph change detected
+- `GraphRelation` — named in intent, no matching graph change detected
+- `Groovy` — named in intent, no matching graph change detected
+- `HANDLES_GRAPHQL` — named in intent, no matching graph change detected
+- `HANDLES_GRPC` — named in intent, no matching graph change detected
+- `HANDLES_ROUTE` — named in intent, no matching graph change detected
+- `HANDLES_TRPC` — named in intent, no matching graph change detected
+- `HCL` — named in intent, no matching graph change detected
+- `HTTP_CALLS` — named in intent, no matching graph change detected
+- `IMPLEMENTS` — named in intent, no matching graph change detected
+- `IMPORTS` — named in intent, no matching graph change detected
+- `INHERITS` — named in intent, no matching graph change detected
+- `Inspect` — named in intent, no matching graph change detected
+- `Install` — named in intent, no matching graph change detected
+- `Installing` — named in intent, no matching graph change detected
+- `Intent` — named in intent, no matching graph change detected
+- `Java` — named in intent, no matching graph change detected
+- `JavaScript` — named in intent, no matching graph change detected
+- `Julia` — named in intent, no matching graph change detected
+- `Kotlin` — named in intent, no matching graph change detected
+- `LISTENS_ON` — named in intent, no matching graph change detected
+- `LanguageCompleteness` — named in intent, no matching graph change detected
+- `Ledger` — named in intent, no matching graph change detected
+- `License` — named in intent, no matching graph change detected
+- `LimitedFileReader` — named in intent, no matching graph change detected
+- `LimitedFileReader.Prime` — named in intent, no matching graph change detected
+- `LimitedFileReader.ReadFile` — named in intent, no matching graph change detected
+- `Limits` — named in intent, no matching graph change detected
+- `Line` — named in intent, no matching graph change detected
+- `ListFiles` — named in intent, no matching graph change detected
+- `ListIndexFiles` — named in intent, no matching graph change detected
+- `LoadCompactSnapshot` — named in intent, no matching graph change detected
+- `LoadConfig` — named in intent, no matching graph change detected
+- `LoadOrBuildProviderSnapshot` — named in intent, no matching graph change detected
+- `Location` — named in intent, no matching graph change detected
+- `Lua` — named in intent, no matching graph change detected
+- `Named` — named in intent, no matching graph change detected
+- `NativeGraphAdapter` — named in intent, no matching graph change detected
+- `Network` — named in intent, no matching graph change detected
+- `OCaml` — named in intent, no matching graph change detected
+- `OVERRIDES` — named in intent, no matching graph change detected
+- `Objective` — named in intent, no matching graph change detected
+- `Open` — named in intent, no matching graph change detected
+- `Operations` — named in intent, no matching graph change detected
+- `Options` — named in intent, no matching graph change detected
+- `Options.Version` — named in intent, no matching graph change detected
+- `PARAM_TYPE` — named in intent, no matching graph change detected
+- `PHP` — named in intent, no matching graph change detected
+- `ParseStatus` — named in intent, no matching graph change detected
+- `Parser` — named in intent, no matching graph change detected
+- `PartialFailure` — named in intent, no matching graph change detected
+- `Performance` — named in intent, no matching graph change detected
+- `Pipeline` — named in intent, no matching graph change detected
+- `PostToolUse` — named in intent, no matching graph change detected
+- `PreToolUse` — named in intent, no matching graph change detected
+- `PreflightReport` — named in intent, no matching graph change detected
+- `PreindexProviderSnapshot` — named in intent, no matching graph change detected
+- `Problem` — named in intent, no matching graph change detected
+- `Profile` — named in intent, no matching graph change detected
+- `ProfileLimits` — named in intent, no matching graph change detected
+- `Profiles` — named in intent, no matching graph change detected
+- `ProgressEvent` — named in intent, no matching graph change detected
+- `Prompt` — named in intent, no matching graph change detected
+- `ProviderRecord` — named in intent, no matching graph change detected
+- `ProviderSnapshot` — named in intent, no matching graph change detected
+- `ProviderSnapshotOptions` — named in intent, no matching graph change detected
+- `ProviderStats` — named in intent, no matching graph change detected
+- `ProviderWarning` — named in intent, no matching graph change detected
+- `Purpose` — named in intent, no matching graph change detected
+- `Python` — named in intent, no matching graph change detected
+- `R` — named in intent, no matching graph change detected
+- `READS_FIELD` — named in intent, no matching graph change detected
+- `RESOURCE_DEPENDS_ON` — named in intent, no matching graph change detected
+- `RETURNS_TYPE` — named in intent, no matching graph change detected
+- `Ranking` — named in intent, no matching graph change detected
+- `Receipt` — named in intent, no matching graph change detected
+- `ReconcileDirectClaims` — named in intent, no matching graph change detected
+- `Reference` — named in intent, no matching graph change detected
+- `RelationRecord` — named in intent, no matching graph change detected
+- `Relations` — named in intent, no matching graph change detected
+- `Removal` — named in intent, no matching graph change detected
+- `RepoCommandRoot` — named in intent, no matching graph change detected
+- `RepoRoot` — named in intent, no matching graph change detected
+- `Report` — named in intent, no matching graph change detected
+- `Request` — named in intent, no matching graph change detected
+- `Requirements` — named in intent, no matching graph change detected
+- `ResolveFallback` — named in intent, no matching graph change detected
+- `Result` — named in intent, no matching graph change detected
+- `Router` — named in intent, no matching graph change detected
+- `Ruby` — named in intent, no matching graph change detected
+- `Run` — named in intent, no matching graph change detected
+- `RunSkeleton` — named in intent, no matching graph change detected
+- `Running` — named in intent, no matching graph change detected
+- `Rust` — named in intent, no matching graph change detected
+- `SIMILAR_TO` — named in intent, no matching graph change detected
+- `SQL` — named in intent, no matching graph change detected
+- `Safety` — named in intent, no matching graph change detected
+- `Scala` — named in intent, no matching graph change detected
+- `Scope` — named in intent, no matching graph change detected
+- `SearchOptions` — named in intent, no matching graph change detected
+- `SearchRepository` — named in intent, no matching graph change detected
+- `SearchResponse` — named in intent, no matching graph change detected
+- `SearchResult` — named in intent, no matching graph change detected
+- `SearchVerifyCommand` — named in intent, no matching graph change detected
+- `Session` — named in intent, no matching graph change detected
+- `SessionEnd` — named in intent, no matching graph change detected
+- `SessionStart` — named in intent, no matching graph change detected
+- `SnapshotHeader` — named in intent, no matching graph change detected
+- `SnapshotSummary` — named in intent, no matching graph change detected
+- `Stage` — named in intent, no matching graph change detected
+- `StageRunner` — named in intent, no matching graph change detected
+- `Stop` — named in intent, no matching graph change detected
+- `Stream` — named in intent, no matching graph change detected
+- `SubagentStart` — named in intent, no matching graph change detected
+- `SubagentStop` — named in intent, no matching graph change detected
+- `Supported` — named in intent, no matching graph change detected
+- `Swift` — named in intent, no matching graph change detected
+- `Symbol` — named in intent, no matching graph change detected
+- `SymbolRecord` — named in intent, no matching graph change detected
+- `Symbols` — named in intent, no matching graph change detected
+- `TESTS` — named in intent, no matching graph change detected
+- `TestClassifyRelationUsesRealProviderFields` — named in intent, no matching graph change detected
+- `TestCompletenessFailureCountExcludesIntentionalSkips` — named in intent, no matching graph change detected
+- `TestCurrentPreflightReportReflectsGraphCapabilities` — named in intent, no matching graph change detected
+- `TestDeclareIntentInheritsOnlyExplicitVagueFollowUp` — named in intent, no matching graph change detected
+- `TestDeclareIntentMarksNoBaseline` — named in intent, no matching graph change detected
+- `TestExtractDirectMentionsAcceptsPeriodAfterQualifiedSymbol` — named in intent, no matching graph change detected
+- `TestExtractDirectMentionsGroundsOnlyWholeSymbols` — named in intent, no matching graph change detected
+- `TestGraphIgnoreFileHonored` — named in intent, no matching graph change detected
+- `TestLoadConfigRejectsUnsupportedGraphDepth` — named in intent, no matching graph change detected
+- `TestNativeGraphAdapterDiffsAgainstEmptyTree` — named in intent, no matching graph change detected
+- `TestNativeGraphAdapterReadsCheckpointTranscriptWithEntireCLI` — named in intent, no matching graph change detected
+- `TestNativeGraphAdapterResolvesCheckpointCommit` — named in intent, no matching graph change detected
+- `TestParseVerifyIntentFlags` — named in intent, no matching graph change detected
+- `TestPipelineGroundsTranscriptAndReconcilesCheckpointRange` — named in intent, no matching graph change detected
+- `TestPipelineInheritsVagueIntentFromExplicitBaseline` — named in intent, no matching graph change detected
+- `TestPipelineMarksMissingBaseCheckpoint` — named in intent, no matching graph change detected
+- `TestReconcileDirectClaimsSeparatesConfirmedAndMissing` — named in intent, no matching graph change detected
+- `TestResolveFallbackRejectsInventedEntity` — named in intent, no matching graph change detected
+- `TestRunSkeletonOrdersEveryStage` — named in intent, no matching graph change detected
+- `TestWriteTextSearchRendersCoverageNoteUnderTheTest` — named in intent, no matching graph change detected
+- `Tests` — named in intent, no matching graph change detected
+- `Tiers` — named in intent, no matching graph change detected
+- `TypeScript` — named in intent, no matching graph change detected
+- `USES_TYPE` — named in intent, no matching graph change detected
+- `UnavailableAdapter` — named in intent, no matching graph change detected
+- `UnimplementedEntity` — named in intent, no matching graph change detected
+- `UserPromptSubmit` — named in intent, no matching graph change detected
+- `Version` — named in intent, no matching graph change detected
+- `WRITES_FIELD` — named in intent, no matching graph change detected
+- `WriteText` — named in intent, no matching graph change detected
+- `Writer` — named in intent, no matching graph change detected
+- `YAML` — named in intent, no matching graph change detected
+- `Zig` — named in intent, no matching graph change detected
+- `adapter` — named in intent, no matching graph change detected
+- `add` — named in intent, no matching graph change detected
+- `addedChange` — named in intent, no matching graph change detected
+- `admitChangedFiles` — named in intent, no matching graph change detected
+- `advance` — named in intent, no matching graph change detected
+- `agent` — named in intent, no matching graph change detected
+- `aggregate` — named in intent, no matching graph change detected
+- `amount` — named in intent, no matching graph change detected
+- `annotateImpactCallSites` — named in intent, no matching graph change detected
+- `annotateNeighborCallSites` — named in intent, no matching graph change detected
+- `app` — named in intent, no matching graph change detected
+- `appendBoundedNeighborEdge` — named in intent, no matching graph change detected
+- `appendFailureClause` — named in intent, no matching graph change detected
+- `argDoc` — named in intent, no matching graph change detected
+- `argument` — named in intent, no matching graph change detected
+- `author` — named in intent, no matching graph change detected
+- `automation` — named in intent, no matching graph change detected
+- `bestRename` — named in intent, no matching graph change detected
+- `blast_radius_hops` — named in intent, no matching graph change detected
+- `block` — named in intent, no matching graph change detected
+- `budgetSkippedFileWarning` — named in intent, no matching graph change detected
+- `build` — named in intent, no matching graph change detected
+- `buildCompletenessScope` — named in intent, no matching graph change detected
+- `buildImpactResponseFromReader` — named in intent, no matching graph change detected
+- `buildNeighborResponseFromReader` — named in intent, no matching graph change detected
+- `buildSearchVerifyCommand` — named in intent, no matching graph change detected
+- `cached` — named in intent, no matching graph change detected
+- `callContextBudgeter` — named in intent, no matching graph change detected
+- `callSite` — named in intent, no matching graph change detected
+- `candidateSharesDeclarations` — named in intent, no matching graph change detected
+- `capImpactSections` — named in intent, no matching graph change detected
+- `capture` — named in intent, no matching graph change detected
+- `capturedIgnorePolicy` — named in intent, no matching graph change detected
+- `changedFileScan` — named in intent, no matching graph change detected
+- `changedFilesMayBeVendored` — named in intent, no matching graph change detected
+- `checkout` — named in intent, no matching graph change detected
+- `class` — named in intent, no matching graph change detected
+- `clean` — named in intent, no matching graph change detected
+- `command` — named in intent, no matching graph change detected
+- `compactAgentNeighbors` — named in intent, no matching graph change detected
+- `compactCompletenessLine` — named in intent, no matching graph change detected
+- `compactNeighborEdge` — named in intent, no matching graph change detected
+- `compareEntities` — named in intent, no matching graph change detected
+- `completenessFailureCount` — named in intent, no matching graph change detected
+- `completenessLevel` — named in intent, no matching graph change detected
+- `completenessScope` — named in intent, no matching graph change detected
+- `completenessScopeOrAll` — named in intent, no matching graph change detected
+- `component` — named in intent, no matching graph change detected
+- `connect` — named in intent, no matching graph change detected
+- `contains` — named in intent, no matching graph change detected
+- `containsSymbolMention` — named in intent, no matching graph change detected
+- `contractSearchResponse` — named in intent, no matching graph change detected
+- `coverageNoteResponse` — named in intent, no matching graph change detected
+- `create` — named in intent, no matching graph change detected
+- `deny` — named in intent, no matching graph change detected
+- `dependencies` — named in intent, no matching graph change detected
+- `depends` — named in intent, no matching graph change detected
+- `deriveSearchVerifyCargo` — named in intent, no matching graph change detected
+- `deriveSearchVerifyCommand` — named in intent, no matching graph change detected
+- `deriveSearchVerifyGo` — named in intent, no matching graph change detected
+- `deriveSearchVerifyGradle` — named in intent, no matching graph change detected
+- `deriveSearchVerifyMaven` — named in intent, no matching graph change detected
+- `deriveSearchVerifySuiteCargo` — named in intent, no matching graph change detected
+- `deriveSearchVerifySuiteCommand` — named in intent, no matching graph change detected
+- `deriveSearchVerifySuiteComposer` — named in intent, no matching graph change detected
+- `deriveSearchVerifySuiteGo` — named in intent, no matching graph change detected
+- `deriveSearchVerifySuiteGradle` — named in intent, no matching graph change detected
+- `deriveSearchVerifySuiteMake` — named in intent, no matching graph change detected
+- `deriveSearchVerifySuiteMaven` — named in intent, no matching graph change detected
+- `deriveSearchVerifySuiteNode` — named in intent, no matching graph change detected
+- `deriveSearchVerifySuitePytest` — named in intent, no matching graph change detected
+- `deriveSearchVerifySuiteRuby` — named in intent, no matching graph change detected
+- `describe` — named in intent, no matching graph change detected
+- `description` — named in intent, no matching graph change detected
+- `diagnosticInScope` — named in intent, no matching graph change detected
+- `diffFileReadWarning` — named in intent, no matching graph change detected
+- `diffFileTooLargeWarning` — named in intent, no matching graph change detected
+- `diffIndexPolicy` — named in intent, no matching graph change detected
+- `diffNonBlobWarning` — named in intent, no matching graph change detected
+- `diffParseOutcome` — named in intent, no matching graph change detected
+- `diffProgressLine` — named in intent, no matching graph change detected
+- `distinct` — named in intent, no matching graph change detected
+- `edge` — named in intent, no matching graph change detected
+- `edgeForRelation` — named in intent, no matching graph change detected
+- `edge_classes` — named in intent, no matching graph change detected
+- `enabled` — named in intent, no matching graph change detected
+- `endpointForExternal` — named in intent, no matching graph change detected
+- `endpointForFile` — named in intent, no matching graph change detected
+- `endpointForSymbol` — named in intent, no matching graph change detected
+- `entire-graph` — named in intent, no matching graph change detected
+- `entry` — named in intent, no matching graph change detected
+- `env` — named in intent, no matching graph change detected
+- `event` — named in intent, no matching graph change detected
+- `extensionUnsupported` — named in intent, no matching graph change detected
+- `extraction` — named in intent, no matching graph change detected
+- `fail` — named in intent, no matching graph change detected
+- `features` — named in intent, no matching graph change detected
+- `fetch` — named in intent, no matching graph change detected
+- `field` — named in intent, no matching graph change detected
+- `file` — named in intent, no matching graph change detected
+- `fileDelta` — named in intent, no matching graph change detected
+- `findCommandDoc` — named in intent, no matching graph change detected
+- `first` — named in intent, no matching graph change detected
+- `flagDoc` — named in intent, no matching graph change detected
+- `focusQueryLanguage` — named in intent, no matching graph change detected
+- `formatCallSiteLocation` — named in intent, no matching graph change detected
+- `formatImpactEntryLocation` — named in intent, no matching graph change detected
+- `formatNeighborEdgeLocation` — named in intent, no matching graph change detected
+- `formatNeighborEndpoint` — named in intent, no matching graph change detected
+- `formatNeighborFocus` — named in intent, no matching graph change detected
+- `function` — named in intent, no matching graph change detected
+- `git` — named in intent, no matching graph change detected
+- `go` — named in intent, no matching graph change detected
+- `grepFixedStringMatches` — named in intent, no matching graph change detected
+- `grepTreePaths` — named in intent, no matching graph change detected
+- `grow` — named in intent, no matching graph change detected
+- `hash` — named in intent, no matching graph change detected
+- `helper` — named in intent, no matching graph change detected
+- `hooks` — named in intent, no matching graph change detected
+- `id` — named in intent, no matching graph change detected
+- `ignoreMatcher` — named in intent, no matching graph change detected
+- `impactBundlePath` — named in intent, no matching graph change detected
+- `impactCallRelation` — named in intent, no matching graph change detected
+- `impactDegenerateReason` — named in intent, no matching graph change detected
+- `impactEntry` — named in intent, no matching graph change detected
+- `impactFlags` — named in intent, no matching graph change detected
+- `impactNonCodeMention` — named in intent, no matching graph change detected
+- `impactResponse` — named in intent, no matching graph change detected
+- `impactSection` — named in intent, no matching graph change detected
+- `impactSectionOf` — named in intent, no matching graph change detected
+- `impactTypeRelation` — named in intent, no matching graph change detected
+- `index` — named in intent, no matching graph change detected
+- `indexPolicyChangeWarnings` — named in intent, no matching graph change detected
+- `indexPolicyChangedWarning` — named in intent, no matching graph change detected
+- `indexed` — named in intent, no matching graph change detected
+- `init` — named in intent, no matching graph change detected
+- `interface` — named in intent, no matching graph change detected
+- `isCallRelation` — named in intent, no matching graph change detected
+- `isConventionalTestPath` — named in intent, no matching graph change detected
+- `isIndexPolicyFile` — named in intent, no matching graph change detected
+- `isVagueFollowUp` — named in intent, no matching graph change detected
+- `itoa` — named in intent, no matching graph change detected
+- `jaccard` — named in intent, no matching graph change detected
+- `key` — named in intent, no matching graph change detected
+- `keyedEntityMaps` — named in intent, no matching graph change detected
+- `kind` — named in intent, no matching graph change detected
+- `label` — named in intent, no matching graph change detected
+- `labelSelectsTreePath` — named in intent, no matching graph change detected
+- `languages` — named in intent, no matching graph change detected
+- `layout` — named in intent, no matching graph change detected
+- `ledger` — named in intent, no matching graph change detected
+- `lineForSort` — named in intent, no matching graph change detected
+- `lineReader` — named in intent, no matching graph change detected
+- `loadExplicitIgnoreMatcher` — named in intent, no matching graph change detected
+- `loadWorktreeIgnoreMatcher` — named in intent, no matching graph change detected
+- `locomo-nightly` — named in intent, no matching graph change detected
+- `lookup` — named in intent, no matching graph change detected
+- `main` — named in intent, no matching graph change detected
+- `make` — named in intent, no matching graph change detected
+- `manifest` — named in intent, no matching graph change detected
+- `matcher` — named in intent, no matching graph change detected
+- `message` — named in intent, no matching graph change detected
+- `metadata` — named in intent, no matching graph change detected
+- `method` — named in intent, no matching graph change detected
+- `model` — named in intent, no matching graph change detected
+- `moduleScopeChange` — named in intent, no matching graph change detected
+- `module_granularity` — named in intent, no matching graph change detected
+- `name` — named in intent, no matching graph change detected
+- `names` — named in intent, no matching graph change detected
+- `neighborDirectionQueried` — named in intent, no matching graph change detected
+- `neighborEdge` — named in intent, no matching graph change detected
+- `neighborEdgeLess` — named in intent, no matching graph change detected
+- `neighborEndpoint` — named in intent, no matching graph change detected
+- `neighborEndpointAllowed` — named in intent, no matching graph change detected
+- `neighborEndpointNames` — named in intent, no matching graph change detected
+- `neighborEndpointTier` — named in intent, no matching graph change detected
+- `neighborFlags` — named in intent, no matching graph change detected
+- `neighborFocus` — named in intent, no matching graph change detected
+- `neighborPath` — named in intent, no matching graph change detected
+- `neighborRelationMatches` — named in intent, no matching graph change detected
+- `neighborResolutionTier` — named in intent, no matching graph change detected
+- `neighborResponse` — named in intent, no matching graph change detected
+- `new` — named in intent, no matching graph change detected
+- `newDiffIndexPolicies` — named in intent, no matching graph change detected
+- `nightly` — named in intent, no matching graph change detected
+- `on` — named in intent, no matching graph change detected
+- `open` — named in intent, no matching graph change detected
+- `openSnapshotLineReaderOrDegrade` — named in intent, no matching graph change detected
+- `option` — named in intent, no matching graph change detected
+- `out` — named in intent, no matching graph change detected
+- `outcome` — named in intent, no matching graph change detected
+- `output` — named in intent, no matching graph change detected
+- `owner` — named in intent, no matching graph change detected
+- `page` — named in intent, no matching graph change detected
+- `parseFailureWarning` — named in intent, no matching graph change detected
+- `parseImpactFlags` — named in intent, no matching graph change detected
+- `parseNeighborFlags` — named in intent, no matching graph change detected
+- `parseProfile` — named in intent, no matching graph change detected
+- `parseVerifyIntentFlags` — named in intent, no matching graph change detected
+- `parserVersions` — named in intent, no matching graph change detected
+- `pass` — named in intent, no matching graph change detected
+- `pathScopeChange` — named in intent, no matching graph change detected
+- `percent` — named in intent, no matching graph change detected
+- `permissions` — named in intent, no matching graph change detected
+- `ping` — named in intent, no matching graph change detected
+- `pipelineAdapter` — named in intent, no matching graph change detected
+- `pipelineStages` — named in intent, no matching graph change detected
+- `plugins` — named in intent, no matching graph change detected
+- `pluralSuffix` — named in intent, no matching graph change detected
+- `port` — named in intent, no matching graph change detected
+- `post` — named in intent, no matching graph change detected
+- `prepare` — named in intent, no matching graph change detected
+- `printHelp` — named in intent, no matching graph change detected
+- `project` — named in intent, no matching graph change detected
+- `prompt` — named in intent, no matching graph change detected
+- `prune` — named in intent, no matching graph change detected
+- `qualify` — named in intent, no matching graph change detected
+- `rankedLanguageNames` — named in intent, no matching graph change detected
+- `reconcileMoves` — named in intent, no matching graph change detected
+- `recordingFidelityStages` — named in intent, no matching graph change detected
+- `ref` — named in intent, no matching graph change detected
+- `refresh` — named in intent, no matching graph change detected
+- `register` — named in intent, no matching graph change detected
+- `relation_types` — named in intent, no matching graph change detected
+- `release` — named in intent, no matching graph change detected
+- `remote` — named in intent, no matching graph change detected
+- `removedChange` — named in intent, no matching graph change detected
+- `render` — named in intent, no matching graph change detected
+- `renderCommandHelp` — named in intent, no matching graph change detected
+- `repeat` — named in intent, no matching graph change detected
+- `repoKey` — named in intent, no matching graph change detected
+- `resolveCacheDir` — named in intent, no matching graph change detected
+- `resolveDiffTrees` — named in intent, no matching graph change detected
+- `resolveRepo` — named in intent, no matching graph change detected
+- `resource` — named in intent, no matching graph change detected
+- `result` — named in intent, no matching graph change detected
+- `retrieve` — named in intent, no matching graph change detected
+- `rev` — named in intent, no matching graph change detected
+- `routes` — named in intent, no matching graph change detected
+- `rpc` — named in intent, no matching graph change detected
+- `run` — named in intent, no matching graph change detected
+- `runAgentGuide` — named in intent, no matching graph change detected
+- `runAnalyze` — named in intent, no matching graph change detected
+- `runCapabilities` — named in intent, no matching graph change detected
+- `runCheckpoint` — named in intent, no matching graph change detected
+- `runCommit` — named in intent, no matching graph change detected
+- `runDef` — named in intent, no matching graph change detected
+- `runDiff` — named in intent, no matching graph change detected
+- `runDoctor` — named in intent, no matching graph change detected
+- `runExplain` — named in intent, no matching graph change detected
+- `runGit` — named in intent, no matching graph change detected
+- `runImpact` — named in intent, no matching graph change detected
+- `runIndex` — named in intent, no matching graph change detected
+- `runInitAgents` — named in intent, no matching graph change detected
+- `runNeighbors` — named in intent, no matching graph change detected
+- `runProviderRecords` — named in intent, no matching graph change detected
+- `runSearch` — named in intent, no matching graph change detected
+- `runSnapshotQuery` — named in intent, no matching graph change detected
+- `runStats` — named in intent, no matching graph change detected
+- `runVerify` — named in intent, no matching graph change detected
+- `runVerifyIntent` — named in intent, no matching graph change detected
+- `runWithStderr` — named in intent, no matching graph change detected
+- `runtime` — named in intent, no matching graph change detected
+- `sameEntityName` — named in intent, no matching graph change detected
+- `sample` — named in intent, no matching graph change detected
+- `sandbox` — named in intent, no matching graph change detected
+- `scan` — named in intent, no matching graph change detected
+- `schema` — named in intent, no matching graph change detected
+- `scope` — named in intent, no matching graph change detected
+- `scopeLanguageFileCount` — named in intent, no matching graph change detected
+- `scopeLanguageLabel` — named in intent, no matching graph change detected
+- `scored` — named in intent, no matching graph change detected
+- `scripts` — named in intent, no matching graph change detected
+- `searchSnapshotKey` — named in intent, no matching graph change detected
+- `searchVerifyAncestorFile` — named in intent, no matching graph change detected
+- `searchVerifyControlBytes` — named in intent, no matching graph change detected
+- `searchVerifyEvidence` — named in intent, no matching graph change detected
+- `searchVerifyJoin` — named in intent, no matching graph change detected
+- `searchVerifyMirrorTest` — named in intent, no matching graph change detected
+- `searchVerifyModuleLabel` — named in intent, no matching graph change detected
+- `searchVerifyProvenancePaths` — named in intent, no matching graph change detected
+- `searchVerifyRelative` — named in intent, no matching graph change detected
+- `searchVerifyResidualFloor` — named in intent, no matching graph change detected
+- `searchVerifyRunIn` — named in intent, no matching graph change detected
+- `searchVerifyStem` — named in intent, no matching graph change detected
+- `searchVerifySubject` — named in intent, no matching graph change detected
+- `searchVerifySubjectFor` — named in intent, no matching graph change detected
+- `searchVerifySuiteCommand` — named in intent, no matching graph change detected
+- `searchVerifyTestName` — named in intent, no matching graph change detected
+- `searchVerifyTomlPackageName` — named in intent, no matching graph change detected
+- `section` — named in intent, no matching graph change detected
+- `select` — named in intent, no matching graph change detected
+- `server` — named in intent, no matching graph change detected
+- `service` — named in intent, no matching graph change detected
+- `settings` — named in intent, no matching graph change detected
+- `shuffle` — named in intent, no matching graph change detected
+- `sig` — named in intent, no matching graph change detected
+- `similarity` — named in intent, no matching graph change detected
+- `skip` — named in intent, no matching graph change detected
+- `sortChanges` — named in intent, no matching graph change detected
+- `sortNeighborEdges` — named in intent, no matching graph change detected
+- `sortedEntities` — named in intent, no matching graph change detected
+- `source` — named in intent, no matching graph change detected
+- `span` — named in intent, no matching graph change detected
+- `spec` — named in intent, no matching graph change detected
+- `stage` — named in intent, no matching graph change detected
+- `stageRecorder` — named in intent, no matching graph change detected
+- `staticFallback` — named in intent, no matching graph change detected
+- `statusLine` — named in intent, no matching graph change detected
+- `store` — named in intent, no matching graph change detected
+- `struct` — named in intent, no matching graph change detected
+- `stub` — named in intent, no matching graph change detected
+- `symbolByte` — named in intent, no matching graph change detected
+- `symbolID` — named in intent, no matching graph change detected
+- `symbolMatchBody` — named in intent, no matching graph change detected
+- `tasks.build` — named in intent, no matching graph change detected
+- `tasks.check` — named in intent, no matching graph change detected
+- `tasks.fmt` — named in intent, no matching graph change detected
+- `tasks.install` — named in intent, no matching graph change detected
+- `tasks.release` — named in intent, no matching graph change detected
+- `tasks.test` — named in intent, no matching graph change detected
+- `tasks.vet` — named in intent, no matching graph change detected
+- `telemetry` — named in intent, no matching graph change detected
+- `test` — named in intent, no matching graph change detected
+- `testFidelityAdapter` — named in intent, no matching graph change detected
+- `text` — named in intent, no matching graph change detected
+- `tiers` — named in intent, no matching graph change detected
+- `timeout` — named in intent, no matching graph change detected
+- `tokenSet` — named in intent, no matching graph change detected
+- `tool_result` — named in intent, no matching graph change detected
+- `tool_use` — named in intent, no matching graph change detected
+- `tools` — named in intent, no matching graph change detected
+- `total` — named in intent, no matching graph change detected
+- `trait` — named in intent, no matching graph change detected
+- `treeBlobMembersBatch` — named in intent, no matching graph change detected
+- `treeVendorIgnoreRules` — named in intent, no matching graph change detected
+- `type` — named in intent, no matching graph change detected
+- `usage` — named in intent, no matching graph change detected
+- `vendorIgnoreRules` — named in intent, no matching graph change detected
+- `verify` — named in intent, no matching graph change detected
+- `verifyIntentFlags` — named in intent, no matching graph change detected
+- `wantsHelp` — named in intent, no matching graph change detected
+- `weights` — named in intent, no matching graph change detected
+- `write` — named in intent, no matching graph change detected
+- `writeAgentNeighborCompleteness` — named in intent, no matching graph change detected
+- `writeAgentNeighbors` — named in intent, no matching graph change detected
+- `writeAgentNeighborsBounded` — named in intent, no matching graph change detected
+- `writeAgentNeighborsFull` — named in intent, no matching graph change detected
+- `writeImpactBounded` — named in intent, no matching graph change detected
+- `writeImpactDegenerate` — named in intent, no matching graph change detected
+- `writeImpactSection` — named in intent, no matching graph change detected
+- `writeImpactText` — named in intent, no matching graph change detected
+- `writeIndexCostNotice` — named in intent, no matching graph change detected
+- `writeNeighborEdgeList` — named in intent, no matching graph change detected
+- `writeNeighborPathFamily` — named in intent, no matching graph change detected
+- `writeNeighborSectionNotQueried` — named in intent, no matching graph change detected
+- `writeScopedCompletenessBlock` — named in intent, no matching graph change detected
+- `writeTextSearch` — named in intent, no matching graph change detected
+

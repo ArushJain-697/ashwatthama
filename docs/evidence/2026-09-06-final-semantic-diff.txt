@@ -1,0 +1,202 @@
+Semantic changes bb61095..1e334ab
+
+BUILDATHON.md (Markdown)
+  + section The-Noon-Curveball:-Track-2-Graph-Is-Evidence-Not-an-Oracle added
+
+docs/fidelity-phase-0.md (Markdown)
+  + section Isn-t-this-just-Graphify-s-tri-state-model added
+
+fidelity.config.yaml (YAML)
+  ~ section verdict_thresholds body changed (1 dependent)
+  + section coverage added
+  ~ section databricks body changed (1 dependent)
+
+internal/cli/verify_intent.go (Go)
+  ~ type verifyIntentResponse signature changed (2 dependents)
+  + field verifyIntentResponse.Verdict added
+  + field verifyIntentResponse.VerdictPath added
+  + field verifyIntentResponse.ReportPath added
+  ~ function runVerifyIntentWithAdapter body changed (2 dependents)
+  + function writeTextFile added
+
+internal/cli/verify_intent_test.go (Go)
+  + method testFidelityAdapter.Graph added
+  - method testFidelityAdapter.SymbolDictionary removed (0 dependents)
+  ~ function TestVerifyIntentReportsPartialPipeline body changed (0 dependents)
+
+internal/fidelity/adapter.go (Go)
+  ~ type Adapter signature changed (7 dependents)
+  - method Adapter.SymbolDictionary removed (0 dependents)
+  + method Adapter.Graph added
+  + type GraphSnapshot added
+  + field GraphSnapshot.Symbols added
+  + field GraphSnapshot.Relations added
+  + field GraphSnapshot.FileLanguages added
+  + field GraphSnapshot.LanguageTiers added
+  + field GraphSnapshot.PartialFailureFiles added
+  + field GraphSnapshot.CompletenessLevel added
+  - method NativeGraphAdapter.SymbolDictionary removed (0 dependents)
+  + method NativeGraphAdapter.Graph added
+  - method UnavailableAdapter.SymbolDictionary removed (0 dependents)
+  + method UnavailableAdapter.Graph added
+
+internal/fidelity/adapter_test.go (Go)
+  ~ function TestNativeGraphAdapterLoadsSymbolsAndChanges body changed (0 dependents)
+
+internal/fidelity/config.go (Go)
+  ~ type Config signature changed (26 dependents)
+  + field Config.Coverage added
+  + type Coverage added
+  + field Coverage.DetectVia added
+  + field Coverage.TreatZeroEdgeAs added
+  + field Coverage.FallbackVerificationPath added
+  ~ type VerdictThresholds signature changed (5 dependents)
+  + field VerdictThresholds.ReviewRequiredIfUnverifiableCoverageGTE added
+  ~ type Databricks signature changed (9 dependents)
+  + field Databricks.CoverageCorroborationEnabled added
+  ~ function DefaultConfig body changed (9 dependents)
+  ~ function assignConfigValue body changed (1 dependent)
+  ~ function validateConfig body changed (1 dependent)
+
+internal/fidelity/config_test.go (Go)
+  ~ function TestLoadConfig body changed (0 dependents)
+
+internal/fidelity/coverage.go (Go)
+  + type CoverageConfidence added
+  + function ComputeCoverage added
+  + function zeroEdgeCoverage added
+  + function countGraphEdges added
+
+internal/fidelity/curveball_fixture_test.go (Go)
+  + function writeCurveballFixtureRepo added
+  + function mustWrite added
+  + function trimmed added
+  + function TestPartialAnalysisFixtureNeverMisfilesReflectionDispatchAsScopeCreep added
+
+internal/fidelity/pipeline.go (Go)
+  ~ type Verification signature changed (9 dependents)
+  ~ field Verification.Reconciliation signature changed (19 dependents)
+  ~ method Pipeline.Run body changed (565 dependents)
+
+internal/fidelity/pipeline_test.go (Go)
+  + method pipelineAdapter.Graph added
+  - method pipelineAdapter.SymbolDictionary removed (0 dependents)
+
+internal/fidelity/preflight.go (Go)
+  ~ function CurrentPreflightReport body changed (5 dependents)
+
+internal/fidelity/reachability.go (Go)
+  + type reachabilityHit added
+  + field reachabilityHit.Hops added
+  + field reachabilityHit.Path added
+  + field reachabilityHit.EdgeTypesTraversed added
+  + field reachabilityHit.MinEdgeClass added
+  + function symbolIDForEntity added
+  + function reachable added
+  + type step added
+  + field step.edgeType added
+  + field step.id added
+  + type queued added
+  + field queued.id added
+  + field queued.depth added
+  + field queued.path added
+  + field queued.edgeTypesTraversed added
+
+internal/fidelity/reconcile.go (Go)
+  ~ type EntityLocation signature changed (7 dependents)
+  + field EntityLocation.CoverageConfidence added
+  + type BlastRadiusEntity added
+  + field BlastRadiusEntity.Entity added
+  + field BlastRadiusEntity.File added
+  + field BlastRadiusEntity.Line added
+  + field BlastRadiusEntity.PathFromConfirmed added
+  + field BlastRadiusEntity.Hops added
+  + field BlastRadiusEntity.EdgeTypesTraversed added
+  + field BlastRadiusEntity.MinEdgeClass added
+  + field BlastRadiusEntity.CoverageConfidence added
+  + type ScopeCreepEntity added
+  + field ScopeCreepEntity.Entity added
+  + field ScopeCreepEntity.File added
+  + field ScopeCreepEntity.Line added
+  + field ScopeCreepEntity.Reason added
+  + field ScopeCreepEntity.CoverageConfidence added
+  + type AdvisoryEntity added
+  + field AdvisoryEntity.Entity added
+  + field AdvisoryEntity.File added
+  + field AdvisoryEntity.Line added
+  + field AdvisoryEntity.EdgeClass added
+  + field AdvisoryEntity.Reason added
+  + field AdvisoryEntity.CoverageConfidence added
+  + field AdvisoryEntity.VerbalConfidence added
+  + field AdvisoryEntity.ConformalGatePassed added
+  + field AdvisoryEntity.CalibratedConfidence added
+  + field AdvisoryEntity.Corroboration added
+  + type UnverifiableCoverageEntity added
+  + field UnverifiableCoverageEntity.Entity added
+  + field UnverifiableCoverageEntity.File added
+  + field UnverifiableCoverageEntity.Line added
+  + field UnverifiableCoverageEntity.CoverageConfidence added
+  + field UnverifiableCoverageEntity.CoverageReason added
+  + field UnverifiableCoverageEntity.VerificationPath added
+  + field UnverifiableCoverageEntity.Corroboration added
+  + type Corroboration added
+  + field Corroboration.Attempted added
+  + field Corroboration.Verified added
+  + field Corroboration.EvidenceSnippet added
+  + type Reconciliation added
+  + field Reconciliation.Confirmed added
+  + field Reconciliation.DeclaredUnimplemented added
+  + field Reconciliation.ExpectedBlastRadius added
+  + field Reconciliation.UndeclaredScopeCreep added
+  + field Reconciliation.AdvisoryLowConfidence added
+  + field Reconciliation.UnverifiableCoverage added
+  + function Reconcile added
+  + function stampConfirmedCoverage added
+  + function isConfirmedChange added
+  + function hopsWord added
+
+internal/fidelity/reconcile_test.go (Go)
+  + function fixtureGraph added
+  + function TestReconcileSixTiers added
+  + function TestReconcileNeverUpgradesPartialCoverageToScopeCreep added
+
+internal/fidelity/render.go (Go)
+  + function RenderTerminal added
+  + function terminalSection added
+  + function location added
+  + function RenderMarkdown added
+  + function markdownSection added
+
+internal/fidelity/render_test.go (Go)
+  + function TestRenderersAgreeOnCountsAndSatisfyThreeWayDistinctness added
+
+internal/fidelity/verdict.go (Go)
+  + type Verdict added
+  + field Verdict.CheckpointID added
+  + field Verdict.BaseCheckpointID added
+  + field Verdict.GeneratedAt added
+  + field Verdict.GraphCapabilitiesVerified added
+  + field Verdict.Intent added
+  + field Verdict.Reconciliation added
+  + field Verdict.Summary added
+  + type VerdictIntent added
+  + field VerdictIntent.RawPromptExcerpt added
+  + field VerdictIntent.ExtractedEntities added
+  + field VerdictIntent.UnresolvedFragments added
+  + type VerdictSummary added
+  + field VerdictSummary.TotalChangedEntities added
+  + field VerdictSummary.ScopeCreepCount added
+  + field VerdictSummary.UnimplementedCount added
+  + field VerdictSummary.AdvisoryEdgeCount added
+  + field VerdictSummary.UnverifiableCoverageCount added
+  + field VerdictSummary.VerdictLabel added
+  + function BuildVerdict added
+  + function verifiedRelationTypes added
+  + function excerpt added
+  + function WriteVerdict added
+
+internal/fidelity/verdict_test.go (Go)
+  + function fixtureVerification added
+  + function TestBuildVerdictLabelsReviewRequiredOnScopeCreep added
+  + function TestWriteVerdictProducesValidJSON added
+
