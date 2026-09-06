@@ -1,0 +1,26 @@
+{
+  "cli_version": "0.10.5",
+  "checkpoint_id": "acf673a76f32",
+  "strategy": "manual-commit",
+  "branch": "new_branch",
+  "checkpoints_count": 1,
+  "files_touched": [
+    "frontend/src/components/TierList.tsx"
+  ],
+  "sessions": [
+    {
+      "metadata": "/ac/f673a76f32/0/metadata.json",
+      "transcript": "/ac/f673a76f32/0/full.jsonl",
+      "compact_transcript": "/ac/f673a76f32/0/transcript.jsonl",
+      "content_hash": "/ac/f673a76f32/0/content_hash.txt",
+      "prompt": "/ac/f673a76f32/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 10,
+    "cache_creation_tokens": 15488,
+    "cache_read_tokens": 4040354,
+    "output_tokens": 3045,
+    "api_call_count": 5
+  }
+}

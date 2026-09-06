@@ -1,0 +1,333 @@
+Confirmed (65)
+Adapter — internal/fidelity/adapter.go:18 [coverage: full]
+AdvisoryEntity — internal/fidelity/reconcile.go:52 [coverage: partial]
+BlastRadiusEntity — internal/fidelity/reconcile.go:25 [coverage: partial]
+BuildVerdict — internal/fidelity/verdict.go:47 [coverage: full]
+ComputeCoverage — internal/fidelity/coverage.go:34 [coverage: full]
+Config — internal/fidelity/config.go:18 [coverage: full]
+Corroboration — internal/fidelity/reconcile.go:87 [coverage: partial]
+Coverage — internal/fidelity/config.go:32 [coverage: full]
+CoverageConfidence — internal/fidelity/coverage.go:13 [coverage: full]
+CurrentPreflightReport — internal/fidelity/preflight.go:21 [coverage: full]
+Databricks — internal/fidelity/config.go:64 [coverage: full]
+DefaultConfig — internal/fidelity/config.go:86 [coverage: full]
+EntityLocation — internal/fidelity/reconcile.go:8 [coverage: full]
+GraphSnapshot — internal/fidelity/adapter.go:40 [coverage: full]
+NativeGraphAdapter.Graph — internal/fidelity/adapter.go:130 [coverage: full]
+Pipeline.Run — internal/fidelity/pipeline.go:30 [coverage: full]
+Reconcile — internal/fidelity/reconcile.go:144 [coverage: full]
+Reconciliation — internal/fidelity/reconcile.go:94 [coverage: full]
+RenderMarkdown — internal/fidelity/render.go:102 [coverage: full]
+RenderTerminal — internal/fidelity/render.go:40 [coverage: full]
+ScopeCreepEntity — internal/fidelity/reconcile.go:40 [coverage: partial]
+TestBuildVerdictLabelsReviewRequiredOnScopeCreep — internal/fidelity/verdict_test.go:31 [coverage: full]
+TestLoadConfig — internal/fidelity/config_test.go:45 [coverage: full]
+TestNativeGraphAdapterLoadsSymbolsAndChanges — internal/fidelity/adapter_test.go:22 [coverage: full]
+TestPartialAnalysisFixtureNeverMisfilesReflectionDispatchAsScopeCreep — internal/fidelity/curveball_fixture_test.go:107 [coverage: full]
+TestReconcileNeverUpgradesPartialCoverageToScopeCreep — internal/fidelity/reconcile_test.go:92 [coverage: full]
+TestReconcileSixTiers — internal/fidelity/reconcile_test.go:41 [coverage: full]
+TestRenderersAgreeOnCountsAndSatisfyThreeWayDistinctness — internal/fidelity/render_test.go:15 [coverage: full]
+TestVerifyIntentReportsPartialPipeline — internal/cli/verify_intent_test.go:76 [coverage: full]
+TestWriteVerdictProducesValidJSON — internal/fidelity/verdict_test.go:44 [coverage: full]
+UnverifiableCoverageEntity — internal/fidelity/reconcile.go:71 [coverage: partial]
+Verdict — internal/fidelity/verdict.go:16 [coverage: full]
+VerdictIntent — internal/fidelity/verdict.go:26 [coverage: partial]
+VerdictSummary — internal/fidelity/verdict.go:32 [coverage: partial]
+VerdictThresholds — internal/fidelity/config.go:59 [coverage: full]
+Verification — internal/fidelity/pipeline.go:11 [coverage: full]
+WriteVerdict — internal/fidelity/verdict.go:108 [coverage: full]
+assignConfigValue — internal/fidelity/config.go:162 [coverage: full]
+countGraphEdges — internal/fidelity/coverage.go:88 [coverage: full]
+coverage — fidelity.config.yaml:22 [coverage: partial]
+databricks — fidelity.config.yaml:26 [coverage: partial]
+excerpt — internal/fidelity/verdict.go:97 [coverage: full]
+fixtureGraph — internal/fidelity/reconcile_test.go:17 [coverage: full]
+fixtureVerification — internal/fidelity/verdict_test.go:11 [coverage: full]
+hopsWord — internal/fidelity/reconcile.go:252 [coverage: full]
+isConfirmedChange — internal/fidelity/reconcile.go:243 [coverage: full]
+location — internal/fidelity/render.go:90 [coverage: full]
+markdownSection — internal/fidelity/render.go:149 [coverage: full]
+mustWrite — internal/fidelity/curveball_fixture_test.go:87 [coverage: full]
+queued — internal/fidelity/reachability.go:58 [coverage: full]
+reachabilityHit — internal/fidelity/reachability.go:13 [coverage: full]
+reachable — internal/fidelity/reachability.go:38 [coverage: full]
+runVerifyIntentWithAdapter — internal/cli/verify_intent.go:92 [coverage: full]
+stampConfirmedCoverage — internal/fidelity/reconcile.go:226 [coverage: full]
+step — internal/fidelity/reachability.go:39 [coverage: partial]
+symbolIDForEntity — internal/fidelity/reachability.go:24 [coverage: full]
+terminalSection — internal/fidelity/render.go:81 [coverage: full]
+trimmed — internal/fidelity/curveball_fixture_test.go:94 [coverage: full]
+validateConfig — internal/fidelity/config.go:255 [coverage: full]
+verdict_thresholds — fidelity.config.yaml:19 [coverage: partial]
+verifiedRelationTypes — internal/fidelity/verdict.go:86 [coverage: full]
+verifyIntentResponse — internal/cli/verify_intent.go:24 [coverage: partial]
+writeCurveballFixtureRepo — internal/fidelity/curveball_fixture_test.go:23 [coverage: full]
+writeTextFile — internal/cli/verify_intent.go:155 [coverage: full]
+zeroEdgeCoverage — internal/fidelity/coverage.go:70 [coverage: full]
+Advisory Low Confidence (19)
+testFidelityAdapter.Graph — reachable from a confirmed entity within 1 hop only via an inferred/ambiguous edge
+Adapter.Graph — reachable from a confirmed entity within 1 hop only via an inferred/ambiguous edge
+GraphSnapshot.Symbols — reachable from a confirmed entity within 1 hop only via an inferred/ambiguous edge
+GraphSnapshot.Relations — reachable from a confirmed entity within 1 hop only via an inferred/ambiguous edge
+GraphSnapshot.FileLanguages — reachable from a confirmed entity within 1 hop only via an inferred/ambiguous edge
+GraphSnapshot.LanguageTiers — reachable from a confirmed entity within 1 hop only via an inferred/ambiguous edge
+GraphSnapshot.PartialFailureFiles — reachable from a confirmed entity within 1 hop only via an inferred/ambiguous edge
+UnavailableAdapter.Graph — reachable from a confirmed entity within 1 hop only via an inferred/ambiguous edge
+Verification.Reconciliation — reachable from a confirmed entity within 1 hop only via an inferred/ambiguous edge
+pipelineAdapter.Graph — reachable from a confirmed entity within 1 hop only via an inferred/ambiguous edge
+Reconciliation.ExpectedBlastRadius — reachable from a confirmed entity within 1 hop only via an inferred/ambiguous edge
+Reconciliation.UndeclaredScopeCreep — reachable from a confirmed entity within 1 hop only via an inferred/ambiguous edge
+Reconciliation.AdvisoryLowConfidence — reachable from a confirmed entity within 1 hop only via an inferred/ambiguous edge
+Reconciliation.UnverifiableCoverage — reachable from a confirmed entity within 1 hop only via an inferred/ambiguous edge
+Verdict.CheckpointID — reachable from a confirmed entity within 1 hop only via an inferred/ambiguous edge
+Verdict.BaseCheckpointID — reachable from a confirmed entity within 1 hop only via an inferred/ambiguous edge
+Verdict.GeneratedAt — reachable from a confirmed entity within 1 hop only via an inferred/ambiguous edge
+Verdict.Reconciliation — reachable from a confirmed entity within 1 hop only via an inferred/ambiguous edge
+Verdict.Summary — reachable from a confirmed entity within 1 hop only via an inferred/ambiguous edge
+Unverifiable Coverage (73)
+The-Noon-Curveball:-Track-2-Graph-Is-Evidence-Not-an-Oracle — this file's language (Markdown) is inventory-only: the graph records file/symbol structure but does not attempt relationship extraction for it [manual_review_recommended]
+Isn-t-this-just-Graphify-s-tri-state-model — this file's language (Markdown) is inventory-only: the graph records file/symbol structure but does not attempt relationship extraction for it [manual_review_recommended]
+verifyIntentResponse.Verdict — zero graph edges detected for this symbol despite real code presence; static analysis may not have resolved dynamic dispatch, generated code, or reflection here [manual_review_recommended]
+verifyIntentResponse.VerdictPath — zero graph edges detected for this symbol despite real code presence; static analysis may not have resolved dynamic dispatch, generated code, or reflection here [manual_review_recommended]
+verifyIntentResponse.ReportPath — zero graph edges detected for this symbol despite real code presence; static analysis may not have resolved dynamic dispatch, generated code, or reflection here [manual_review_recommended]
+testFidelityAdapter.SymbolDictionary — entity could not be grounded to a symbol in the graph snapshot; it may be dynamically dispatched, generated, or otherwise unresolvable to static analysis [manual_review_recommended]
+Adapter.SymbolDictionary — entity could not be grounded to a symbol in the graph snapshot; it may be dynamically dispatched, generated, or otherwise unresolvable to static analysis [manual_review_recommended]
+GraphSnapshot.CompletenessLevel — zero graph edges detected for this symbol despite real code presence; static analysis may not have resolved dynamic dispatch, generated code, or reflection here [manual_review_recommended]
+NativeGraphAdapter.SymbolDictionary — entity could not be grounded to a symbol in the graph snapshot; it may be dynamically dispatched, generated, or otherwise unresolvable to static analysis [manual_review_recommended]
+UnavailableAdapter.SymbolDictionary — entity could not be grounded to a symbol in the graph snapshot; it may be dynamically dispatched, generated, or otherwise unresolvable to static analysis [manual_review_recommended]
+Coverage.DetectVia — zero graph edges detected for this symbol despite real code presence; static analysis may not have resolved dynamic dispatch, generated code, or reflection here [manual_review_recommended]
+Coverage.TreatZeroEdgeAs — zero graph edges detected for this symbol despite real code presence; static analysis may not have resolved dynamic dispatch, generated code, or reflection here [manual_review_recommended]
+Coverage.FallbackVerificationPath — zero graph edges detected for this symbol despite real code presence; static analysis may not have resolved dynamic dispatch, generated code, or reflection here [manual_review_recommended]
+VerdictThresholds.ReviewRequiredIfUnverifiableCoverageGTE — zero graph edges detected for this symbol despite real code presence; static analysis may not have resolved dynamic dispatch, generated code, or reflection here [manual_review_recommended]
+Databricks.CoverageCorroborationEnabled — zero graph edges detected for this symbol despite real code presence; static analysis may not have resolved dynamic dispatch, generated code, or reflection here [manual_review_recommended]
+pipelineAdapter.SymbolDictionary — entity could not be grounded to a symbol in the graph snapshot; it may be dynamically dispatched, generated, or otherwise unresolvable to static analysis [manual_review_recommended]
+reachabilityHit.Hops — zero graph edges detected for this symbol despite real code presence; static analysis may not have resolved dynamic dispatch, generated code, or reflection here [manual_review_recommended]
+reachabilityHit.Path — zero graph edges detected for this symbol despite real code presence; static analysis may not have resolved dynamic dispatch, generated code, or reflection here [manual_review_recommended]
+reachabilityHit.EdgeTypesTraversed — zero graph edges detected for this symbol despite real code presence; static analysis may not have resolved dynamic dispatch, generated code, or reflection here [manual_review_recommended]
+reachabilityHit.MinEdgeClass — zero graph edges detected for this symbol despite real code presence; static analysis may not have resolved dynamic dispatch, generated code, or reflection here [manual_review_recommended]
+step.edgeType — zero graph edges detected for this symbol despite real code presence; static analysis may not have resolved dynamic dispatch, generated code, or reflection here [manual_review_recommended]
+step.id — zero graph edges detected for this symbol despite real code presence; static analysis may not have resolved dynamic dispatch, generated code, or reflection here [manual_review_recommended]
+queued.id — zero graph edges detected for this symbol despite real code presence; static analysis may not have resolved dynamic dispatch, generated code, or reflection here [manual_review_recommended]
+queued.depth — zero graph edges detected for this symbol despite real code presence; static analysis may not have resolved dynamic dispatch, generated code, or reflection here [manual_review_recommended]
+queued.path — zero graph edges detected for this symbol despite real code presence; static analysis may not have resolved dynamic dispatch, generated code, or reflection here [manual_review_recommended]
+queued.edgeTypesTraversed — zero graph edges detected for this symbol despite real code presence; static analysis may not have resolved dynamic dispatch, generated code, or reflection here [manual_review_recommended]
+EntityLocation.CoverageConfidence — zero graph edges detected for this symbol despite real code presence; static analysis may not have resolved dynamic dispatch, generated code, or reflection here [manual_review_recommended]
+BlastRadiusEntity.Entity — zero graph edges detected for this symbol despite real code presence; static analysis may not have resolved dynamic dispatch, generated code, or reflection here [manual_review_recommended]
+BlastRadiusEntity.File — zero graph edges detected for this symbol despite real code presence; static analysis may not have resolved dynamic dispatch, generated code, or reflection here [manual_review_recommended]
+BlastRadiusEntity.Line — zero graph edges detected for this symbol despite real code presence; static analysis may not have resolved dynamic dispatch, generated code, or reflection here [manual_review_recommended]
+BlastRadiusEntity.PathFromConfirmed — zero graph edges detected for this symbol despite real code presence; static analysis may not have resolved dynamic dispatch, generated code, or reflection here [manual_review_recommended]
+BlastRadiusEntity.Hops — zero graph edges detected for this symbol despite real code presence; static analysis may not have resolved dynamic dispatch, generated code, or reflection here [manual_review_recommended]
+BlastRadiusEntity.EdgeTypesTraversed — zero graph edges detected for this symbol despite real code presence; static analysis may not have resolved dynamic dispatch, generated code, or reflection here [manual_review_recommended]
+BlastRadiusEntity.MinEdgeClass — zero graph edges detected for this symbol despite real code presence; static analysis may not have resolved dynamic dispatch, generated code, or reflection here [manual_review_recommended]
+BlastRadiusEntity.CoverageConfidence — zero graph edges detected for this symbol despite real code presence; static analysis may not have resolved dynamic dispatch, generated code, or reflection here [manual_review_recommended]
+ScopeCreepEntity.Entity — zero graph edges detected for this symbol despite real code presence; static analysis may not have resolved dynamic dispatch, generated code, or reflection here [manual_review_recommended]
+ScopeCreepEntity.File — zero graph edges detected for this symbol despite real code presence; static analysis may not have resolved dynamic dispatch, generated code, or reflection here [manual_review_recommended]
+ScopeCreepEntity.Line — zero graph edges detected for this symbol despite real code presence; static analysis may not have resolved dynamic dispatch, generated code, or reflection here [manual_review_recommended]
+ScopeCreepEntity.Reason — zero graph edges detected for this symbol despite real code presence; static analysis may not have resolved dynamic dispatch, generated code, or reflection here [manual_review_recommended]
+ScopeCreepEntity.CoverageConfidence — zero graph edges detected for this symbol despite real code presence; static analysis may not have resolved dynamic dispatch, generated code, or reflection here [manual_review_recommended]
+AdvisoryEntity.Entity — zero graph edges detected for this symbol despite real code presence; static analysis may not have resolved dynamic dispatch, generated code, or reflection here [manual_review_recommended]
+AdvisoryEntity.File — zero graph edges detected for this symbol despite real code presence; static analysis may not have resolved dynamic dispatch, generated code, or reflection here [manual_review_recommended]
+AdvisoryEntity.Line — zero graph edges detected for this symbol despite real code presence; static analysis may not have resolved dynamic dispatch, generated code, or reflection here [manual_review_recommended]
+AdvisoryEntity.EdgeClass — zero graph edges detected for this symbol despite real code presence; static analysis may not have resolved dynamic dispatch, generated code, or reflection here [manual_review_recommended]
+AdvisoryEntity.Reason — zero graph edges detected for this symbol despite real code presence; static analysis may not have resolved dynamic dispatch, generated code, or reflection here [manual_review_recommended]
+AdvisoryEntity.CoverageConfidence — zero graph edges detected for this symbol despite real code presence; static analysis may not have resolved dynamic dispatch, generated code, or reflection here [manual_review_recommended]
+AdvisoryEntity.VerbalConfidence — zero graph edges detected for this symbol despite real code presence; static analysis may not have resolved dynamic dispatch, generated code, or reflection here [manual_review_recommended]
+AdvisoryEntity.ConformalGatePassed — zero graph edges detected for this symbol despite real code presence; static analysis may not have resolved dynamic dispatch, generated code, or reflection here [manual_review_recommended]
+AdvisoryEntity.CalibratedConfidence — zero graph edges detected for this symbol despite real code presence; static analysis may not have resolved dynamic dispatch, generated code, or reflection here [manual_review_recommended]
+AdvisoryEntity.Corroboration — zero graph edges detected for this symbol despite real code presence; static analysis may not have resolved dynamic dispatch, generated code, or reflection here [manual_review_recommended]
+UnverifiableCoverageEntity.Entity — zero graph edges detected for this symbol despite real code presence; static analysis may not have resolved dynamic dispatch, generated code, or reflection here [manual_review_recommended]
+UnverifiableCoverageEntity.File — zero graph edges detected for this symbol despite real code presence; static analysis may not have resolved dynamic dispatch, generated code, or reflection here [manual_review_recommended]
+UnverifiableCoverageEntity.Line — zero graph edges detected for this symbol despite real code presence; static analysis may not have resolved dynamic dispatch, generated code, or reflection here [manual_review_recommended]
+UnverifiableCoverageEntity.CoverageConfidence — zero graph edges detected for this symbol despite real code presence; static analysis may not have resolved dynamic dispatch, generated code, or reflection here [manual_review_recommended]
+UnverifiableCoverageEntity.CoverageReason — zero graph edges detected for this symbol despite real code presence; static analysis may not have resolved dynamic dispatch, generated code, or reflection here [manual_review_recommended]
+UnverifiableCoverageEntity.VerificationPath — zero graph edges detected for this symbol despite real code presence; static analysis may not have resolved dynamic dispatch, generated code, or reflection here [manual_review_recommended]
+UnverifiableCoverageEntity.Corroboration — zero graph edges detected for this symbol despite real code presence; static analysis may not have resolved dynamic dispatch, generated code, or reflection here [manual_review_recommended]
+Corroboration.Attempted — zero graph edges detected for this symbol despite real code presence; static analysis may not have resolved dynamic dispatch, generated code, or reflection here [manual_review_recommended]
+Corroboration.Verified — zero graph edges detected for this symbol despite real code presence; static analysis may not have resolved dynamic dispatch, generated code, or reflection here [manual_review_recommended]
+Corroboration.EvidenceSnippet — zero graph edges detected for this symbol despite real code presence; static analysis may not have resolved dynamic dispatch, generated code, or reflection here [manual_review_recommended]
+Reconciliation.Confirmed — zero graph edges detected for this symbol despite real code presence; static analysis may not have resolved dynamic dispatch, generated code, or reflection here [manual_review_recommended]
+Reconciliation.DeclaredUnimplemented — zero graph edges detected for this symbol despite real code presence; static analysis may not have resolved dynamic dispatch, generated code, or reflection here [manual_review_recommended]
+Verdict.GraphCapabilitiesVerified — zero graph edges detected for this symbol despite real code presence; static analysis may not have resolved dynamic dispatch, generated code, or reflection here [manual_review_recommended]
+Verdict.Intent — zero graph edges detected for this symbol despite real code presence; static analysis may not have resolved dynamic dispatch, generated code, or reflection here [manual_review_recommended]
+VerdictIntent.RawPromptExcerpt — zero graph edges detected for this symbol despite real code presence; static analysis may not have resolved dynamic dispatch, generated code, or reflection here [manual_review_recommended]
+VerdictIntent.ExtractedEntities — zero graph edges detected for this symbol despite real code presence; static analysis may not have resolved dynamic dispatch, generated code, or reflection here [manual_review_recommended]
+VerdictIntent.UnresolvedFragments — zero graph edges detected for this symbol despite real code presence; static analysis may not have resolved dynamic dispatch, generated code, or reflection here [manual_review_recommended]
+VerdictSummary.TotalChangedEntities — zero graph edges detected for this symbol despite real code presence; static analysis may not have resolved dynamic dispatch, generated code, or reflection here [manual_review_recommended]
+VerdictSummary.ScopeCreepCount — zero graph edges detected for this symbol despite real code presence; static analysis may not have resolved dynamic dispatch, generated code, or reflection here [manual_review_recommended]
+VerdictSummary.UnimplementedCount — zero graph edges detected for this symbol despite real code presence; static analysis may not have resolved dynamic dispatch, generated code, or reflection here [manual_review_recommended]
+VerdictSummary.AdvisoryEdgeCount — zero graph edges detected for this symbol despite real code presence; static analysis may not have resolved dynamic dispatch, generated code, or reflection here [manual_review_recommended]
+VerdictSummary.UnverifiableCoverageCount — zero graph edges detected for this symbol despite real code presence; static analysis may not have resolved dynamic dispatch, generated code, or reflection here [manual_review_recommended]
+VerdictSummary.VerdictLabel — zero graph edges detected for this symbol despite real code presence; static analysis may not have resolved dynamic dispatch, generated code, or reflection here [manual_review_recommended]
+Undeclared Scope Creep (1)
+Config.Coverage — changed, not reachable from any confirmed entity within 2 hops [community: internal/fidelity]
+Declared Unimplemented (619)
+.gitignore — named in intent, no matching graph change detected
+AISearch — named in intent, no matching graph change detected
+ASYNC_CALLS — named in intent, no matching graph change detected
+Add — named in intent, no matching graph change detected
+Aggregate — named in intent, no matching graph change detected
+AnalyzeCheckpoint — named in intent, no matching graph change detected
+AnalyzeGitRange — named in intent, no matching graph change detected
+AnalyzeGitRangeWithOptions — named in intent, no matching graph change detected
+AnalyzeOptions — named in intent, no matching graph change detected
+AnalyzeProgressEvent — named in intent, no matching graph change detected
+Architecture — named in intent, no matching graph change detected
+Base — named in intent, no matching graph change detected
+Bash — named in intent, no matching graph change detected
+Benchmarks — named in intent, no matching graph change detected
+Build — named in intent, no matching graph change detected
+BuildProviderSnapshot — named in intent, no matching graph change detected
+BuildProviderSnapshotWithOptions — named in intent, no matching graph change detected
+Bytes — named in intent, no matching graph change detected
+C — named in intent, no matching graph change detected
+CALLS — named in intent, no matching graph change detected
+CONFIGURES — named in intent, no matching graph change detected
+CONSTRUCTS — named in intent, no matching graph change detected
+CONTAINS — named in intent, no matching graph change detected
+CUE — named in intent, no matching graph change detected
+Cache — named in intent, no matching graph change detected
+CalibrationGate — named in intent, no matching graph change detected
+Capabilities — named in intent, no matching graph change detected
+CapabilityReport — named in intent, no matching graph change detected
+ChangedEntity — named in intent, no matching graph change detected
+CheckReadableSchemaVersion — named in intent, no matching graph change detected
+Checkpoints — named in intent, no matching graph change detected
+ClassifyRelation — named in intent, no matching graph change detected
+Commands — named in intent, no matching graph change detected
+CompactSnapshotIndex — named in intent, no matching graph change detected
+Compare — named in intent, no matching graph change detected
+CompletenessReport — named in intent, no matching graph change detected
+Consequences — named in intent, no matching graph change detected
+Context — named in intent, no matching graph change detected
+DATA_FLOWS — named in intent, no matching graph change detected
+DEFINES — named in intent, no matching graph change detected
+Decision — named in intent, no matching graph change detected
+DeclareIntent — named in intent, no matching graph change detected
+Design — named in intent, no matching graph change detected
+DirectReconciliation — named in intent, no matching graph change detected
+Dockerfile — named in intent, no matching graph change detected
+Documentation — named in intent, no matching graph change detected
+EMITS — named in intent, no matching graph change detected
+EXTENDS — named in intent, no matching graph change detected
+EdgeClass — named in intent, no matching graph change detected
+EdgeClasses — named in intent, no matching graph change detected
+Elixir — named in intent, no matching graph change detected
+EntireEnv — named in intent, no matching graph change detected
+Entity — named in intent, no matching graph change detected
+Entity.bodyless — named in intent, no matching graph change detected
+Entity.cLinkage — named in intent, no matching graph change detected
+EntityChange — named in intent, no matching graph change detected
+EnvFromOS — named in intent, no matching graph change detected
+Evidence — named in intent, no matching graph change detected
+Execute — named in intent, no matching graph change detected
+Export — named in intent, no matching graph change detected
+ExternalRecord — named in intent, no matching graph change detected
+ExtractDirectMentions — named in intent, no matching graph change detected
+ExtractedEntity — named in intent, no matching graph change detected
+Extraction — named in intent, no matching graph change detected
+FallbackResolver — named in intent, no matching graph change detected
+Fidelity — named in intent, no matching graph change detected
+File — named in intent, no matching graph change detected
+FileChange — named in intent, no matching graph change detected
+FileRecord — named in intent, no matching graph change detected
+FindCommitWithCheckpoint — named in intent, no matching graph change detected
+Formats — named in intent, no matching graph change detected
+Go — named in intent, no matching graph change detected
+Goal — named in intent, no matching graph change detected
+GraphRelation — named in intent, no matching graph change detected
+Groovy — named in intent, no matching graph change detected
+HANDLES_GRAPHQL — named in intent, no matching graph change detected
+HANDLES_GRPC — named in intent, no matching graph change detected
+HANDLES_ROUTE — named in intent, no matching graph change detected
+HANDLES_TRPC — named in intent, no matching graph change detected
+HCL — named in intent, no matching graph change detected
+HTTP_CALLS — named in intent, no matching graph change detected
+IMPLEMENTS — named in intent, no matching graph change detected
+IMPORTS — named in intent, no matching graph change detected
+INHERITS — named in intent, no matching graph change detected
+Inspect — named in intent, no matching graph change detected
+Install — named in intent, no matching graph change detected
+Installing — named in intent, no matching graph change detected
+Intent — named in intent, no matching graph change detected
+Java — named in intent, no matching graph change detected
+JavaScript — named in intent, no matching graph change detected
+Julia — named in intent, no matching graph change detected
+Kotlin — named in intent, no matching graph change detected
+LISTENS_ON — named in intent, no matching graph change detected
+LanguageCompleteness — named in intent, no matching graph change detected
+Ledger — named in intent, no matching graph change detected
+License — named in intent, no matching graph change detected
+LimitedFileReader — named in intent, no matching graph change detected
+LimitedFileReader.Prime — named in intent, no matching graph change detected
+LimitedFileReader.ReadFile — named in intent, no matching graph change detected
+Limits — named in intent, no matching graph change detected
+Line — named in intent, no matching graph change detected
+ListFiles — named in intent, no matching graph change detected
+ListIndexFiles — named in intent, no matching graph change detected
+LoadCompactSnapshot — named in intent, no matching graph change detected
+LoadConfig — named in intent, no matching graph change detected
+LoadOrBuildProviderSnapshot — named in intent, no matching graph change detected
+Location — named in intent, no matching graph change detected
+Lua — named in intent, no matching graph change detected
+Named — named in intent, no matching graph change detected
+NativeGraphAdapter — named in intent, no matching graph change detected
+Network — named in intent, no matching graph change detected
+OCaml — named in intent, no matching graph change detected
+OVERRIDES — named in intent, no matching graph change detected
+Objective — named in intent, no matching graph change detected
+Open — named in intent, no matching graph change detected
+Operations — named in intent, no matching graph change detected
+Options — named in intent, no matching graph change detected
+Options.Version — named in intent, no matching graph change detected
+PARAM_TYPE — named in intent, no matching graph change detected
+PHP — named in intent, no matching graph change detected
+ParseStatus — named in intent, no matching graph change detected
+Parser — named in intent, no matching graph change detected
+PartialFailure — named in intent, no matching graph change detected
+Performance — named in intent, no matching graph change detected
+Pipeline — named in intent, no matching graph change detected
+PostToolUse — named in intent, no matching graph change detected
+PreToolUse — named in intent, no matching graph change detected
+PreflightReport — named in intent, no matching graph change detected
+PreindexProviderSnapshot — named in intent, no matching graph change detected
+Problem — named in intent, no matching graph change detected
+Profile — named in intent, no matching graph change detected
+ProfileLimits — named in intent, no matching graph change detected
+Profiles — named in intent, no matching graph change detected
+ProgressEvent — named in intent, no matching graph change detected
+Prompt — named in intent, no matching graph change detected
+ProviderRecord — named in intent, no matching graph change detected
+ProviderSnapshot — named in intent, no matching graph change detected
+ProviderSnapshotOptions — named in intent, no matching graph change detected
+ProviderStats — named in intent, no matching graph change detected
+ProviderWarning — named in intent, no matching graph change detected
+Purpose — named in intent, no matching graph change detected
+Python — named in intent, no matching graph change detected
+R — named in intent, no matching graph change detected
+READS_FIELD — named in intent, no matching graph change detected
+RESOURCE_DEPENDS_ON — named in intent, no matching graph change detected
+RETURNS_TYPE — named in intent, no matching graph change detected
+Ranking — named in intent, no matching graph change detected
+Receipt — named in intent, no matching graph change detected
+ReconcileDirectClaims — named in intent, no matching graph change detected
+Reference — named in intent, no matching graph change detected
+RelationRecord — named in intent, no matching graph change detected
+Relations — named in intent, no matching graph change detected
+Removal — named in intent, no matching graph change detected
+RepoCommandRoot — named in intent, no matching graph change detected
+RepoRoot — named in intent, no matching graph change detected
+Report — named in intent, no matching graph change detected
+Request — named in intent, no matching graph change detected
+Requirements — named in intent, no matching graph change detected
+ResolveFallback — named in intent, no matching graph change detected
+Result — named in intent, no matching graph change detected
+Router — named in intent, no matching graph change detected
+Ruby — named in intent, no matching graph change detected
+Run — named in intent, no matching graph change detected
+RunSkeleton — named in intent, no matching graph change detected
+Running — named in intent, no matching graph change detected
+Rust — named in intent, no matching graph change detected
+SIMILAR_TO — named in intent, no matching graph change detected
+SQL — named in intent, no matching graph change detected
+Safety — named in intent, no matching graph change detected
+theres a lot of informatine lines one below the other in single page can you divide it into multipl parts like check documents/dwarpal frontend see its dashboard
