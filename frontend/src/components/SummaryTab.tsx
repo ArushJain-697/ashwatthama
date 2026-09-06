@@ -9,7 +9,7 @@ export function SummaryTab({ verdict }: { verdict: Verdict }) {
   const driftCount = r.undeclared_scope_creep.length + r.declared_unimplemented.length
 
   return (
-    <section className="px-7 pb-16">
+    <section className="px-7 pb-16 bg-charcoal">
       <div className="grid grid-cols-4 gap-4 mb-7">
         <TierCard count={confirmedCount} label={LABEL_CONFIRMED} color="#3fb950" />
         <TierCard count={r.advisory_low_confidence.length} label={LABEL_HEURISTIC} color="#d29922" delayMs={80} />

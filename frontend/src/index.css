@@ -3,28 +3,28 @@
 @tailwind utilities;
 
 ::selection {
-  background: #ff4500;
-  color: #fff;
+  background: #ffe17c;
+  color: #000;
 }
 
 body {
   margin: 0;
-  background: #050505;
-  color: #ededed;
+  background: #171e19;
+  color: #e9ede9;
+  font-family: 'Satoshi', ui-sans-serif, system-ui;
 }
 
-/* Film-grain overlay: an inline SVG feTurbulence data URI, not an external
-   image fetch -- the same choice made in dashboard.go's Go-rendered
-   single-file version, for the same reason: no network dependency for the
-   page's own chrome. */
-.noise-overlay {
-  position: fixed;
-  inset: 0;
-  z-index: 0;
-  pointer-events: none;
-  opacity: 0.05;
-  mix-blend-mode: overlay;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+/* Neo-Brutalist "press" interaction: a button starts offset from its own
+   hard shadow and moves into it on hover/press, simulating a physical
+   depression. Applied via .brutal-btn rather than duplicating the
+   transition/transform pair on every button. */
+.brutal-btn {
+  transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+.brutal-btn:hover,
+.brutal-btn:active {
+  transform: translate(4px, 4px);
+  box-shadow: 0px 0px 0px 0px #000000 !important;
 }
 
 /* Reveal-on-scroll base state; useReveal (hooks/useReveal.ts) adds

@@ -4,11 +4,13 @@ export default {
   theme: {
     extend: {
       colors: {
-        bg: '#050505',
-        card: '#0e0e0e',
-        line: '#232323',
-        muted: '#8a8a8a',
-        accent: '#ff4500',
+        bg: '#171e19',
+        card: '#ffffff',
+        line: '#000000',
+        muted: '#5b645f',
+        accent: '#ffe17c',
+        sage: '#b7c6c2',
+        charcoal: '#171e19',
         tier: {
           confirmed: '#3fb950',
           heuristic: '#d29922',
@@ -17,9 +19,21 @@ export default {
         },
       },
       fontFamily: {
-        sans: ['Inter', 'ui-sans-serif', 'system-ui'],
-        serif: ['"Playfair Display"', 'serif'],
+        sans: ['Satoshi', 'ui-sans-serif', 'system-ui'],
+        serif: ['"Cabinet Grotesk"', 'ui-sans-serif'],
         mono: ['ui-monospace', 'monospace'],
+      },
+      boxShadow: {
+        hard: '8px 8px 0px 0px #000000',
+        'hard-sm': '4px 4px 0px 0px #000000',
+        'hard-lg': '12px 12px 0px 0px #000000',
+      },
+      backgroundImage: {
+        'dot-pattern':
+          'radial-gradient(circle, rgba(0,0,0,0.1) 1.5px, transparent 1.5px)',
+      },
+      backgroundSize: {
+        dots: '32px 32px',
       },
     },
   },

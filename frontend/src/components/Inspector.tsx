@@ -30,26 +30,30 @@ export function Inspector({ node, verdict, onClose }: { node: GraphNode | null; 
 
   return (
     <div
-      className={`absolute top-0 right-0 h-full w-[300px] bg-black/95 border-l border-line p-5 box-border overflow-y-auto z-30 transition-transform duration-300 ease-[cubic-bezier(.22,1,.36,1)] ${
+      className={`absolute top-0 right-0 h-full w-[300px] bg-white border-l-2 border-black p-5 box-border overflow-y-auto z-30 transition-transform duration-300 ease-[cubic-bezier(.22,1,.36,1)] ${
         open ? 'translate-x-0' : 'translate-x-full'
       }`}
     >
-      <button className="absolute top-3.5 right-3.5 text-muted text-lg" onClick={onClose} aria-label="Close inspector">
+      <button
+        className="absolute top-3.5 right-3.5 text-black text-lg font-sans"
+        onClick={onClose}
+        aria-label="Close inspector"
+      >
         ✕
       </button>
       {node && (
         <>
-          <h4 className="font-serif text-base mb-1.5 break-words">{node.label}</h4>
+          <h4 className="font-serif font-extrabold text-base mb-2 break-words text-black">{node.label}</h4>
           <span
-            className="inline-block text-[10px] uppercase tracking-wide px-2.5 py-0.5 rounded-full mb-3.5"
-            style={{ background: tierColor + '22', color: tierColor, border: `1px solid ${tierColor}55` }}
+            className="inline-block text-[10px] uppercase tracking-wide px-2.5 py-0.5 border-2 border-black font-sans font-medium mb-3.5"
+            style={{ background: tierColor }}
           >
             {node.tier}
           </span>
-          <dl className="text-xs">
+          <dl className="text-xs font-sans text-black">
             {node.zone === 'blast' && (
               <>
-                <dt className="text-muted mt-3">Hops from confirmed</dt>
+                <dt className="text-black/50 mt-3">Hops from confirmed</dt>
                 <dd className="mt-0.5 font-mono break-words">{node.hops}</dd>
               </>
             )}
@@ -58,7 +62,7 @@ export function Inspector({ node, verdict, onClose }: { node: GraphNode | null; 
                 .filter(([, value]) => value !== null && value !== undefined && value !== '')
                 .map(([key, value]) => (
                   <div key={key}>
-                    <dt className="text-muted mt-3">{key}</dt>
+                    <dt className="text-black/50 mt-3">{key}</dt>
                     <dd className="mt-0.5 font-mono break-words">
                       {typeof value === 'object' ? JSON.stringify(value) : String(value)}
                     </dd>

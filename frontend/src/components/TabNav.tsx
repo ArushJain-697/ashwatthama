@@ -6,17 +6,15 @@ export function TabNav({ tab, onChange }: { tab: Tab; onChange: (tab: Tab) => vo
     { id: 'graph', label: 'Graph View' },
   ]
   return (
-    <nav className="flex gap-1.5 px-7 pb-4 relative z-10">
+    <nav className="flex gap-3 px-7 py-5 bg-charcoal">
       {tabs.map((t) => {
         const active = t.id === tab
         return (
           <button
             key={t.id}
             onClick={() => onChange(t.id)}
-            className={`border rounded-full px-5 py-2 text-[13px] transition-all duration-200 ${
-              active
-                ? 'text-white bg-accent border-accent shadow-[0_0_20px_rgba(255,69,0,0.35)]'
-                : 'text-muted border-line hover:border-[#444] hover:text-fg bg-transparent'
+            className={`brutal-btn font-sans font-medium text-sm px-5 py-2 border-2 border-black ${
+              active ? 'bg-black text-accent shadow-hard-sm' : 'bg-white text-black shadow-hard-sm'
             }`}
           >
             {t.label}

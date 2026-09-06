@@ -41,23 +41,23 @@ export function GraphView({ verdict }: { verdict: Verdict }) {
   }
 
   return (
-    <section className="px-7 pb-16 relative z-[1]">
-      <div className="relative w-full h-[78vh] border border-line rounded-[20px] bg-[#020305] overflow-hidden shadow-[0_0_60px_rgba(255,69,0,0.06)_inset]">
-        <div className="absolute top-3 left-3 flex gap-1.5 z-20">
+    <section className="px-7 pb-16 relative z-[1] bg-charcoal">
+      <div className="relative w-full h-[78vh] border-2 border-black shadow-hard-lg bg-[#020305] overflow-hidden">
+        <div className="absolute top-3 left-3 flex gap-2 z-20">
           <button
-            className="bg-black/85 border border-line text-fg rounded-full px-3.5 py-1.5 text-[11px] backdrop-blur hover:border-accent transition-colors"
+            className="brutal-btn bg-white text-black border-2 border-black shadow-hard-sm px-3.5 py-1.5 text-[11px] font-sans font-medium"
             onClick={toggleSpin}
           >
             {autoRotateWanted ? '⏸ pause spin' : '▶ resume spin'}
           </button>
           <button
-            className="bg-black/85 border border-line text-fg rounded-full px-3.5 py-1.5 text-[11px] backdrop-blur hover:border-accent transition-colors"
+            className="brutal-btn bg-white text-black border-2 border-black shadow-hard-sm px-3.5 py-1.5 text-[11px] font-sans font-medium"
             onClick={() => setResetSignal((n) => n + 1)}
           >
             ⟲ reset view
           </button>
         </div>
-        <div className="absolute top-3 right-3 text-[11px] text-muted bg-black/85 border border-line rounded-full px-3.5 py-1.5 z-20 font-mono">
+        <div className="absolute top-3 right-3 text-[11px] text-black bg-accent border-2 border-black px-3.5 py-1.5 z-20 font-mono">
           {nodes.length} nodes · {edges.length} real edges
         </div>
 
@@ -77,7 +77,7 @@ export function GraphView({ verdict }: { verdict: Verdict }) {
 
       <Legend visibleZones={visibleZones} onToggle={toggleZones} />
 
-      <p className="text-xs text-muted mt-3 leading-relaxed max-w-3xl">
+      <p className="text-xs text-sage/80 font-sans mt-3 leading-relaxed max-w-3xl">
         Distance from center is a real graph fact ONLY inside the green blast radius (hop count from a confirmed
         change, connected by real traversed edges, shown as pulsing lines). The uncertain/fog/outside rings are
         fixed layout zones, not measured distances — advisory evidence sits in a ring, unverifiable-coverage

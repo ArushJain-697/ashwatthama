@@ -17,26 +17,12 @@ export function TierCard({
     <div
       ref={ref}
       data-active={active}
-      className="reveal bg-card border border-line rounded-[20px] p-5.5 transition-all duration-400 ease-[cubic-bezier(.22,1,.36,1)] hover:-translate-y-1"
-      style={
-        {
-          transitionDelay: `${delayMs}ms`,
-          '--tw-shadow': `0 16px 40px -12px ${color}40`,
-        } as React.CSSProperties
-      }
-      onMouseEnter={(e) => {
-        e.currentTarget.style.borderColor = color
-        e.currentTarget.style.boxShadow = `0 16px 40px -12px ${color}40`
-      }}
-      onMouseLeave={(e) => {
-        e.currentTarget.style.borderColor = ''
-        e.currentTarget.style.boxShadow = ''
-      }}
+      className="reveal bg-white border-2 border-black shadow-hard-sm p-5 transition-transform duration-200"
+      style={{ transitionDelay: `${delayMs}ms` }}
     >
-      <div className="font-serif text-4xl font-semibold leading-none" style={{ color }}>
-        {count}
-      </div>
-      <div className="text-xs text-muted mt-2.5 uppercase tracking-wide">{label}</div>
+      <div className="w-4 h-4 border-2 border-black mb-3" style={{ background: color }} />
+      <div className="font-serif font-extrabold text-4xl leading-none text-black">{count}</div>
+      <div className="text-xs font-sans font-medium text-black/60 mt-2.5 uppercase tracking-wide">{label}</div>
     </div>
   )
 }
