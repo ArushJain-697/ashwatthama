@@ -25,6 +25,11 @@ extraction:
 module_granularity: true
 verdict_thresholds:
   review_required_if_scope_creep_gte: 1
+  review_required_if_unverifiable_coverage_gte: 1
+coverage:
+  detect_via: capabilities_api
+  treat_zero_edge_as: partial
+  fallback_verification_path: manual_review_recommended
 databricks:
   calibration_enabled: false
   score_source: batch
@@ -34,6 +39,7 @@ databricks:
   ai_search:
     enabled: false
     index_name: null
+  coverage_corroboration_enabled: false
 `
 
 func TestLoadConfig(t *testing.T) {
@@ -50,6 +56,13 @@ func TestLoadConfig(t *testing.T) {
 	}
 	if config.Databricks.ScoreSource != "batch" || config.Databricks.Gate.AlphaTarget != 0.05 {
 		t.Fatalf("unexpected Databricks config: %#v", config.Databricks)
+	}
+	if config.Coverage.DetectVia != "capabilities_api" || config.Coverage.TreatZeroEdgeAs != "partial" ||
+		config.Coverage.FallbackVerificationPath != "manual_review_recommended" {
+		t.Fatalf("unexpected Coverage config: %#v", config.Coverage)
+	}
+	if config.VerdictThresholds.ReviewRequiredIfUnverifiableCoverageGTE != 1 {
+		t.Fatalf("unexpected VerdictThresholds: %#v", config.VerdictThresholds)
 	}
 }
 

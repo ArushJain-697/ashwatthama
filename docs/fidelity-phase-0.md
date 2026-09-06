@@ -14,23 +14,30 @@ The supplied planning material contains a deadline conflict:
 The live spoken kickoff announcement is authoritative. The team must record
 the confirmed deadline here before 9:30 AM IST.
 
-**Confirmed deadline:** pending
+**Confirmed deadline:** 3:00 PM IST (confirmed by the team at the Noon Curveball gate)
 
-**Person who confirmed it:** pending
+**Person who confirmed it:** team, verbally, at the 12:00 curveball briefing
 
 ## 2. Track, Databricks, repository, and demo ownership — pending team decision
 
 | Decision | Current value |
 | --- | --- |
 | Entire track | E2 — Build with Graph Intelligence |
-| Databricks opt-in | Pending team decision |
-| GitHub fork target | Pending team decision |
+| Databricks opt-in | **Yes** — a special prize is offered for the best Databricks use. See the honest environment caveat below. |
+| GitHub fork target | Deferred — working entirely locally for the remainder of the build per team direction; no fork/mirror work was done post-curveball. |
 | Entire mirror region | India |
-| Demo/deployment owner | Pending team decision |
+| Demo/deployment owner | Not yet named |
 
-Databricks stays disabled in `fidelity.config.yaml` until the team explicitly
-opts in. Its Lakebase stretch work is additionally gated on a live Free Edition
-availability check.
+**Honest Databricks environment caveat, recorded here rather than discovered
+at demo time:** this machine has no `databricks` CLI, no `~/.databrickscfg`,
+and no `mlflow` installed, and no workspace credentials were available inside
+the remaining build window. The opt-in decision is real, but the mechanism
+actually reachable in this window is §12.7's fallback tier (a plain, local
+scoring computation, schema-compatible with the full I-CALM/CRC/AI-Search
+chain) — attempted only after the mandatory Curveball response (Track 2) is
+solid, per house priority. If it does not land before the deadline, that is
+stated plainly in `BUILDATHON.md` as environment-blocked, not silently
+dropped.
 
 ## 3. Differentiation answers
 
@@ -50,6 +57,18 @@ graph structure. Entire Graph remains the structural source of truth;
 Databricks, if selected, is an optional confidence/corroboration and reporting
 layer rather than the graph store.
 
+### "Isn't this just Graphify's tri-state model?"
+
+Graphify's EXTRACTED/INFERRED/AMBIGUOUS tagging routes an agent's *attention*
+during exploration — it helps an agent decide how much to trust an edge while
+it works. Fidelity uses the same kind of signal to drive a deterministic
+*verdict* after the work is done: reconciliation against a stated claim, not
+retrieval to support one. The tri-state idea itself is not Fidelity's
+differentiator — the two tools are converging on the same taxonomy
+independently — the differentiator is what happens after: a persisted,
+graph-verified reconciliation a reviewer can trust as reproducible, versus a
+context aid for further exploration. (Bible v6 §1.5.)
+
 ## 4. Curveball briefing
 
 The highest-probability planned pivot is a unified query layer joining graph
@@ -65,9 +84,9 @@ contract.
 
 ## Phase 0 completion checklist
 
-- [ ] Record the official deadline after kickoff.
-- [ ] Record the Databricks opt-in decision.
-- [ ] Record the fork target and India mirror setup owner.
+- [x] Record the official deadline after kickoff. (3:00 PM IST)
+- [x] Record the Databricks opt-in decision. (Yes, with an honest environment caveat above.)
+- [ ] Record the fork target and India mirror setup owner. (Deferred — local-only for the remainder of the build.)
 - [ ] Name the demo/deployment owner.
-- [x] Record the judge-facing differentiation answers.
+- [x] Record the judge-facing differentiation answers, including §1.5 (Graphify).
 - [x] Record the curveball briefing and adapter safeguard.

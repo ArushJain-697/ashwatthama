@@ -21,7 +21,29 @@ type Config struct {
 	Extraction        Extraction
 	ModuleGranularity bool
 	VerdictThresholds VerdictThresholds
-	Databricks        Databricks
+	// Coverage governs the Curveball response (Track 2, #33-#37): whether a
+	// changed entity's absence of graph edges means "confirmed disconnected"
+	// or "the graph never tried to look here." Orthogonal to EdgeClasses,
+	// which classifies confidence in an edge that DOES exist.
+	Coverage   Coverage
+	Databricks Databricks
+}
+
+type Coverage struct {
+	// DetectVia selects the detection mechanism: "capabilities_api" reads the
+	// provider's own completeness signals (language tier, partial failures,
+	// file presence) before falling back to edge counting; "heuristic_zero_edge"
+	// uses only the zero-edge count. #7 confirmed capabilities_api is real for
+	// this provider, so it is the default.
+	DetectVia string
+	// TreatZeroEdgeAs is the coverage value assigned when an entity has code
+	// presence but zero extracted-class edges. "partial" is the conservative
+	// default per the curveball's "never present incomplete as certain."
+	TreatZeroEdgeAs string
+	// FallbackVerificationPath is stamped on every unverifiable_coverage entry
+	// as the baseline, always-present safety guarantee (#35): it must hold
+	// with Databricks fully disabled.
+	FallbackVerificationPath string
 }
 
 type EdgeClasses struct {
@@ -35,7 +57,8 @@ type Extraction struct {
 }
 
 type VerdictThresholds struct {
-	ReviewRequiredIfScopeCreepGTE int
+	ReviewRequiredIfScopeCreepGTE           int
+	ReviewRequiredIfUnverifiableCoverageGTE int
 }
 
 type Databricks struct {
@@ -43,6 +66,11 @@ type Databricks struct {
 	ScoreSource        string
 	Gate               CalibrationGate
 	AISearch           AISearch
+	// CoverageCorroborationEnabled turns on §12.15's enhancement of the
+	// unverifiable_coverage baseline: a second query against the same AI
+	// Search index used for advisory-edge corroboration. Never a substitute
+	// for the baseline (#35), which must hold with this false.
+	CoverageCorroborationEnabled bool
 }
 
 type CalibrationGate struct {
@@ -64,7 +92,15 @@ func DefaultConfig() Config {
 		},
 		Extraction:        Extraction{FallbackLLM: true, LLMVocabularySource: "graph_snapshot"},
 		ModuleGranularity: true,
-		VerdictThresholds: VerdictThresholds{ReviewRequiredIfScopeCreepGTE: 1},
+		VerdictThresholds: VerdictThresholds{
+			ReviewRequiredIfScopeCreepGTE:           1,
+			ReviewRequiredIfUnverifiableCoverageGTE: 1,
+		},
+		Coverage: Coverage{
+			DetectVia:                "capabilities_api",
+			TreatZeroEdgeAs:          "partial",
+			FallbackVerificationPath: "manual_review_recommended",
+		},
 		Databricks: Databricks{
 			ScoreSource: "batch",
 			Gate:        CalibrationGate{Mode: "fallback", AlphaTarget: 0.05},
@@ -171,6 +207,23 @@ func assignConfigValue(config *Config, section, subsection, key, value string) e
 		v, err := parseInt()
 		config.VerdictThresholds.ReviewRequiredIfScopeCreepGTE = v
 		return err
+	case section == "verdict_thresholds" && key == "review_required_if_unverifiable_coverage_gte":
+		v, err := parseInt()
+		config.VerdictThresholds.ReviewRequiredIfUnverifiableCoverageGTE = v
+		return err
+	case section == "coverage" && key == "detect_via":
+		config.Coverage.DetectVia = value
+		return nil
+	case section == "coverage" && key == "treat_zero_edge_as":
+		config.Coverage.TreatZeroEdgeAs = value
+		return nil
+	case section == "coverage" && key == "fallback_verification_path":
+		config.Coverage.FallbackVerificationPath = value
+		return nil
+	case section == "databricks" && subsection == "" && key == "coverage_corroboration_enabled":
+		v, err := parseBool()
+		config.Databricks.CoverageCorroborationEnabled = v
+		return err
 	case section == "databricks" && subsection == "" && key == "calibration_enabled":
 		v, err := parseBool()
 		config.Databricks.CalibrationEnabled = v
@@ -218,6 +271,15 @@ func validateConfig(config Config) error {
 	}
 	if config.Databricks.Gate.AlphaTarget <= 0 || config.Databricks.Gate.AlphaTarget >= 1 {
 		return fmt.Errorf("gate.alpha_target must be between 0 and 1")
+	}
+	if config.Coverage.DetectVia != "capabilities_api" && config.Coverage.DetectVia != "heuristic_zero_edge" {
+		return fmt.Errorf("coverage.detect_via must be capabilities_api or heuristic_zero_edge")
+	}
+	if config.Coverage.TreatZeroEdgeAs != "partial" && config.Coverage.TreatZeroEdgeAs != "full" {
+		return fmt.Errorf("coverage.treat_zero_edge_as must be partial or full")
+	}
+	if config.Coverage.FallbackVerificationPath == "" {
+		return fmt.Errorf("coverage.fallback_verification_path must not be empty")
 	}
 	return nil
 }

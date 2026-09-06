@@ -25,11 +25,20 @@ func CurrentPreflightReport() PreflightReport {
 		relations[relation] = true
 	}
 	return PreflightReport{
-		Provider:                   capabilities.Provider,
-		SchemaVersion:              capabilities.SchemaVersion,
-		RelationTypes:              relations,
-		ConfidenceModel:            "numeric confidence with resolution, evidence, and warning codes",
-		SupportsTwoHopNeighbors:    true,
-		RequiredRelationsAvailable: relations["CALLS"] && relations["DATA_FLOWS"] && relations["TESTS"] && relations["HANDLES_ROUTE"] && relations["HANDLES_GRPC"],
+		Provider:                capabilities.Provider,
+		SchemaVersion:           capabilities.SchemaVersion,
+		RelationTypes:           relations,
+		ConfidenceModel:         "numeric confidence with resolution, evidence, and warning codes",
+		SupportsTwoHopNeighbors: true,
+		// CALLS is the only relation type Fidelity's own reachability logic
+		// (reachability.go) structurally depends on: it walks whatever
+		// relations the snapshot returns, generically, for both the
+		// deterministic-only and any-edge passes. Requiring TESTS/
+		// HANDLES_ROUTE/HANDLES_GRPC here was a v1 assumption that the
+		// pre-flight record already disproved for Go in the full profile
+		// (BUILDATHON.md), and Fidelity never actually reads those three
+		// relation types — gating on them would report false-red for a
+		// perfectly usable Go repository.
+		RequiredRelationsAvailable: relations["CALLS"],
 	}
 }

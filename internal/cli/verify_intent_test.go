@@ -63,8 +63,10 @@ func (testFidelityAdapter) CheckpointCommit(_ context.Context, checkpoint string
 	return "head", nil
 }
 
-func (testFidelityAdapter) SymbolDictionary(context.Context) ([]fidelity.Symbol, error) {
-	return []fidelity.Symbol{{QualifiedName: "cli.VerifyIntent"}, {QualifiedName: "cli.Missing"}}, nil
+func (testFidelityAdapter) Graph(context.Context) (fidelity.GraphSnapshot, error) {
+	return fidelity.GraphSnapshot{
+		Symbols: []fidelity.Symbol{{QualifiedName: "cli.VerifyIntent"}, {QualifiedName: "cli.Missing"}},
+	}, nil
 }
 
 func (testFidelityAdapter) ChangedEntities(_ context.Context, _, _ string) ([]fidelity.ChangedEntity, error) {
@@ -76,17 +78,17 @@ func TestVerifyIntentReportsPartialPipeline(t *testing.T) {
 	if err := os.WriteFile(filepath.Join(repo, "fidelity.config.yaml"), []byte(verifyIntentConfig), 0o600); err != nil {
 		t.Fatal(err)
 	}
-	var output bytes.Buffer
-	err := runVerifyIntentWithAdapter(t.Context(), Options{Env: EntireEnv{RepoRoot: repo}, Stdout: &output}, []string{"checkpoint-1", "--base", "checkpoint-0"}, testFidelityAdapter{})
+	var output, errOutput bytes.Buffer
+	err := runVerifyIntentWithAdapter(t.Context(), Options{Env: EntireEnv{RepoRoot: repo}, Stdout: &output, Stderr: &errOutput}, []string{"checkpoint-1", "--base", "checkpoint-0"}, testFidelityAdapter{})
 	if err != nil {
 		t.Fatal(err)
 	}
 	var response verifyIntentResponse
 	if err := json.Unmarshal(output.Bytes(), &response); err != nil {
-		t.Fatal(err)
+		t.Fatalf("stdout was not clean JSON: %v\n%s", err, output.String())
 	}
 	want := []fidelity.Stage{fidelity.StageCapture, fidelity.StageDeclare, fidelity.StageObserve, fidelity.StageReconcile, fidelity.StageManifest}
-	if response.Status != "partial" || !reflect.DeepEqual(response.Stages, want) {
+	if response.Status != "ok" || !reflect.DeepEqual(response.Stages, want) {
 		t.Fatalf("response = %#v, want ordered pipeline stages %#v", response, want)
 	}
 	if !response.Preflight.RequiredRelationsAvailable || response.Preflight.ConfidenceModel == "" {
@@ -94,5 +96,17 @@ func TestVerifyIntentReportsPartialPipeline(t *testing.T) {
 	}
 	if len(response.Verification.Reconciliation.Confirmed) != 1 || len(response.Verification.Reconciliation.DeclaredUnimplemented) != 1 {
 		t.Fatalf("response did not include direct reconciliation: %#v", response.Verification)
+	}
+	if response.VerdictPath == "" || response.ReportPath == "" {
+		t.Fatalf("response did not report where verdict.json/VERIFY_REPORT.md were written: %#v", response)
+	}
+	if _, err := os.Stat(response.VerdictPath); err != nil {
+		t.Fatalf("verdict.json was not written: %v", err)
+	}
+	if _, err := os.Stat(response.ReportPath); err != nil {
+		t.Fatalf("VERIFY_REPORT.md was not written: %v", err)
+	}
+	if errOutput.Len() == 0 {
+		t.Fatal("terminal report was not printed to stderr")
 	}
 }

@@ -23,8 +23,8 @@ func (adapter *pipelineAdapter) CheckpointCommit(_ context.Context, id string) (
 	return adapter.commits[id], nil
 }
 
-func (adapter *pipelineAdapter) SymbolDictionary(context.Context) ([]Symbol, error) {
-	return adapter.symbols, nil
+func (adapter *pipelineAdapter) Graph(context.Context) (GraphSnapshot, error) {
+	return GraphSnapshot{Symbols: adapter.symbols}, nil
 }
 
 func (adapter *pipelineAdapter) ChangedEntities(_ context.Context, base, head string) ([]ChangedEntity, error) {

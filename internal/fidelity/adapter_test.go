@@ -45,12 +45,15 @@ func TestNativeGraphAdapterLoadsSymbolsAndChanges(t *testing.T) {
 	git("commit", "-am", "change")
 
 	adapter := NativeGraphAdapter{Repo: repo, ProviderVersion: "test"}
-	symbols, err := adapter.SymbolDictionary(t.Context())
+	graph, err := adapter.Graph(t.Context())
 	if err != nil {
 		t.Fatal(err)
 	}
-	if len(symbols) == 0 || symbols[0].QualifiedName == "" {
-		t.Fatalf("symbols = %#v", symbols)
+	if len(graph.Symbols) == 0 || graph.Symbols[0].QualifiedName == "" {
+		t.Fatalf("symbols = %#v", graph.Symbols)
+	}
+	if graph.CompletenessLevel == "" {
+		t.Fatalf("Graph did not report a completeness level: %#v", graph)
 	}
 	changes, err := adapter.ChangedEntities(t.Context(), "HEAD~1", "HEAD")
 	if err != nil {

@@ -9,14 +9,14 @@ import (
 // verdict.json fields are added. Its inputs all pass through Adapter, keeping
 // the CLI, parent Entire checkpoint store, and semantic provider separated.
 type Verification struct {
-	CheckpointID     string               `json:"checkpoint_id"`
-	BaseCheckpointID string               `json:"base_checkpoint_id,omitempty"`
-	HeadCommit       string               `json:"head_commit"`
-	BaseCommit       string               `json:"base_commit"`
-	NoBaseline       bool                 `json:"no_baseline"`
-	Intent           Intent               `json:"intent"`
-	Changes          []ChangedEntity      `json:"changes"`
-	Reconciliation   DirectReconciliation `json:"reconciliation"`
+	CheckpointID     string          `json:"checkpoint_id"`
+	BaseCheckpointID string          `json:"base_checkpoint_id,omitempty"`
+	HeadCommit       string          `json:"head_commit"`
+	BaseCommit       string          `json:"base_commit"`
+	NoBaseline       bool            `json:"no_baseline"`
+	Intent           Intent          `json:"intent"`
+	Changes          []ChangedEntity `json:"changes"`
+	Reconciliation   Reconciliation  `json:"reconciliation"`
 }
 
 // Pipeline runs the five stable Fidelity stages against a real adapter. A
@@ -52,7 +52,7 @@ func (pipeline Pipeline) Run(ctx context.Context, request Request) (Verification
 	if err := runStage(StageDeclare); err != nil {
 		return Verification{}, err
 	}
-	symbols, err := pipeline.Adapter.SymbolDictionary(ctx)
+	graph, err := pipeline.Adapter.Graph(ctx)
 	if err != nil {
 		return Verification{}, fmt.Errorf("Fidelity declare stage: %w", err)
 	}
@@ -64,7 +64,7 @@ func (pipeline Pipeline) Run(ctx context.Context, request Request) (Verification
 			return Verification{}, fmt.Errorf("Fidelity declare stage: %w", err)
 		}
 	}
-	intent := DeclareIntent(transcript, baselineTranscript, symbols, noBaseline)
+	intent := DeclareIntent(transcript, baselineTranscript, graph.Symbols, noBaseline)
 
 	if err := runStage(StageObserve); err != nil {
 		return Verification{}, err
@@ -88,7 +88,7 @@ func (pipeline Pipeline) Run(ctx context.Context, request Request) (Verification
 	if err := runStage(StageReconcile); err != nil {
 		return Verification{}, err
 	}
-	reconciliation := ReconcileDirectClaims(intent, changes)
+	reconciliation := Reconcile(intent, changes, graph, request.Config)
 
 	if err := runStage(StageManifest); err != nil {
 		return Verification{}, err

@@ -4,8 +4,10 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"os"
 	"path/filepath"
 	"strings"
+	"time"
 
 	"github.com/entireio/entire-graph/internal/fidelity"
 	"github.com/entireio/entire-graph/internal/termsafe"
@@ -29,6 +31,9 @@ type verifyIntentResponse struct {
 	Stages           []fidelity.Stage         `json:"stages"`
 	Preflight        fidelity.PreflightReport `json:"preflight"`
 	Verification     fidelity.Verification    `json:"verification"`
+	Verdict          fidelity.Verdict         `json:"verdict"`
+	VerdictPath      string                   `json:"verdict_path"`
+	ReportPath       string                   `json:"report_path"`
 	Message          string                   `json:"message"`
 }
 
@@ -115,15 +120,38 @@ func runVerifyIntentWithAdapter(ctx context.Context, opts Options, args []string
 	if err != nil {
 		return err
 	}
+	preflight := fidelity.CurrentPreflightReport()
+	verdict := fidelity.BuildVerdict(verification, preflight, config, time.Now())
+
+	outputDirectory := flags.OutputDirectory
+	if !filepath.IsAbs(outputDirectory) {
+		outputDirectory = filepath.Join(repo, outputDirectory)
+	}
+	verdictPath, err := fidelity.WriteVerdict(outputDirectory, verdict)
+	if err != nil {
+		return err
+	}
+	reportPath := filepath.Join(outputDirectory, "VERIFY_REPORT.md")
+	if err := writeTextFile(reportPath, fidelity.RenderMarkdown(verdict)); err != nil {
+		return err
+	}
+	// opts.Stdout is the JSON response contract; the human-readable terminal
+	// report goes to stderr so scripted callers still get clean JSON on stdout.
+	fmt.Fprint(opts.Stderr, fidelity.RenderTerminal(verdict))
+
 	response := verifyIntentResponse{
-		FormatVersion: 1, Status: "partial", CheckpointID: checkpointID,
+		FormatVersion: 1, Status: "ok", CheckpointID: checkpointID,
 		BaseCheckpointID: flags.BaseCheckpointID, ConfigPath: configPath,
 		OutputDirectory: flags.OutputDirectory, Stages: runner.stages,
-		Preflight:    fidelity.CurrentPreflightReport(),
-		Verification: verification,
-		Message:      "transcript capture, graph-grounded declaration, and direct reconciliation are complete; reachability tiers and verdict file rendering are not yet implemented",
+		Preflight: preflight, Verification: verification,
+		Verdict: verdict, VerdictPath: verdictPath, ReportPath: reportPath,
+		Message: "capture, declaration, semantic-diff observation, six-tier reconciliation (including coverage-confidence), and verdict/report rendering are complete",
 	}
 	encoder := json.NewEncoder(termsafe.NewJSONWriter(opts.Stdout))
 	encoder.SetEscapeHTML(false)
 	return encoder.Encode(response)
+}
+
+func writeTextFile(path, content string) error {
+	return os.WriteFile(path, []byte(content), 0o644)
 }
