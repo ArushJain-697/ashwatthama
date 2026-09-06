@@ -61,6 +61,18 @@ type dashboardNode struct {
 	Label string `json:"label"`
 	Tier  string `json:"tier"`  // one of the four visual categories
 	Color string `json:"color"` // matches the terminal/Markdown renderer palette
+	// Zone drives the 3D radial layout: "core" (confirmed, center),
+	// "blast" (expected_blast_radius, distance = real hop count),
+	// "uncertain" (advisory, a fixed ring beyond the farthest real hop),
+	// "fog" (unverifiable_coverage, further out still, inside the scene's
+	// literal THREE.Fog — visually "the graph can't see clearly here"), and
+	// "outside" (undeclared_scope_creep, the farthest ring — confirmed
+	// drift, not uncertainty, so it stays sharp instead of foggy).
+	Zone string `json:"zone"`
+	// Hops is the real graph-reachability distance for "blast" nodes; 0 for
+	// every other zone, where distance is a fixed layout constant, not a
+	// graph fact — never conflate the two.
+	Hops int `json:"hops,omitempty"`
 }
 
 type dashboardEdge struct {
@@ -83,16 +95,16 @@ func dashboardGraph(verdict Verdict) ([]dashboardNode, []dashboardEdge) {
 	var nodes []dashboardNode
 	var edges []dashboardEdge
 	seen := map[string]bool{}
-	addNode := func(id, label, tier, color string) {
+	addNode := func(id, label, tier, color, zone string, hops int) {
 		if id == "" || seen[id] {
 			return
 		}
 		seen[id] = true
-		nodes = append(nodes, dashboardNode{ID: id, Label: label, Tier: tier, Color: color})
+		nodes = append(nodes, dashboardNode{ID: id, Label: label, Tier: tier, Color: color, Zone: zone, Hops: hops})
 	}
 
 	for _, entry := range verdict.Reconciliation.Confirmed {
-		addNode(entry.Entity, entry.Entity, "confirmed", colorConfirmed)
+		addNode(entry.Entity, entry.Entity, "confirmed", colorConfirmed, "core", 0)
 	}
 	for _, entry := range verdict.Reconciliation.ExpectedBlastRadius {
 		// The path's own last element IS this entity's graph symbol ID
@@ -101,17 +113,22 @@ func dashboardGraph(verdict Verdict) ([]dashboardNode, []dashboardEdge) {
 		// lastSegment used for every other path node would silently create
 		// two disconnected nodes for one entity. Use the path consistently.
 		if len(entry.PathFromConfirmed) == 0 {
-			addNode(entry.Entity, entry.Entity, "expected_blast_radius", colorConfirmed)
+			addNode(entry.Entity, entry.Entity, "expected_blast_radius", colorConfirmed, "blast", entry.Hops)
 			continue
 		}
 		for i := 0; i < len(entry.PathFromConfirmed)-1; i++ {
 			from, to := lastSegment(entry.PathFromConfirmed[i]), lastSegment(entry.PathFromConfirmed[i+1])
 			fromTier, toTier := "confirmed", "confirmed"
+			fromZone, toZone := "core", "core"
+			fromHops, toHops := 0, 0
 			if i+1 == len(entry.PathFromConfirmed)-1 {
-				toTier = "expected_blast_radius"
+				toTier, toZone, toHops = "expected_blast_radius", "blast", entry.Hops
 			}
-			addNode(from, from, fromTier, colorConfirmed)
-			addNode(to, to, toTier, colorConfirmed)
+			if i > 0 {
+				fromTier, fromZone, fromHops = "expected_blast_radius", "blast", i
+			}
+			addNode(from, from, fromTier, colorConfirmed, fromZone, fromHops)
+			addNode(to, to, toTier, colorConfirmed, toZone, toHops)
 			edgeType := ""
 			if i < len(entry.EdgeTypesTraversed) {
 				edgeType = entry.EdgeTypesTraversed[i]
@@ -120,13 +137,13 @@ func dashboardGraph(verdict Verdict) ([]dashboardNode, []dashboardEdge) {
 		}
 	}
 	for _, entry := range verdict.Reconciliation.AdvisoryLowConfidence {
-		addNode(entry.Entity, entry.Entity, "advisory_low_confidence", colorHeuristic)
+		addNode(entry.Entity, entry.Entity, "advisory_low_confidence", colorHeuristic, "uncertain", 0)
 	}
 	for _, entry := range verdict.Reconciliation.UnverifiableCoverage {
-		addNode(entry.Entity, entry.Entity, "unverifiable_coverage", colorUnverifiable)
+		addNode(entry.Entity, entry.Entity, "unverifiable_coverage", colorUnverifiable, "fog", 0)
 	}
 	for _, entry := range verdict.Reconciliation.UndeclaredScopeCreep {
-		addNode(entry.Entity, entry.Entity, "undeclared_scope_creep", colorDrift)
+		addNode(entry.Entity, entry.Entity, "undeclared_scope_creep", colorDrift, "outside", 0)
 	}
 	if nodes == nil {
 		nodes = []dashboardNode{}
@@ -182,8 +199,11 @@ const dashboardHTML = `<!doctype html>
   .tier h3 { font-size:13px; text-transform:uppercase; letter-spacing:.04em; color:#8b949e; margin:0 0 6px; }
   .row { font-size:13px; padding:4px 0; border-bottom:1px solid #21262d; font-family:ui-monospace,monospace; }
   .row .loc { color:#8b949e; }
-  #graph-svg { width:100%; height:70vh; border:1px solid #30363d; border-radius:8px; background:#0d1117; }
-  .legend { display:flex; gap:16px; margin-top:10px; font-size:12px; color:#8b949e; }
+  #graph-canvas-wrap { position:relative; width:100%; height:70vh; border:1px solid #30363d; border-radius:8px; background:#050709; overflow:hidden; }
+  #graph-canvas-wrap canvas { display:block; cursor:grab; }
+  #graph-canvas-wrap canvas:active { cursor:grabbing; }
+  #node-tooltip { position:absolute; pointer-events:none; background:#161b22; border:1px solid #30363d; border-radius:6px; padding:6px 10px; font-size:12px; display:none; max-width:280px; }
+  .legend { display:flex; gap:16px; margin-top:10px; font-size:12px; color:#8b949e; flex-wrap:wrap; }
   .legend span { display:inline-flex; align-items:center; gap:6px; }
   .dot { width:10px; height:10px; border-radius:50%; display:inline-block; }
   .note { font-size:12px; color:#8b949e; margin-top:8px; }
@@ -208,19 +228,19 @@ const dashboardHTML = `<!doctype html>
   <div id="tier-lists"></div>
 </section>
 <section id="graph-tab" hidden>
-  <svg id="graph-svg"></svg>
+  <div id="graph-canvas-wrap"><div id="node-tooltip"></div></div>
   <div class="legend">
-    <span><i class="dot" style="background:#3fb950"></i>{{.LabelConfirmed}}</span>
-    <span><i class="dot" style="background:#d29922"></i>{{.LabelHeuristic}}</span>
-    <span><i class="dot" style="background:#bc8cff"></i>{{.LabelUnverifiable}}</span>
-    <span><i class="dot" style="background:#f85149"></i>{{.LabelDrift}}</span>
+    <span><i class="dot" style="background:#3fb950"></i>Core / Blast Radius — {{.LabelConfirmed}} (distance = real hop count)</span>
+    <span><i class="dot" style="background:#d29922"></i>Uncertain ring — {{.LabelHeuristic}}</span>
+    <span><i class="dot" style="background:#bc8cff"></i>Fog zone — {{.LabelUnverifiable}}</span>
+    <span><i class="dot" style="background:#f85149"></i>Outside the blast radius — {{.LabelDrift}}</span>
   </div>
-  <p class="note">Edges are drawn only where a real graph path exists (expected_blast_radius). Every other node is placed by tier and colored accordingly, but is never connected by a relationship the graph did not actually compute.</p>
+  <p class="note">Distance from center is a real graph fact ONLY inside the green blast radius (hop count from a confirmed change, connected by real traversed edges). The uncertain/fog/outside rings are fixed layout zones, not measured distances — advisory evidence sits in a ring, unverifiable-coverage entities are literally rendered inside the scene's fog (the graph could not see clearly there), and scope-creep sits outside it all: confirmed drift, not uncertainty. Drag to rotate, scroll to zoom.</p>
 </section>
 <script id="verdict-data" type="application/json">{{.VerdictJSON}}</script>
 <script id="graph-nodes-data" type="application/json">{{.GraphNodes}}</script>
 <script id="graph-edges-data" type="application/json">{{.GraphEdges}}</script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script>
 const verdict = JSON.parse(document.getElementById('verdict-data').textContent);
 const graphNodes = JSON.parse(document.getElementById('graph-nodes-data').textContent);
@@ -258,39 +278,150 @@ function renderTierLists() {
 }
 renderTierLists();
 
+// Radial "blast radius" layout: distance from the origin is a real graph
+// fact (hop count) inside the blast zone, and a fixed zone ring everywhere
+// else -- this scene never implies a measured distance it doesn't have.
+const RING_UNIT = 55;      // world units per hop, inside the real blast radius
+const RING_UNCERTAIN = 260; // advisory: fixed ring beyond the farthest plausible hop
+const RING_FOG = 340;       // unverifiable_coverage: inside the literal scene fog
+const RING_OUTSIDE = 430;   // undeclared_scope_creep: farthest, sharp (not foggy)
+
+function hashAngle(id) {
+  let h = 0;
+  for (let i = 0; i < id.length; i++) h = (h * 31 + id.charCodeAt(i)) >>> 0;
+  return h;
+}
+
+function positionFor(node) {
+  const h = hashAngle(node.id);
+  const theta = (h % 1000) / 1000 * Math.PI * 2;
+  const phi = ((h >> 10) % 1000) / 1000 * Math.PI;
+  let radius;
+  if (node.zone === 'core') radius = 12 + (h % 15);
+  else if (node.zone === 'blast') radius = node.hops * RING_UNIT + (h % 20);
+  else if (node.zone === 'uncertain') radius = RING_UNCERTAIN + (h % 40);
+  else if (node.zone === 'fog') radius = RING_FOG + (h % 50);
+  else radius = RING_OUTSIDE + (h % 60);
+  return new THREE.Vector3(
+    radius * Math.sin(phi) * Math.cos(theta),
+    radius * Math.sin(phi) * Math.sin(theta),
+    radius * Math.cos(phi)
+  );
+}
+
 let graphDrawn = false;
 function drawGraph() {
   if (graphDrawn) return;
   graphDrawn = true;
-  const svg = d3.select('#graph-svg');
-  const width = svg.node().clientWidth || 800;
-  const height = svg.node().clientHeight || 500;
-  svg.attr('viewBox', [0, 0, width, height]);
+  const wrap = document.getElementById('graph-canvas-wrap');
+  const tooltip = document.getElementById('node-tooltip');
+  const width = wrap.clientWidth || 800, height = wrap.clientHeight || 500;
 
-  const simulation = d3.forceSimulation(graphNodes)
-    .force('link', d3.forceLink(graphEdges).id(d => d.id).distance(80))
-    .force('charge', d3.forceManyBody().strength(-120))
-    .force('center', d3.forceCenter(width / 2, height / 2))
-    .force('collide', d3.forceCollide(24));
+  const scene = new THREE.Scene();
+  scene.background = new THREE.Color(0x050709);
+  // The fog IS the visualization of coverage uncertainty: anything at or
+  // beyond the fog ring fades into haze, exactly like an entity the graph
+  // could not see clearly -- a real renderer feature standing in for a real
+  // property of the data, not decoration.
+  scene.fog = new THREE.Fog(0x050709, RING_UNCERTAIN, RING_FOG + 120);
 
-  const link = svg.append('g').selectAll('line').data(graphEdges).join('line')
-    .attr('stroke', '#484f58').attr('stroke-width', 1.5);
+  const camera = new THREE.PerspectiveCamera(55, width / height, 1, 2000);
+  camera.position.set(0, 120, 480);
 
-  const node = svg.append('g').selectAll('circle').data(graphNodes).join('circle')
-    .attr('r', 8).attr('fill', d => d.color)
-    .call(d3.drag()
-      .on('start', (event, d) => { if (!event.active) simulation.alphaTarget(0.3).restart(); d.fx = d.x; d.fy = d.y; })
-      .on('drag', (event, d) => { d.fx = event.x; d.fy = event.y; })
-      .on('end', (event, d) => { if (!event.active) simulation.alphaTarget(0); d.fx = null; d.fy = null; }));
-  node.append('title').text(d => d.label);
+  const renderer = new THREE.WebGLRenderer({ antialias: true });
+  renderer.setSize(width, height);
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+  wrap.insertBefore(renderer.domElement, tooltip);
 
-  const label = svg.append('g').selectAll('text').data(graphNodes).join('text')
-    .text(d => d.label).attr('font-size', 10).attr('fill', '#8b949e').attr('dx', 12).attr('dy', 4);
+  scene.add(new THREE.AmbientLight(0xffffff, 0.65));
+  const point = new THREE.PointLight(0xffffff, 0.8);
+  point.position.set(200, 300, 300);
+  scene.add(point);
 
-  simulation.on('tick', () => {
-    link.attr('x1', d => d.source.x).attr('y1', d => d.source.y).attr('x2', d => d.target.x).attr('y2', d => d.target.y);
-    node.attr('cx', d => d.x).attr('cy', d => d.y);
-    label.attr('x', d => d.x).attr('y', d => d.y);
+  const group = new THREE.Group();
+  scene.add(group);
+
+  // Faint reference rings at each real hop distance, so "farther = more
+  // hops" reads as a measurement, not just a vibe.
+  const maxHops = Math.max(1, ...graphNodes.filter(n => n.zone === 'blast').map(n => n.hops || 1));
+  for (let hop = 1; hop <= maxHops; hop++) {
+    const ringGeo = new THREE.RingGeometry(hop * RING_UNIT - 0.5, hop * RING_UNIT + 0.5, 64);
+    const ringMat = new THREE.MeshBasicMaterial({ color: 0x3fb950, transparent: true, opacity: 0.12, side: THREE.DoubleSide });
+    const ring = new THREE.Mesh(ringGeo, ringMat);
+    ring.rotation.x = Math.PI / 2;
+    group.add(ring);
+  }
+
+  const positions = new Map();
+  const meshByID = new Map();
+  const sphereGeo = new THREE.SphereGeometry(6, 16, 16);
+  graphNodes.forEach(n => {
+    const pos = positionFor(n);
+    positions.set(n.id, pos);
+    const mat = new THREE.MeshStandardMaterial({
+      color: n.color,
+      transparent: n.zone === 'fog', opacity: n.zone === 'fog' ? 0.55 : 1,
+      wireframe: n.zone === 'fog',
+    });
+    const mesh = new THREE.Mesh(sphereGeo, mat);
+    mesh.position.copy(pos);
+    mesh.userData = n;
+    group.add(mesh);
+    meshByID.set(n.id, mesh);
+  });
+
+  graphEdges.forEach(e => {
+    const from = positions.get(e.source), to = positions.get(e.target);
+    if (!from || !to) return;
+    const geo = new THREE.BufferGeometry().setFromPoints([from, to]);
+    const mat = new THREE.LineBasicMaterial({ color: 0x3fb950 });
+    group.add(new THREE.Line(geo, mat));
+  });
+
+  // Hand-rolled orbit/zoom: drag to rotate the whole scene group, wheel to
+  // dolly the camera. No extra script beyond three.js core itself.
+  let dragging = false, lastX = 0, lastY = 0;
+  renderer.domElement.addEventListener('mousedown', e => { dragging = true; lastX = e.clientX; lastY = e.clientY; });
+  window.addEventListener('mouseup', () => { dragging = false; });
+  renderer.domElement.addEventListener('mousemove', e => {
+    if (dragging) {
+      group.rotation.y += (e.clientX - lastX) * 0.005;
+      group.rotation.x += (e.clientY - lastY) * 0.005;
+      lastX = e.clientX; lastY = e.clientY;
+    }
+    const rect = renderer.domElement.getBoundingClientRect();
+    pointerNDC.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+    pointerNDC.y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
+    tooltip.style.left = (e.clientX - rect.left + 12) + 'px';
+    tooltip.style.top = (e.clientY - rect.top + 12) + 'px';
+  });
+  renderer.domElement.addEventListener('wheel', e => {
+    e.preventDefault();
+    camera.position.z = Math.max(80, Math.min(1200, camera.position.z + e.deltaY * 0.4));
+  }, { passive: false });
+
+  const pointerNDC = new THREE.Vector2(-10, -10);
+  const raycaster = new THREE.Raycaster();
+  function animate() {
+    requestAnimationFrame(animate);
+    if (!dragging) group.rotation.y += 0.0015; // slow idle spin so the shape reads even before a viewer touches it
+    raycaster.setFromCamera(pointerNDC, camera);
+    const hits = raycaster.intersectObjects(Array.from(meshByID.values()));
+    if (hits.length > 0) {
+      const n = hits[0].object.userData;
+      tooltip.style.display = 'block';
+      tooltip.textContent = n.label + ' — ' + n.tier + (n.zone === 'blast' ? ' (' + n.hops + ' hop' + (n.hops === 1 ? '' : 's') + ')' : '');
+    } else {
+      tooltip.style.display = 'none';
+    }
+    renderer.render(scene, camera);
+  }
+  animate();
+
+  window.addEventListener('resize', () => {
+    const w = wrap.clientWidth, h = wrap.clientHeight;
+    camera.aspect = w / h; camera.updateProjectionMatrix();
+    renderer.setSize(w, h);
   });
 }
 </script>
