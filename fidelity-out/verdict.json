@@ -1,7 +1,7 @@
 {
   "checkpoint_id": "af04126413fd",
   "base_checkpoint_id": "caefd603ffcd",
-  "generated_at": "2026-09-06T08:45:53Z",
+  "generated_at": "2026-09-06T09:04:41Z",
   "graph_capabilities_verified": [
     "ACCESSES",
     "ASYNC_CALLS",
@@ -1699,11 +1699,6 @@
       },
       {
         "name": "declared_unimplemented",
-        "method": "regex",
-        "confidence": 1
-      },
-      {
-        "name": "deny",
         "method": "regex",
         "confidence": 1
       },
@@ -5028,10 +5023,6 @@
         "reason": "named in intent, no matching graph change detected"
       },
       {
-        "entity": "deny",
-        "reason": "named in intent, no matching graph change detected"
-      },
-      {
         "entity": "dependencies",
         "reason": "named in intent, no matching graph change detected"
       },
@@ -7593,7 +7584,7 @@
   "summary": {
     "total_changed_entities": 158,
     "scope_creep_count": 1,
-    "unimplemented_count": 620,
+    "unimplemented_count": 619,
     "advisory_edge_count": 19,
     "unverifiable_coverage_count": 73,
     "verdict_label": "REVIEW_REQUIRED"

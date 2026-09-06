@@ -95,11 +95,23 @@ func dashboardGraph(verdict Verdict) ([]dashboardNode, []dashboardEdge) {
 		addNode(entry.Entity, entry.Entity, "confirmed", colorConfirmed)
 	}
 	for _, entry := range verdict.Reconciliation.ExpectedBlastRadius {
-		addNode(entry.Entity, entry.Entity, "expected_blast_radius", colorConfirmed)
+		// The path's own last element IS this entity's graph symbol ID
+		// (reachability.go appends the target itself), so labeling it with
+		// entry.Entity (the diff's short name) instead of the same
+		// lastSegment used for every other path node would silently create
+		// two disconnected nodes for one entity. Use the path consistently.
+		if len(entry.PathFromConfirmed) == 0 {
+			addNode(entry.Entity, entry.Entity, "expected_blast_radius", colorConfirmed)
+			continue
+		}
 		for i := 0; i < len(entry.PathFromConfirmed)-1; i++ {
 			from, to := lastSegment(entry.PathFromConfirmed[i]), lastSegment(entry.PathFromConfirmed[i+1])
-			addNode(from, from, "confirmed", colorConfirmed)
-			addNode(to, to, "expected_blast_radius", colorConfirmed)
+			fromTier, toTier := "confirmed", "confirmed"
+			if i+1 == len(entry.PathFromConfirmed)-1 {
+				toTier = "expected_blast_radius"
+			}
+			addNode(from, from, fromTier, colorConfirmed)
+			addNode(to, to, toTier, colorConfirmed)
 			edgeType := ""
 			if i < len(entry.EdgeTypesTraversed) {
 				edgeType = entry.EdgeTypesTraversed[i]

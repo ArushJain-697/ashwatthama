@@ -1,6 +1,6 @@
 # Fidelity Verdict Report
 
-Checkpoint `af04126413fd` (base `caefd603ffcd`) — generated 2026-09-06T08:45:53Z — **REVIEW_REQUIRED**
+Checkpoint `af04126413fd` (base `caefd603ffcd`) — generated 2026-09-06T09:04:41Z — **REVIEW_REQUIRED**
 
 | Tier | Visual category | Count |
 |---|---|---|
@@ -9,7 +9,7 @@ Checkpoint `af04126413fd` (base `caefd603ffcd`) — generated 2026-09-06T08:45:5
 | advisory_low_confidence | HEURISTIC / INCOMPLETE EVIDENCE | 19 |
 | unverifiable_coverage | NEEDS SOURCE/TEST VERIFICATION | 73 |
 | undeclared_scope_creep | DRIFT FROM STATED INTENT | 1 |
-| declared_unimplemented | DRIFT FROM STATED INTENT | 620 |
+| declared_unimplemented | DRIFT FROM STATED INTENT | 619 |
 
 ## ✅ CONFIRMED STRUCTURAL EVIDENCE
 
@@ -472,7 +472,6 @@ Checkpoint `af04126413fd` (base `caefd603ffcd`) — generated 2026-09-06T08:45:5
 - `coverage_reason` — named in intent, no matching graph change detected
 - `create` — named in intent, no matching graph change detected
 - `declared_unimplemented` — named in intent, no matching graph change detected
-- `deny` — named in intent, no matching graph change detected
 - `dependencies` — named in intent, no matching graph change detected
 - `depends` — named in intent, no matching graph change detected
 - `deriveSearchVerifyCargo` — named in intent, no matching graph change detected

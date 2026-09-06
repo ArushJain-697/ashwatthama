@@ -70,3 +70,31 @@ func TestDashboardGraphNeverFabricatesEdgesOutsideBlastRadius(t *testing.T) {
 		t.Fatalf("no expected_blast_radius entries in this fixture, but %d edges were drawn: %#v", len(edges), edges)
 	}
 }
+
+// TestDashboardGraphBlastRadiusNodesAreConnected pins a real bug found by
+// re-reading the JS this generates: an expected_blast_radius entity's own
+// tier-colored node must be the SAME node the path's edges terminate at, not
+// a second, disconnected node under a different ID string.
+func TestDashboardGraphBlastRadiusNodesAreConnected(t *testing.T) {
+	verification := fixtureVerification() // exercises a real 1-hop blast-radius entry (A -> B)
+	verdict := BuildVerdict(verification, CurrentPreflightReport(), DefaultConfig(), time.Now())
+	if len(verdict.Reconciliation.ExpectedBlastRadius) == 0 {
+		t.Fatal("fixture must exercise expected_blast_radius for this test to mean anything")
+	}
+	nodes, edges := dashboardGraph(verdict)
+	nodeIDs := map[string]bool{}
+	for _, node := range nodes {
+		nodeIDs[node.ID] = true
+	}
+	if len(edges) == 0 {
+		t.Fatal("expected at least one blast-radius edge")
+	}
+	for _, edge := range edges {
+		if !nodeIDs[edge.Source] {
+			t.Fatalf("edge source %q has no matching node — d3.forceLink would throw", edge.Source)
+		}
+		if !nodeIDs[edge.Target] {
+			t.Fatalf("edge target %q has no matching node — d3.forceLink would throw", edge.Target)
+		}
+	}
+}
