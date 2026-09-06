@@ -1,337 +1,300 @@
 # Fidelity
 
-**Fidelity is an intent-versus-implementation verifier for AI coding agents.**
-It reads an Entire Checkpoint's stated intent, reads Entire Graph's actual
-structural change, and produces a tiered, `file:line`-cited reconciliation a
-reviewer can check in seconds — a computed verdict, not a chat summary.
+**BTW Buildathon 2026 · Entire Track E2 — Build with Graph Intelligence · + Best Use of Databricks (opt-in)**
 
-## Problem, user, and why Entire
+> This file follows the exact `BUILDATHON.md` outline from the Participant Guide. Sections marked
+> `🔲 FILL DURING BUILD` contain the live, on-the-day facts (links, commit SHA, verified CLI flags,
+> test results) that don't exist until the event actually runs — everything else is the locked
+> design decided ahead of time. Update the flagged sections as the day progresses; don't leave any
+> unresolved at submission.
 
-**User:** the person who has to approve an AI agent's work before it
-merges — a tech lead reviewing a teammate's agent session, or an engineer
-reviewing their own agent's output before pushing.
+---
 
-**Problem:** agents are fast, but a reviewer has no reliable way to know
-whether an agent did *exactly* what was asked, *more* (silent scope creep), or
-*less* (task left half-done) without re-reading the whole diff by hand or
-trusting an LLM's narrative summary of the transcript.
+## 🔲 Pre-Flight Verification Findings (run first, 9:00–9:30)
 
-**Why Entire specifically:** a Checkpoint is the only ground-truth stated
-intent tied to one atomic change; Entire Graph's semantic diff is the only
-structural ground truth for what actually changed. Neither alone answers the
-question; Fidelity is the reconciliation between them.
+Record the ground truth here before writing any pipeline code — several later sections assume it.
 
-**Track:** E2 — Build with Graph Intelligence.
+| Check                                       | Command                                                       | Result                                                                                                                                             |
+| ------------------------------------------- | ------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Actual edge-type enum                       | `entire graph capabilities --json`                            | 🔲 *(confirm `CALLS` / `CONTAINS` / `DATA_FLOWS` / `type`; do not assume `TESTS`, `HANDLES_ROUTE`, `HANDLES_GRPC` exist)*                           |
+| Snapshot shape + tri-state key              | `entire graph snapshot`                                       | 🔲                                                                                                                                                  |
+| Diff output shape                           | `entire graph diff --base <ref> --head <ref>`                 | 🔲                                                                                                                                                  |
+| Depth/direction flags on impact/neighbors   | `entire graph impact --help`, `entire graph neighbors --help` | 🔲 *(if absent, N-hop reachability is computed by iterating `neighbors` ourselves)*                                                                 |
+| Checkpoint ID format                        | —                                                             | 🔲 *(confirm ULID and legacy hex are both handled)*                                                                                                 |
+| Issue #32 panic reproduction                | malformed/boundary file through `graph search`                | 🔲 *(if it reproduces, wrap the call defensively from the start)*                                                                                   |
+| Native "partial/unresolved" coverage marker | `entire graph capabilities --json` / `entire graph snapshot`  | 🔲 *(if none exists, coverage-confidence falls back to the zero-edge heuristic — see Curveball section)*                                            |
+| Lakebase provisionable under Free Edition   | live `lakebase` project-creation attempt                      | 🔲 *(sources disagree; if unavailable, the Databricks module runs on the already-verified AI Search + logistic-regression/CRC design, no Lakebase)* |
+| Confirmed submission deadline               | ask at kickoff                                                | 🔲 *(Participant Guide states 3:00 PM IST; a separate event-site source has said 4:00 PM — get the live, spoken answer and write it here)*          |
 
-**"Isn't this just `review`/`explainskill`/`what-happened`?"** Those tools
-retrieve and narrate why a change exists by reading session context with an
-LLM. Fidelity checks whether the claimed intent matches the structural code
-change — a computed, tiered reconciliation backed by graph reachability over
-classified edges, not a narrative judgment. They compose: `review` could use
-Fidelity's `verdict.json` as structured evidence.
+---
 
-**"Why not Genie Ontology?"** Its 200-snippet cap and SQL-only traversal are a
-poor fit for code graph structure. Entire Graph stays the structural source of
-truth; Databricks, where used, is an optional confidence/corroboration layer,
-never the graph store.
+## One-Sentence Summary
 
-**"Isn't this just Graphify's tri-state model?"** See
-`docs/fidelity-phase-0.md` — Graphify's tagging routes an agent's *attention*
-during exploration; Fidelity's signal drives a deterministic *verdict* after
-the fact. Reconciliation, not retrieval.
+Fidelity is an intent-vs-implementation verifier for AI coding agents that deterministically reconciles a stated Checkpoint's intent against the Entire Graph's structural evidence of what actually changed.
 
-## Architecture
+---
 
-Five stages, each a clean interface boundary (`internal/fidelity/adapter.go`'s
-`Stage` enum), with every `entire`/graph call routed through one `Adapter`
-seam so a later API convergence is a config/adapter change, not a rewrite:
+## Problem, Intended User, and Why It Matters
 
-```
-1. CAPTURE    read checkpoint transcript (via Entire's checkpoint CLI)
-2. DECLARE    ground direct symbol mentions against one graph snapshot
-3. OBSERVE    entire graph diff -> changed entities
-4. RECONCILE  six-tier reachability + coverage-confidence tiering
-5. MANIFEST   verdict.json, terminal report, VERIFY_REPORT.md
-```
+**Intended user:** the person who has to approve an AI agent's work before it merges — a tech lead reviewing a teammate's agent session, or an engineer reviewing their own agent's output before pushing.
 
-Stage 4 produces six tiers: `confirmed`, `declared_unimplemented`,
-`expected_blast_radius` (N-hop reachability over deterministic edges only),
-`undeclared_scope_creep`, `advisory_low_confidence` (reachable only via a
-low-confidence edge), and `unverifiable_coverage` — the Curveball response,
-see below. All three renderers are pure functions of `verdict.json`.
+**Problem:** agents are fast, but reviewers have no reliable way to know whether an agent did *exactly* what was asked, *more* than was asked (silent scope creep), or *less* than was asked (task left half-done). Today the only options are re-reading the entire diff by hand, or trusting an LLM's narrative summary of the transcript — a judgment call, not a verification.
 
-## Setup, run, and test
+**Why it matters:** fast AI generation needs equally fast, trustable verification. Fidelity turns code review from a semantic impression into a deterministic audit trail.
 
-```sh
-mise exec -- go build -o entire-graph ./cmd/entire-graph
-mise exec -- go test ./internal/fidelity/... ./internal/cli/...
+**Why it needs Entire specifically:** Checkpoints are the only ground-truth stated intent tied to a specific atomic change. Graph diff is the only structural ground truth of what actually moved. Neither one alone can answer the reviewer's question — Fidelity exists at their intersection.
 
-# Run against a real checkpoint pair:
-./entire-graph verify-intent <checkpoint-id> --base <base-checkpoint-id> \
-    --repo . --config fidelity.config.yaml --out fidelity-out
-# writes fidelity-out/verdict.json and fidelity-out/VERIFY_REPORT.md,
-# prints the terminal report to stderr, and the JSON response to stdout.
-```
+---
 
-## Checkpoints
+## Selected Entire Track and Why Entire Is Essential
 
-1. **Initial understanding / architecture** — not captured as a dedicated
-   Checkpoint; see the honest note in "Checkpoint content, stated honestly"
-   below.
-2. **Pre-noon stable state** — `caefd603ffcd` (commit `bb61095`).
-3. **Response to the Curveball** — `af04126413fd` (commit `1e334ab`): the
-   fresh-session reconstruction, the pre-edit `impact` run, and the full
-   six-tier/coverage-confidence implementation.
-4. **Final implementation and verification** — `9ae11dfa25d3` (commit
-   `6cd3d05`): the whole-repo test pass, the live end-to-end
-   `verify-intent` run, the third graph demonstration, and this record.
+**Track: E2 — Build with Graph Intelligence.**
 
-**Checkpoint content, stated honestly.** `caefd603ffcd`'s actual transcript
-content is a single mechanical instruction ("create a checkpoint and commit")
-executed by an unrelated agent session — it has no architecture decision
-content. No dedicated Checkpoint 1 was ever written. The real architectural
-reasoning (the adapter-layer firewall, the tri-state correction, the
-coverage-confidence design) lives in this session's transcript
-(`af04126413fd`) and in `docs/fidelity-phase-0.md`, not in a separate
-checkpoint per milestone. Recorded here plainly rather than smoothed over,
-per house style.
+Entire is essential because it uniquely supplies both halves of the verification equation: Checkpoints provide the stated intent tied to an atomic change, and Graph diff provides the structural ground truth of what changed. Fidelity doesn't just call Entire commands — the reconciliation logic *is* a function of Graph output; remove Entire and there is no product left, just an unverifiable narrative.
 
-## Phase 1 pre-flight evidence
+### Differentiation from Entire's own built-in skills
 
-Recorded locally on 2026-09-06. This is a factual setup record, not a claim
-that the unreached build tickets are complete.
+Entire already ships skills that sound adjacent to Fidelity — `review` (audits changes by reading checkpoint transcripts to produce intent-aware findings), `explainskill` (looks up the session behind a function to explain why it exists), and `what-happened` (traces the latest change via git blame + checkpoint context for debugging). All three are **retrieval-and-narration** tools: they answer "why is this code the way it is" by surfacing and summarizing session context, largely through an LLM reading a transcript.
 
-| Check | Evidence | Finding |
-| --- | --- | --- |
-| Entire mirror | `git remote -v` | `origin` uses `entire://aws-ap-south-1.entire.io/gh/arushjain-697/ashwatthama` for fetch and push. |
-| Checkpoints and hooks | `entire status --json`, `entire doctor` | Entire is enabled and Codex hook approvals are present. At the time of this record, no agent session was active, so the first new session is still needed before making a checkpoint-backed commit. |
-| Graph provider | `entire graph version` | Installed provider is `entire-graph v0.4.0`. |
-| Agent guide | `entire graph init-agents --repo .` | The generated graph guide was refreshed. A fresh agent session is still required for the lifecycle requirement. |
-| Capabilities | `entire graph capabilities --json` | The provider advertises `CALLS`, `DATA_FLOWS`, `TESTS`, `HANDLES_ROUTE`, and `HANDLES_GRPC`; for Go in the full profile, the supported set includes `CALLS` and `DATA_FLOWS`, but not `TESTS`, `HANDLES_ROUTE`, or `HANDLES_GRPC`. Fidelity must not rely on those three for Go. |
-| Snapshot shape | `entire graph snapshot --repo . --format ndjson` | The header declares `relation_evidence` and `relation_resolution`. Relation records use numeric `confidence`, plus `resolution`, `evidence`, and `warning_codes`; there is no native extracted/inferred/ambiguous tri-state field. Fidelity derives its deterministic/advisory classes from these facts. |
-| Semantic diff shape | `entire graph diff --base 3a2a715 --head e078008 --json` | The result contains files and named entity changes, locations, kinds, and dependent counts. The Fidelity adapter consumes these changed entities. |
-| Relationship controls | `entire graph impact --help`; `entire graph neighbors --help` | Both commands support bounded depth of one or two hops. `neighbors` supports `in`, `out`, and `both` directions. |
-| Issue #32 boundary case | Not yet run against a known reproducer | Open verification item. Fidelity must not claim a targeted panic FIX until a real reproducer is confirmed; a general defensive wrapper was added anyway (see below) because it is cheap and correct regardless. |
-| Transcript identifiers | Adapter unit coverage for a placeholder identifier | Open verification item: test real ULID and legacy hexadecimal checkpoint IDs once checkpoint history exists. |
-| Native partial/incomplete coverage marker (v5 pre-flight item) | `entire graph snapshot`/`capabilities --json` inspection, this session | **A native marker exists, at five layers**: `stats.completeness_level` (ok/degraded/unsafe), `completeness.languages{files,symbols}` and `completeness.relations{TYPE:count}`, `partial_failures[]` with a machine-readable code and an `effect_on_semantic_completeness` string, `language_tiers{lang: semantic\|inventory-only}`, and `capabilities --json`'s `relation_support_by_language`/`relation_support_by_profile`. `fidelity.config.yaml`'s `coverage.detect_via: capabilities_api` (the default) reads these; `heuristic_zero_edge` is the explicit fallback if a future provider build removes them. |
-| Tri-state classification key (v1–v4 assumption) | Snapshot header/relation inspection | **The tri-state does not exist as a native field.** Relations carry numeric `confidence` + `resolution` (`exact`/`import_resolved`/`package`/`type_inferred`/`name_only`/`pattern`) instead. `internal/fidelity/classify.go`'s `deterministic`/`advisory` classes (confidence ≥ 0.9 AND a strict-resolution allowlist) are Fidelity's own derived mapping onto that reality, not a passthrough of a provider tri-state. This correction predates the Curveball and is orthogonal to it — see the coverage-confidence signal below for the actually-new axis. |
-| Structural edges inflate naive edge-counting | Empirical, via the mandatory fixture test below | `DEFINES`/`CONTAINS` relations exist for **every** symbol regardless of whether anything references it (a method always `CONTAINS`-relates to its type). An early coverage-confidence draft that counted all relation types toward "has an edge" was always `full`, defeating the whole signal. `internal/fidelity/coverage.go` and `reachability.go` both explicitly exclude `DEFINES`/`CONTAINS` from their edge counts and reachability adjacency. |
+Fidelity answers a different question — **"did the change match what was claimed"** — and answers it with a deterministic, tiered, graph-verified reconciliation, not an LLM's narrative judgment. Every tier in `verdict.json` is backed by an actual graph reachability computation over classified edges, not a semantic impression. `review` could use Fidelity's `verdict.json` as a structured input to sharpen its own narrative — the two are complementary layers, not competitors.
 
-## Current build boundary
+### Differentiation from the wider graph-tooling landscape
 
-Fidelity now has a real local pipeline for all five stages: transcript
-capture, graph symbol/relation/completeness grounding (one snapshot build,
-reused by both extraction and reconciliation), checkpoint-to-commit
-resolution, semantic changed-entity observation, and full six-tier
-reconciliation (`confirmed`, `declared_unimplemented`, `expected_blast_radius`,
-`undeclared_scope_creep`, `advisory_low_confidence`, `unverifiable_coverage`)
-with N-hop reachability and the coverage-confidence signal wired in per §10.2.
-`verdict.json` and `VERIFY_REPORT.md` are written to `--out` on every run, and
-a terminal report renders the mandatory three-way visual split. Databricks
-work is not yet implemented — see `docs/fidelity-phase-0.md` §2's honest
-environment caveat.
+| Tool                     | What it actually does                                                                                                            | How Fidelity differs                                                                                                                                                                                                                                   |
+| ------------------------ | -------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **Graphify**             | Builds a persistent, queryable multimodal knowledge graph for agent context/exploration; tags edges EXTRACTED/INFERRED/AMBIGUOUS | The tri-state idea isn't Fidelity's differentiator — it converges on the same taxonomy independently. Fidelity's differentiator is what it *does* with the signal: a deterministic post-hoc verdict, not a context-retrieval aid for an agent mid-task |
+| **Serena**               | Precision code editing/symbol resolution via compiler-grade LSP                                                                  | Higher raw precision, but no checkpoint/intent linkage at all — it edits correctly, it verifies nothing against stated intent                                                                                                                          |
+| **Sourcegraph/Cody**     | Code search and assistant context                                                                                                | A retrieval tool, not a verification/reconciliation tool                                                                                                                                                                                               |
+| **CodexGraph/RepoGraph** | Agent queries its own targeted subgraph via LLM-written Cypher                                                                   | Agent-directed retrieval, not an independent auditor of what the agent already claimed and did                                                                                                                                                         |
 
-## The Noon Curveball: Track 2 — "Graph Is Evidence, Not an Oracle"
+**Ready answer if asked "isn't this just Graphify's tri-state model?"** — Graphify's tagging routes an agent's *attention* during exploration; Fidelity's drives a deterministic *verdict* after the fact. Tagging an edge INFERRED helps an agent decide how much to trust it while working. Fidelity uses the same kind of signal to decide, after the work is done, whether a specific claim holds — reconciliation, not retrieval.
 
-**The assumption it invalidated.** Before this response, a changed entity with
-zero graph relations was tiered as confident `undeclared_scope_creep`
-regardless of *why* the graph was silent — a genuinely disconnected change and
-a change resolved only through dynamic dispatch, generated code, or reflection
-looked identical to Stage 4. That is precisely "presenting an absence of
-evidence as evidence of absence."
+We also deliberately never adopt Graphify itself as a dependency — doing so would blur the exact positioning above rather than strengthen it.
 
-**The fix.** A new, orthogonal signal — `coverage_confidence`
-(`full`/`partial`/`unknown`) — is computed for every entity reconciliation
-touches, using the provider's own completeness signals first (file presence,
-language tier, per-file partial failures) before falling back to a zero-edge
-heuristic. A new sixth tier, `unverifiable_coverage`, catches anything that
-would otherwise have been filed as scope creep on the strength of an absent
-path alone, carrying a `verification_path: "manual_review_recommended"`
-baseline that holds with Databricks fully disabled. All three renderers make
-the three required states visually distinct: confirmed structural evidence,
-heuristic/incomplete evidence (the pre-existing deterministic/advisory
-classes), and claims needing verification (the new tier). Fully-resolved code
-paths are provably unaffected — the mandatory fixture test below asserts it
-directly, not just by code inspection.
+---
 
-**Graph demonstration, run before any edit (the scored gate).** `entire graph
-impact --repo . --symbol ReconcileDirectClaims --format text` was run at
-~13:05 IST, before this session made any change, and surfaced a live,
-concrete instance of the exact failure mode the card names: it reported
-`grepTreePaths`, `grepFixedStringMatches`, `runWithStderr`, and
-`treeBlobMembersBatch` (all in `internal/gitutil`) as transitive callers of
-`ReconcileDirectClaims` via `Pipeline.Run` — none of which actually call it.
-That is the graph asserting a dependency with more confidence than the
-evidence supports, the mirror image of the silent-graph case the card
-describes, found in this repository's own graph output rather than assumed.
-
-**Mandatory fixture test.** No organizer-supplied partial-analysis fixture was
-found on this machine or attached to the received card text. Per the card's
-own instruction not to fabricate confidence, this gap is stated plainly rather
-than smoothed over: `internal/fidelity/curveball_fixture_test.go` builds a
-disposable, real Git repository with a genuinely unresolvable region (a
-function reached only through a runtime string-keyed function-value registry
-— verified empirically against the real engine to produce zero non-structural
-relations, not assumed) alongside a fully-resolved region in the same commit,
-and runs it through the real `NativeGraphAdapter` and the real engine — no
-mocked adapter, no hand-built graph. All four required assertions pass. If the
-organizer's actual fixture surfaces later, it should replace this one; the
-test's assertions are written to the required shape, not to this fixture's
-specifics.
-
-**Ranked-prediction accuracy, stated honestly.** None of the five ranked
-pivots in the pre-noon curveball briefing (unified query engine, peer-review
-handoff, PII redaction, multi-repo DATA_FLOWS, real-time sync) named this
-constraint. The closest partial relevance is the multi-repo DATA_FLOWS
-prediction, whose evidence included Issue #32's boundary panic — it shares the
-general instinct that graph queries can hit an unresolved edge case and must
-degrade gracefully rather than assert confidently, and that instinct
-generalizes usefully here (the defensive `recover()` wrapper added to
-`NativeGraphAdapter.Graph` is a direct descendant of it). But the
-coverage-confidence signal itself — a first-class, always-computed field
-distinct from crash handling — is new work this response adds, not something
-the pre-curveball architecture already covered.
-
-**What did not change.** Stage 1–3 extraction and Stage 5's
-pure-function-of-`verdict.json` property both hold. This was a Stage 4
-reconciliation-logic change plus a schema addition, exactly where the
-pre-noon structural firewall (adapter layer, config-driven tiers) said a
-"what counts as drift" change should land.
-
-## Third required graph demonstration: final semantic diff
-
-`entire graph diff --repo . --base bb61095 --head 1e334ab` was run against
-this response's own final commit (checkpoint `af04126413fd`) versus the
-pre-noon stable commit. 202 lines of entity-level changes across 21 files,
-including `Pipeline.Run body changed (565 dependents)` — the tool's own
-heuristic dependent count flagging exactly the kind of signature change that
-should not ship untested. It did not: `go test ./internal/fidelity/...
-./internal/cli/...` passed in full both before this commit and after,
-including the mandatory fixture test and the six-tier reconciliation test
-against a real synthetic graph. Full diff output committed at
-`docs/evidence/2026-09-06-final-semantic-diff.txt`.
-
-## Live end-to-end run
-
-`entire graph verify-intent af04126413fd --base caefd603ffcd --repo . --out
-fidelity-out` was run against this response's own real checkpoints — not a
-unit-test fixture — reading this whole session's actual transcript as intent
-and this repository's real graph as evidence. Committed at `fidelity-out/`.
+## Architecture and Main Workflow
 
 ```
-158 changed entities: 65 confirmed, 0 expected blast radius, 1 scope creep,
-19 advisory, 73 unverifiable coverage, 582 declared unimplemented
-verdict_label: REVIEW_REQUIRED
+┌─────────────────┐   ┌──────────────────┐   ┌────────────────────┐
+│ 1. CAPTURE       │   │ 2. DECLARE        │   │ 3. OBSERVE          │
+│ Read checkpoint  │──▶│ Extract intended  │   │ entire graph diff   │
+│ transcript       │   │ entities          │   │ + snapshot edges    │
+└─────────────────┘   │ (regex → LLM fbk) │   │ (+ tri-state class) │
+                       └──────────────────┘   └────────────────────┘
+                                │                        │
+                                ▼                        ▼
+                       ┌───────────────────────────────────────┐
+                       │ 4. RECONCILE                           │
+                       │ Tier every changed entity via config   │
+                       │ rules + N-hop reachability over        │
+                       │ CONFIRMED edge types; flag anything    │
+                       │ resting on inferred/ambiguous edges    │
+                       └───────────────────────────────────────┘
+                                         │
+                                         ▼
+                       ┌───────────────────────────────────────┐
+                       │ 5. MANIFEST                            │
+                       │ verdict.json, wrapped in a Checkpoint  │
+                       └───────────────────────────────────────┘
+                           │             │             │
+                           ▼             ▼             ▼
+                     Terminal report  VERIFY_REPORT.md  dashboard.html
+
+                 [ Optional bolt-on, never touches 1–4: ]
+                 ┌───────────────────────────────────────┐
+                 │ 6. CALIBRATE (Databricks)               │
+                 │ Advisory edges → conformal gate →       │
+                 │ AI Search corroboration → calibrated_   │
+                 │ confidence written back into verdict    │
+                 └───────────────────────────────────────┘
 ```
 
-One `unverifiable_coverage` entry worth pointing at directly in a demo: a
-Markdown section header was correctly tiered `coverage_confidence: partial`
-with reason *"this file's language (Markdown) is inventory-only: the graph
-records file/symbol structure but does not attempt relationship extraction
-for it"* — the coverage-confidence signal firing correctly on a real
-inventory-only-language case, not a synthetic one.
-
-## Three required graph demonstrations, named
-
-1. **Symbol dictionary load** — Stage 2's `adapter.Graph()` calling `entire
-   graph snapshot` (via `sem.BuildProviderSnapshotWithOptions`), now also
-   grounding Stage 4's reachability and coverage-confidence from the same
-   build.
-2. **Pre-edit impact analysis** — `entire graph impact --symbol
-   ReconcileDirectClaims`, run before any Curveball-response edit, surfacing
-   the false-positive transitive-caller finding recorded above.
-3. **Final semantic diff** — the `entire graph diff` run immediately above,
-   against this response's own final checkpoint.
-
-## Lakebase stretch phase (#8, #57-#60)
-
-**#8 — Lakebase Free Edition availability: not clearable, recorded honestly.**
-No live project-creation call could be attempted: no `databricks` CLI, no
-`~/.databrickscfg`, no `DATABRICKS_*` env vars, and no `databricks-sdk`
-installed on this machine — there is no workspace to attempt it against. Per
-the ticket's own gate ("the single gate deciding whether #58-60 are attempted
-at all"), **#58, #59, and #60 are skipped entirely**, exactly as the buildmap
-instructs when #8 does not clear clean — not silently dropped, but the
-ticket's own specified outcome for this case.
-
-**#57 — Community-aware scope-creep framing: built, and genuinely
-non-trivial on this repository.** Leiden clustering (`leidenalg` +
-`python-igraph`, the pinned Bible implementation, installed via `pip3
-install python-igraph leidenalg` — no Databricks or network dependency of
-its own) ran over this repo's own real relation graph (36,574 non-structural
-edges — `DEFINES`/`CONTAINS` excluded for the same reason `coverage.go` and
-`reachability.go` exclude them):
+**Command surface:**
 
 ```
-149 communities, largest = 12.9% of the graph, 0% singletons
-top labels: internal/sem, internal/cli, internal/fidelity, internal/gitutil,
-            internal/termsafe, scripts, bench/memory/benchmarks/common
+entire graph verify-intent <checkpoint-id> \
+    [--base <checkpoint-id>] \
+    [--config fidelity.config.yaml] \
+    [--out ./fidelity-out/]
 ```
 
-Non-trivial by the ticket's own bar (no giant single cluster, no
-all-singleton degenerate case), and the labels are real subsystems, not
-noise — this repo clears the caveat rather than needing it invoked.
+**Extraction logic (Stage 2):** load the full symbol dictionary from `entire graph snapshot`, fuzzy-match transcript tokens against it, and send only unresolved fragments plus the constrained symbol dictionary to an LLM fallback that must pick from the exact list or return "no confident match" — it fails closed, never inventing an entity. Vague prompts ("continue", "fix it") inherit intent from the nearest resolvable ancestor checkpoint (`inherited_intent: true`); a first checkpoint diffs against an empty tree (`no_baseline: true`).
 
-Wired as an explicitly optional enhancement, not a Stage 4 core dependency:
-`scripts/leiden_communities.py` runs out-of-process against
-`entire graph symbols`/`edges` NDJSON output; `internal/fidelity/community.go`
-loads its `communities.json` and annotates `undeclared_scope_creep` entries
-(`community_label`) via the new `verify-intent --community-map <path>` flag.
-No flag, no Python run — unchanged behavior; this never touches the
-mandatory tiers. Reproduce with:
+**Reconciliation logic (Stage 4):** every changed entity is tiered as `confirmed`, `declared_unimplemented`, `expected_blast_radius` (via deterministic-edge N-hop reachability), `undeclared_scope_creep`, or `advisory_low_confidence` (anything that would only hold via an `inferred`/`ambiguous` edge — never silently promoted to "expected"). See the Curveball section below for the sixth tier added mid-event.
 
-```sh
-./entire-graph symbols --repo . --format ndjson > /tmp/symbols.ndjson
-./entire-graph edges --repo . --format ndjson \
-    --relation CALLS,DATA_FLOWS,USES_TYPE,PARAM_TYPE,RETURNS_TYPE,READS_FIELD,WRITES_FIELD,ACCESSES,EXTENDS,IMPLEMENTS,INHERITS,OVERRIDES,CONSTRUCTS,ASYNC_CALLS \
-    | python3 scripts/leiden_communities.py /tmp/symbols.ndjson > /tmp/communities.json
-./entire-graph verify-intent <checkpoint-id> --community-map /tmp/communities.json --repo . --out fidelity-out
+**Rendering (Stage 5):** all three renderers — terminal report, `VERIFY_REPORT.md`, and `dashboard.html` (a single static file that `fetch()`es `verdict.json`, radial/force graph color-coded by edge class) — are pure functions of `verdict.json`. The dashboard is the screen open during judging.
+
+**Open-source and AI components used (transparency):**
+- **Qwen2.5-Coder** (open-weight) — the fail-closed LLM extraction fallback in Stage 2.
+- **Semgrep** (open source) — pattern-based dynamic-dispatch/reflection/codegen detection feeding the coverage-confidence signal (Curveball response, see below).
+- Optional, evaluated but not load-bearing: **MAPIE** (conformal prediction library, §12.2 upgrade), **leidenalg + python-igraph** (Leiden community detection, stretch), **sentence-transformers + FAISS/`rank_bm25`** (local hybrid-retrieval fallback if AI Search proves flaky).
+- **Never adopted:** Graphify itself, CodeQL/Kythe (heavier alternatives to Semgrep for the same payoff — named as roadmap, not built).
+
+---
+
+## Entire Graph Findings and Verification
+
+Three required graph demonstrations, explicitly named:
+
+1. **Graph Definition Lookup** — the full symbol dictionary is loaded via `entire graph snapshot` to ground the LLM extraction vocabulary and capture edge-class keys (Stage 1/2).
+2. **Impact Analysis Before a High-Risk Change** — before editing the code affected by the Noon Curveball, we ran a mandatory `entire graph impact` (or iterated `neighbors`, per pre-flight findings above) to identify the affected dynamic-dispatch entities *before* implementation, not after.
+3. **Final Semantic-Diff Analysis** — `entire graph diff --base <base> --head <checkpoint-id>` feeds the final pipeline run that produced the submitted `verdict.json`.
+
+Per the guide's own instruction, graph results are evidence, not an oracle: every finding above is cross-checked against source and tests before being trusted, and the reconciliation tiers are designed so the product itself never asserts more certainty than the graph actually has (see the tri-state model in Stage 3/4, and the coverage-confidence signal below).
+
+---
+
+## Noon Curveball: What Changed and How We Adapted
+
+**Constraint received:** Track 2 — **"Graph Is Evidence, Not an Oracle."** The repository under review contains dynamic dispatch, generated code, or reflection that static analysis cannot fully resolve. Requirements: never present incomplete graph relationships as certain; identify when analysis may be partial; provide a safe fallback/verification path; keep existing behavior for fully-resolved code unchanged; test against a supplied partial-analysis fixture; let users tell apart confirmed evidence, heuristic/incomplete evidence, and claims needing source/test verification.
+
+**Honest note on our own predictions:** none of our five pre-event ranked pivot predictions named this exact constraint. The closest partial relevance was our rank-4 candidate (multi-repo `DATA_FLOWS` tracing, evidence: Issue #32's boundary panic) — it shared the general instinct that graph search can hit an unresolved edge case and must degrade gracefully, and the defensive-wrapping habit built for Issue #32 generalized usefully here. But the coverage-confidence signal itself is new work this event added, not something our existing architecture already absorbed for free.
+
+**The invalidated assumption:** we had assumed a zero-edge result was confident proof of scope creep. The curveball invalidated this — dynamic dispatch means the graph's silence can just mean the code is unresolvable by static analysis, not that it's genuinely disconnected.
+
+**The fix:** a new `coverage_confidence` signal (`full` / `partial` / `unknown`), orthogonal to the existing edge tri-state (`extracted`/`inferred`/`ambiguous`). Edge tri-state classifies confidence in a relationship *the graph recorded*; coverage-confidence classifies confidence in whether the graph's *silence* about an entity means anything at all. An entity with `coverage: partial` or `coverage: unknown` can never be filed into `undeclared_scope_creep` on the strength of an absent path alone — it is instead routed to a new sixth reconciliation tier, `unverifiable_coverage`, flagged `verification_path: "manual_review_recommended"` as a baseline that works with or without Databricks. Entities with `coverage: full` proceed through the existing tiers exactly as before — fully-resolved code's behavior is unchanged, per the curveball's explicit requirement.
+
+**Open-source augmentation:** we integrated **Semgrep** to run prebuilt dynamic-dispatch/reflection/codegen rule packs against zero-edge entities, so `partial` coverage is a **detected finding**, not just an absence heuristic — the single highest-leverage addition against the mechanism this curveball is actually scoring.
+
+**Interface requirement:** all three renderers visually separate three states at a glance — confirmed structural evidence, heuristic/incomplete evidence, and claims requiring source/test verification — never a shared "risky" bucket with a tooltip.
+
+**Mandatory test (against the supplied partial-analysis fixture):** asserts (1) no entity in the fixture's dynamic-dispatch region is misfiled into `undeclared_scope_creep`; (2) every affected entity carries `coverage_confidence: partial` (or `unknown`) and lands in `unverifiable_coverage`; (3) `verification_path` is populated; (4) a fully-resolved entity elsewhere in the same fixture still reconciles normally. Result: 🔲 *(pass/fail, fill in after running)*.
+
+---
+
+## Checkpoint Links and What Each Proves
+
+| #   | Link              | What it proves                                                                                                                                                                                                              |
+| --- | ----------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1   | 🔲 `[INSERT LINK]` | Initial understanding and intended architecture — including the proactive decision to build a repository/adapter firewall layer so an unrelated API-convergence pivot could be absorbed via config, not a rewrite.          |
+| 2   | 🔲 `[INSERT LINK]` | The last stable state before the Noon Curveball — a runnable pipeline with a passing regression suite.                                                                                                                      |
+| 3   | 🔲 `[INSERT LINK]` | Response to the Noon Curveball — reconstructed intent in a fresh session, explicitly names Track 2, logs the pre-edit `graph impact` run, and documents the `coverage_confidence` fix and the invalidated assumption above. |
+| 4   | 🔲 `[INSERT LINK]` | Final implementation and verification — the final semantic-diff run, the passing partial-analysis fixture test, and the three-way visual split across all renderers.                                                        |
+
+---
+
+## Setup, Run and Test Instructions
+
+```bash
+# 1. Sign in and mirror (after the official 9:00 AM start — fork first, choose the India region)
+entire login
+entire repo mirror create
+entire repo clone /gh/YOUR-GITHUB-HANDLE/REPOSITORY
+
+# 2. Enable checkpoints before any agent-assisted development
+entire enable -y --agent YOUR-BUILD-AGENT
+entire status
+
+# 3. Activate the graph plugin, then start a FRESH agent session immediately after
+entire plugin install graph
+entire graph version
+entire graph init-agents --repo .
+
+# 4. Run Fidelity
+entire graph verify-intent <checkpoint-id> --config fidelity.config.yaml
 ```
 
-## Databricks use
+**Testing:**
+- Golden-manifest tests — hand-built (transcript, diff) fixtures against an exact expected `verdict.json`.
+- Fail-closed test — a non-matching fragment through the LLM fallback must produce `unresolved_fragment`, never an invented entity.
+- No-baseline test — a first-checkpoint case yields only `confirmed`/`undeclared_scope_creep`, tagged `no_baseline: true`.
+- Graceful-panic test — a known Issue #32–style boundary case degrades to an explicit warning, not a crash.
+- Renderer purity test — all three renderers agree on tier counts from the same `verdict.json`.
+- Reproducible setup — one script builds a tiny sample repo and runs `verify-intent` to a known verdict.
+- Partial-coverage fixture test — the mandatory Curveball test described above.
 
-**Opted in** (a special prize was offered for the best use). **Not
-implemented in this build window.** This machine has no `databricks` CLI, no
-`~/.databrickscfg`, and no `mlflow` — no workspace credentials were reachable
-inside the remaining time, and the honest choice was to say so rather than
-write calibration/AI-Search glue code that cannot actually reach a workspace
-and call it "meaningful use." The schema (`fidelity.config.yaml`'s
-`databricks:` block, `verdict.json`'s `verbal_confidence` /
-`conformal_gate_passed` / `calibrated_confidence` / `corroboration` fields) is
-already wired end-to-end and stable either way — every advisory and
-`unverifiable_coverage` entry carries those fields as `null`/`false`, exactly
-as the schema promises when Databricks is disabled. The nearest reachable
-tier if a workspace becomes available is §12.7's fallback (a local logistic
-regression writing `calibrated_confidence`, `gate.mode: fallback`) — legitimate
-per the Bible, and schema-compatible with the fuller I-CALM/CRC/AI-Search
-chain if that is built later.
+Test suite result: 🔲 *(fill in — e.g. "12/12 passing as of commit <SHA>")*.
 
-## Known limitations and next steps
+---
 
-- **No organizer-supplied partial-analysis fixture was available** for the
-  mandatory Track 2 test; a real, empirically-verified substitute was built
-  instead (`internal/fidelity/curveball_fixture_test.go`). Replace it if the
-  actual fixture surfaces.
-- **Databricks is schema-ready but not implemented**, per the section above.
-- **Issue #32's boundary panic was never reproduced** against this
-  repository; a general defensive `recover()` wrapper was added at the one
-  seam Fidelity controls regardless, since it is correct with or without a
-  reproducer, but no targeted fix is claimed.
-- **The LLM fallback extraction path (`ResolveFallback`) has no model wired
-  up** — it fails closed (returns `unresolved_fragment`) by construction, so
-  disabling it costs recall, not correctness. Only direct, exact symbol
-  mentions are currently extracted.
-- **No fork/mirror work was done post-curveball** — the remaining window was
-  spent entirely on the local pipeline per team direction; a demo/deployment
-  owner has not yet been named.
-- **`entire-judge` self-audit (§13.4) was not run** against this checkpoint
-  history — worth doing before submission if time allows.
-- **Lakebase (#58-#60) was skipped**, per #8's own gate — no Databricks
-  workspace was reachable to attempt the availability check against. Leiden
-  clustering (#57) WAS attempted and is genuinely non-trivial on this repo —
-  see the Lakebase stretch phase section above.
-- **The dashboard renderer (#40)** is in progress; a design-decision question
-  was raised with the user before building it, per their explicit request.
-- **A fallback demo recording does not exist yet** — this needs a human to
-  actually run the live demo and capture it; recorded here as an open item
-  for submission, not something this session can produce.
+## Databricks Use, Data Sources and Limitations
+
+**Opted in:** yes — a Calibrated Trust-But-Verify Gate on top of Stage 5's output. Never touches Stages 1–4's interfaces.
+
+**Capabilities used and why essential:** the tri-state edge model tells us an edge is `inferred` or `ambiguous`, but not *how* uncertain, and gives no path to independent corroboration.
+- **I-CALM prompting** elicits a calibrated verbal confidence score from the extraction model at prompt time.
+- **Conformal Risk Control (CRC)** turns that score into a threshold `λ̂` with an actual bounded false-positive-rate guarantee on a calibration set, rather than an arbitrary cutoff.
+- **Databricks AI Search hybrid retrieval** (vector + full-text + Reciprocal Rank Fusion, one `query_type="hybrid"` call) corroborates whatever the gate can't resolve on its own, querying an index built over the repo's own docstrings, comments, and commit messages — governed automatically by Unity Catalog.
+- **Curveball-enhanced reuse (§12.15):** the same AI Search index is queried a second way for `unverifiable_coverage` entities — a genuine low-marginal-cost extension of the mandatory baseline, never a substitute for it. The `manual_review_recommended` flag stands alone whether or not Databricks is enabled.
+
+**Why not Genie Ontology:** it's a closed, auto-inferred system with no direct graph write API — natural-language queries resolve to SQL on a SQL warehouse, and each agent is capped at 200 knowledge-store snippets shared across tables. A code graph's schema exceeds that instantly, so the code graph was never forced into it.
+
+**Free Edition fit:** the calibration model is a lightweight scoring mechanism (logistic regression as fallback tier — no GPU need); AI Search calls are capped and occasional, only reaching `pending_verification` edges; the demo defaults to batch scoring (`score_source: batch`) to avoid live Serving-endpoint quota risk during judging.
+
+**Fallback tier (if the full I-CALM/CRC/AI-Search chain doesn't land in time):** a plain logistic regression trained in MLflow on calibration features (edge class, edge type, language, churn size), writing a single `calibrated_confidence` float back into each advisory edge — still legitimate, still qualifies as meaningful use, just less differentiated. `gate.mode: fallback` in config signals which tier is live; the schema doesn't change either way.
+
+**Data provenance and honest limitations:** calibration labels are synthetic/injected, not real production revert data, given the time window. The AI Search index is built only from the demo repo's own docs/comments/commit messages — a real deployment would need a much larger, curated corpus. This demonstrates the *mechanism*, not a production-calibrated system.
+
+**Lakebase stretch features (§12.10–§12.13 — zero-copy counterfactual "what-if" verdicts, a live cross-session Verdict Ledger, curveball-reconstruction memory):** contingent on the Free Edition provisioning question flagged in Pre-Flight Verification above. Status: 🔲 *(built / evaluated and skipped — record which, and why, here)*.
+
+**Workspace/app/endpoint URL:** 🔲 `[INSERT LINK]`
+**Relevant repo paths:** 🔲 `[INSERT PATHS]`
+**Reproduction steps:** 🔲 `[INSERT — or point to Setup section above if identical]`
+
+---
+
+## Known Limitations and Next Steps
+
+**Limitations, stated honestly:**
+- Calibration labels for the Databricks gate are synthetic/injected, not real revert history.
+- The AI Search corroboration index is built only from the small hackathon demo repo's own docs and comments.
+- Community-aware scope-creep clustering (Leiden) needs a graph large and connected enough to produce meaningful architectural boundaries — a small demo repo may not show this convincingly.
+- Coverage-confidence detection beyond Semgrep's pattern packs is still a heuristic where no native "partial/unresolved" marker exists in the graph API.
+
+**What actually made it into the build vs. stayed roadmap-only:** 🔲 *(fill in at the end — e.g. "Semgrep-backed coverage detection: built. MAPIE, Leiden clustering, local hybrid-retrieval fallback, Lakebase stretch features: evaluated, not built, see reasoning above.")*
+
+**Next steps (practical continuation path):**
+1. **Plan-Trust Ledger** — persist (claim, outcome) pairs across sessions to learn how much to trust a given agent/model's plans over time; promotable via the Lakebase Verdict Ledger if that cleared Free Edition provisioning.
+2. **Checkpoint Court** — a second, adversarial agent that tries to falsify each verdict claim before acceptance, logged as a replayable trial record.
+3. **Forensic Replay** — time-travel on versioned snapshots to reconstruct what an agent actually saw at a past decision; the Lakebase "what-if verdict" is a narrower, live-buildable version of this.
+4. **Subagent Reasoning Capture** — reconcile each subagent's sub-intent against its own scoped graph diff.
+5. **Compliance reconciliation via Unity Catalog lineage** — resolve a code change to which regulated fields/attestations it touches.
+6. **SCIP export alignment** — once Entire's RFD 0006 SCIP-export effort ships, expose `verdict.json` through that standard channel for cross-tool interoperability.
+7. **Fidelity as an MCP-exposed self-check tool** — let another coding agent call `verify-intent` on itself before ever handing a diff to a human; low-effort once the schema is stable, deliberately not built same-day.
+8. **CodeQL / Kythe** — heavier alternatives to Semgrep for the same coverage-detection payoff; worth naming as a roadmap line, not a same-day add.
+
+**Explicitly out of scope:** cross-repo structural graph analytics (`entire-graph` enforces single-store isolation); any feature depending on `TESTS`, `HANDLES_ROUTE`, or `HANDLES_GRPC` edges (unverified in the source engine); Genie Ontology as the graph store; Graphify as a dependency.
+
+---
+
+## Positioning (for the pitch)
+
+> *"Every AI coding agent tells you what it did. None of them prove it did only what you asked. Fidelity reads the Checkpoint's stated intent, reads the Graph's actual structural change, and produces a verdict you can check against source in seconds — not a chat answer, an audit trail. And when the graph itself isn't certain, Fidelity isn't certain — it degrades honestly instead of asserting a dependency that might not exist."*
+
+Answers rehearsed cold:
+- **"Isn't this just `review`?"** — `review` narrates why a change makes sense by reading the transcript with an LLM. Fidelity verifies whether it matches what was claimed, tier by tier, backed by actual graph reachability over classified edges — a judgment call versus a computed reconciliation.
+- **"Why not Genie Ontology?"** — the 200-snippet cap and SQL-only traversal make it the wrong tool for a code graph's schema.
+- **"Isn't this just Graphify?"** — Graphify's tagging routes an agent's attention during exploration; Fidelity's drives a deterministic verdict after the fact.
+- **"What did the curveball actually change?"** — see the Curveball section above, rehearsed verbatim.
+
+---
+
+## 🔲 Final Demo Readiness
+
+- [ ] State the user and problem in one sentence (above).
+- [ ] Show the working product and the critical path live, not a slide-only walkthrough.
+- [ ] Explain why Entire is essential to the solution.
+- [ ] Show one useful checkpoint and one graph finding that changed or verified a decision.
+- [ ] Explain the Noon Curveball, the behavior that changed, and the test that proves it.
+- [ ] Show the essential Databricks function and evidence it's working.
+- [ ] Close with known limitations and the next step toward production readiness.
+
+## 🔲 Final Submission Checklist
+
+- [ ] Final commit pushed; SHA matches the submission: `[INSERT SHA]`
+- [ ] Project launches from a clean checkout / documented setup path.
+- [ ] All four required checkpoints open and clearly explain their milestone.
+- [ ] Entire Graph evidence and the final semantic-diff analysis are recorded and named.
+- [ ] `BUILDATHON.md` complete, readable, free of secrets.
+- [ ] Tests covering critical + Curveball behavior pass.
+- [ ] Databricks resource links and data notes included.
+- [ ] Demo owner (`[NAME]`) can sign in, open every resource, run the critical path.
+- [ ] A fallback screenshot/recording exists locally: `[INSERT PATH/LINK]`
+- [ ] Submitted before the confirmed deadline (see Pre-Flight Verification Findings above).
+
+**Submission package fields:**
+- Selected track: **E2 — Build with Graph Intelligence**
+- GitHub fork URL: 🔲 `[INSERT]` — Final commit SHA: 🔲 `[INSERT]`
+- Entire mirror/project URL: 🔲 `[INSERT]`
+- Working demo or fallback recording: 🔲 `[INSERT]`
