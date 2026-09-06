@@ -243,6 +243,51 @@ inventory-only-language case, not a synthetic one.
 3. **Final semantic diff** — the `entire graph diff` run immediately above,
    against this response's own final checkpoint.
 
+## Lakebase stretch phase (#8, #57-#60)
+
+**#8 — Lakebase Free Edition availability: not clearable, recorded honestly.**
+No live project-creation call could be attempted: no `databricks` CLI, no
+`~/.databrickscfg`, no `DATABRICKS_*` env vars, and no `databricks-sdk`
+installed on this machine — there is no workspace to attempt it against. Per
+the ticket's own gate ("the single gate deciding whether #58-60 are attempted
+at all"), **#58, #59, and #60 are skipped entirely**, exactly as the buildmap
+instructs when #8 does not clear clean — not silently dropped, but the
+ticket's own specified outcome for this case.
+
+**#57 — Community-aware scope-creep framing: built, and genuinely
+non-trivial on this repository.** Leiden clustering (`leidenalg` +
+`python-igraph`, the pinned Bible implementation, installed via `pip3
+install python-igraph leidenalg` — no Databricks or network dependency of
+its own) ran over this repo's own real relation graph (36,574 non-structural
+edges — `DEFINES`/`CONTAINS` excluded for the same reason `coverage.go` and
+`reachability.go` exclude them):
+
+```
+149 communities, largest = 12.9% of the graph, 0% singletons
+top labels: internal/sem, internal/cli, internal/fidelity, internal/gitutil,
+            internal/termsafe, scripts, bench/memory/benchmarks/common
+```
+
+Non-trivial by the ticket's own bar (no giant single cluster, no
+all-singleton degenerate case), and the labels are real subsystems, not
+noise — this repo clears the caveat rather than needing it invoked.
+
+Wired as an explicitly optional enhancement, not a Stage 4 core dependency:
+`scripts/leiden_communities.py` runs out-of-process against
+`entire graph symbols`/`edges` NDJSON output; `internal/fidelity/community.go`
+loads its `communities.json` and annotates `undeclared_scope_creep` entries
+(`community_label`) via the new `verify-intent --community-map <path>` flag.
+No flag, no Python run — unchanged behavior; this never touches the
+mandatory tiers. Reproduce with:
+
+```sh
+./entire-graph symbols --repo . --format ndjson > /tmp/symbols.ndjson
+./entire-graph edges --repo . --format ndjson \
+    --relation CALLS,DATA_FLOWS,USES_TYPE,PARAM_TYPE,RETURNS_TYPE,READS_FIELD,WRITES_FIELD,ACCESSES,EXTENDS,IMPLEMENTS,INHERITS,OVERRIDES,CONSTRUCTS,ASYNC_CALLS \
+    | python3 scripts/leiden_communities.py /tmp/symbols.ndjson > /tmp/communities.json
+./entire-graph verify-intent <checkpoint-id> --community-map /tmp/communities.json --repo . --out fidelity-out
+```
+
 ## Databricks use
 
 **Opted in** (a special prize was offered for the best use). **Not
@@ -281,9 +326,12 @@ chain if that is built later.
   owner has not yet been named.
 - **`entire-judge` self-audit (§13.4) was not run** against this checkpoint
   history — worth doing before submission if time allows.
-- **Community-aware scope-creep clustering (Leiden), the dashboard renderer,
-  and Lakebase** were not attempted — correctly triaged as stretch/optional
-  against this window, not silently dropped from the plan.
+- **Lakebase (#58-#60) was skipped**, per #8's own gate — no Databricks
+  workspace was reachable to attempt the availability check against. Leiden
+  clustering (#57) WAS attempted and is genuinely non-trivial on this repo —
+  see the Lakebase stretch phase section above.
+- **The dashboard renderer (#40)** is in progress; a design-decision question
+  was raised with the user before building it, per their explicit request.
 - **A fallback demo recording does not exist yet** — this needs a human to
   actually run the live demo and capture it; recorded here as an open item
   for submission, not something this session can produce.

@@ -67,7 +67,7 @@ func RenderTerminal(verdict Verdict) string {
 	})
 	terminalSection(&b, ansiRed, "✗", labelDrift, "undeclared_scope_creep", len(verdict.Reconciliation.UndeclaredScopeCreep), func(w *strings.Builder) {
 		for _, entry := range verdict.Reconciliation.UndeclaredScopeCreep {
-			fmt.Fprintf(w, "  ✗ %s (%s) — %s [coverage: %s]\n", entry.Entity, location(entry.File, entry.Line), entry.Reason, entry.CoverageConfidence)
+			fmt.Fprintf(w, "  ✗ %s (%s) — %s [coverage: %s]%s\n", entry.Entity, location(entry.File, entry.Line), entry.Reason, entry.CoverageConfidence, communitySuffix(entry.CommunityLabel))
 		}
 	})
 	terminalSection(&b, ansiRed, "✗", labelDrift, "declared_unimplemented", len(verdict.Reconciliation.DeclaredUnimplemented), func(w *strings.Builder) {
@@ -85,6 +85,15 @@ func terminalSection(b *strings.Builder, color, marker, visualLabel, tierName st
 	fmt.Fprintf(b, "%s%s %s%s — %s (%d)\n", color, marker, visualLabel, ansiReset, tierName, count)
 	body(b)
 	b.WriteString("\n")
+}
+
+// communitySuffix renders #57's optional community label, when present, as
+// " [community: <label>]" — empty when no community map was supplied.
+func communitySuffix(label string) string {
+	if label == "" {
+		return ""
+	}
+	return fmt.Sprintf(" [community: %s]", label)
 }
 
 func location(file string, line int) string {
@@ -137,7 +146,7 @@ func RenderMarkdown(verdict Verdict) string {
 	})
 	markdownSection(&b, "🔴 "+labelDrift, "undeclared_scope_creep / declared_unimplemented", func(w *strings.Builder) {
 		for _, entry := range verdict.Reconciliation.UndeclaredScopeCreep {
-			fmt.Fprintf(w, "- `%s` at %s — %s — coverage: `%s`\n", entry.Entity, location(entry.File, entry.Line), entry.Reason, entry.CoverageConfidence)
+			fmt.Fprintf(w, "- `%s` at %s — %s — coverage: `%s`%s\n", entry.Entity, location(entry.File, entry.Line), entry.Reason, entry.CoverageConfidence, communitySuffix(entry.CommunityLabel))
 		}
 		for _, entry := range verdict.Reconciliation.DeclaredUnimplemented {
 			fmt.Fprintf(w, "- `%s` — %s\n", entry.Entity, entry.Reason)

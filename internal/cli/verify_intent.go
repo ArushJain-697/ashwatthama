@@ -19,6 +19,9 @@ type verifyIntentFlags struct {
 	ConfigPath       string
 	OutputDirectory  string
 	Repo             string
+	// CommunityMapPath is #57's optional enhancement input: a communities.json
+	// produced by scripts/leiden_communities.py. Empty means skip annotation.
+	CommunityMapPath string
 }
 
 type verifyIntentResponse struct {
@@ -59,6 +62,8 @@ func parseVerifyIntentFlags(args []string) (verifyIntentFlags, string, error) {
 			flags.OutputDirectory, err = value()
 		case "--repo":
 			flags.Repo, err = value()
+		case "--community-map":
+			flags.CommunityMapPath, err = value()
 		default:
 			if strings.HasPrefix(argument, "-") {
 				return flags, "", fmt.Errorf("verify-intent received unexpected argument %q", argument)
@@ -120,6 +125,27 @@ func runVerifyIntentWithAdapter(ctx context.Context, opts Options, args []string
 	if err != nil {
 		return err
 	}
+	if flags.CommunityMapPath != "" {
+		// ponytail: this rebuilds the graph snapshot a second time rather than
+		// threading it out of Pipeline.Run — community annotation is opt-in
+		// and off by default, so the extra build cost is paid only when asked
+		// for. Thread it through Verification instead if this flag sees
+		// regular use and the rebuild cost starts to matter.
+		communityMapPath := flags.CommunityMapPath
+		if !filepath.IsAbs(communityMapPath) {
+			communityMapPath = filepath.Join(repo, communityMapPath)
+		}
+		communityMap, err := fidelity.LoadCommunityMap(communityMapPath)
+		if err != nil {
+			return fmt.Errorf("--community-map: %w", err)
+		}
+		graph, err := adapter.Graph(ctx)
+		if err != nil {
+			return fmt.Errorf("--community-map: %w", err)
+		}
+		fidelity.AnnotateScopeCreepCommunities(&verification.Reconciliation, verification.Changes, graph, communityMap)
+	}
+
 	preflight := fidelity.CurrentPreflightReport()
 	verdict := fidelity.BuildVerdict(verification, preflight, config, time.Now())
 

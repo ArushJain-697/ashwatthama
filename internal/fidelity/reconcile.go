@@ -43,6 +43,11 @@ type ScopeCreepEntity struct {
 	Line               int                `json:"line,omitempty"`
 	Reason             string             `json:"reason"`
 	CoverageConfidence CoverageConfidence `json:"coverage_confidence"`
+	// CommunityLabel is #57's optional enhancement: the dominant subsystem
+	// (by directory) of the Leiden community this entity's symbol belongs
+	// to, when a community map was supplied. Empty when none was, or when
+	// this entity could not be resolved to a graph symbol.
+	CommunityLabel string `json:"community_label,omitempty"`
 }
 
 // AdvisoryEntity is one advisory_low_confidence entry (#25): reachable from a
