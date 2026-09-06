@@ -16,15 +16,15 @@ Record the ground truth here before writing any pipeline code — several later 
 
 | Check                                       | Command                                                       | Result                                                                                                                                             |
 | ------------------------------------------- | ------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Actual edge-type enum                       | `entire graph capabilities --json`                            | 🔲 *(confirm `CALLS` / `CONTAINS` / `DATA_FLOWS` / `type`; do not assume `TESTS`, `HANDLES_ROUTE`, `HANDLES_GRPC` exist)*                           |
-| Snapshot shape + tri-state key              | `entire graph snapshot`                                       | 🔲                                                                                                                                                  |
-| Diff output shape                           | `entire graph diff --base <ref> --head <ref>`                 | 🔲                                                                                                                                                  |
-| Depth/direction flags on impact/neighbors   | `entire graph impact --help`, `entire graph neighbors --help` | 🔲 *(if absent, N-hop reachability is computed by iterating `neighbors` ourselves)*                                                                 |
-| Checkpoint ID format                        | —                                                             | 🔲 *(confirm ULID and legacy hex are both handled)*                                                                                                 |
-| Issue #32 panic reproduction                | malformed/boundary file through `graph search`                | 🔲 *(if it reproduces, wrap the call defensively from the start)*                                                                                   |
-| Native "partial/unresolved" coverage marker | `entire graph capabilities --json` / `entire graph snapshot`  | 🔲 *(if none exists, coverage-confidence falls back to the zero-edge heuristic — see Curveball section)*                                            |
-| Lakebase provisionable under Free Edition   | live `lakebase` project-creation attempt                      | 🔲 *(sources disagree; if unavailable, the Databricks module runs on the already-verified AI Search + logistic-regression/CRC design, no Lakebase)* |
-| Confirmed submission deadline               | ask at kickoff                                                | 🔲 *(Participant Guide states 3:00 PM IST; a separate event-site source has said 4:00 PM — get the live, spoken answer and write it here)*          |
+| Actual edge-type enum                       | `entire graph capabilities --json`                            | No native tri-state. Relations carry numeric `confidence` + `resolution` (`exact`/`import_resolved`/`package`/`type_inferred`/`name_only`/`pattern`), not `extracted`/`inferred`/`ambiguous`. `classify.go` derives `deterministic`/`advisory` from those fields. |
+| Snapshot shape + tri-state key              | `entire graph snapshot`                                       | Confirmed above — no tri-state field exists to key on. |
+| Diff output shape                           | `entire graph diff --base <ref> --head <ref>`                 | Entity-level change list with heuristic dependent counts; ran for real against this build's own commits (see Third Graph Demonstration below), 202 lines across 21 files including a `565 dependents` flag on a signature change. |
+| Depth/direction flags on impact/neighbors   | `entire graph impact --help`, `entire graph neighbors --help` | Both support `--depth 1\|2`; `neighbors` supports `in`/`out`/`both`. N-hop reachability implemented directly in `reachability.go` over the whole relation set rather than iterating `neighbors`. |
+| Checkpoint ID format                        | —                                                             | ULID form confirmed live (`af04126413fd`, `9ae11dfa25d3`); legacy hex not separately exercised. |
+| Issue #32 panic reproduction                | malformed/boundary file through `graph search`                | Not reproduced against this repository. A general `recover()` wrapper was added at the one seam Fidelity controls (`adapter.go`'s `Graph()`) regardless — correct with or without a reproducer, but no targeted fix is claimed. |
+| Native "partial/unresolved" coverage marker | `entire graph capabilities --json` / `entire graph snapshot`  | **Exists, at five layers**: `stats.completeness_level`, `completeness.languages`/`completeness.relations`, `partial_failures[]` with a machine-readable code, `language_tiers` (semantic vs inventory-only), and `capabilities --json`'s `relation_support_by_language`/`_by_profile`. `coverage.detect_via: capabilities_api` (the config default) reads these; `heuristic_zero_edge` is the explicit fallback. |
+| Lakebase provisionable under Free Edition   | live `lakebase` project-creation attempt                      | **Yes — clears clean.** A real Postgres instance (`fidelity-test`, `CU_1`) was created via `w.database.create_database_instance` and reached `AVAILABLE` state. This reopens the Lakebase stretch features below. |
+| Confirmed submission deadline               | ask at kickoff                                                | 3:00 PM IST, per the team's own confirmation at the Noon Curveball gate; work continued past it at the user's explicit direction for the Databricks module. |
 
 ---
 
@@ -159,7 +159,7 @@ Per the guide's own instruction, graph results are evidence, not an oracle: ever
 
 **Interface requirement:** all three renderers visually separate three states at a glance — confirmed structural evidence, heuristic/incomplete evidence, and claims requiring source/test verification — never a shared "risky" bucket with a tooltip.
 
-**Mandatory test (against the supplied partial-analysis fixture):** asserts (1) no entity in the fixture's dynamic-dispatch region is misfiled into `undeclared_scope_creep`; (2) every affected entity carries `coverage_confidence: partial` (or `unknown`) and lands in `unverifiable_coverage`; (3) `verification_path` is populated; (4) a fully-resolved entity elsewhere in the same fixture still reconciles normally. Result: 🔲 *(pass/fail, fill in after running)*.
+**Mandatory test (against the supplied partial-analysis fixture):** asserts (1) no entity in the fixture's dynamic-dispatch region is misfiled into `undeclared_scope_creep`; (2) every affected entity carries `coverage_confidence: partial` (or `unknown`) and lands in `unverifiable_coverage`; (3) `verification_path` is populated; (4) a fully-resolved entity elsewhere in the same fixture still reconciles normally. **Result: PASS**, all four assertions — `internal/fidelity/curveball_fixture_test.go`. **Honest disclosure:** no organizer-supplied fixture repository was found; this runs against a real, disposable Git repository with an empirically-verified zero-edge case (a function reached only through a runtime string-keyed function-value registry) built as a substitute, through the real `NativeGraphAdapter` and the real engine — no mocks.
 
 ---
 
@@ -167,10 +167,10 @@ Per the guide's own instruction, graph results are evidence, not an oracle: ever
 
 | #   | Link              | What it proves                                                                                                                                                                                                              |
 | --- | ----------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 1   | 🔲 `[INSERT LINK]` | Initial understanding and intended architecture — including the proactive decision to build a repository/adapter firewall layer so an unrelated API-convergence pivot could be absorbed via config, not a rewrite.          |
-| 2   | 🔲 `[INSERT LINK]` | The last stable state before the Noon Curveball — a runnable pipeline with a passing regression suite.                                                                                                                      |
-| 3   | 🔲 `[INSERT LINK]` | Response to the Noon Curveball — reconstructed intent in a fresh session, explicitly names Track 2, logs the pre-edit `graph impact` run, and documents the `coverage_confidence` fix and the invalidated assumption above. |
-| 4   | 🔲 `[INSERT LINK]` | Final implementation and verification — the final semantic-diff run, the passing partial-analysis fixture test, and the three-way visual split across all renderers.                                                        |
+| 1   | *(not captured as a dedicated checkpoint — see honest note below)* | Initial understanding and intended architecture — including the proactive decision to build a repository/adapter firewall layer so an unrelated API-convergence pivot could be absorbed via config, not a rewrite.          |
+| 2   | `caefd603ffcd` (commit `bb61095`) | The last stable state before the Noon Curveball — a runnable pipeline with a passing regression suite. **Honest note:** its actual transcript content is a single mechanical "create a checkpoint and commit" instruction executed by an unrelated agent session — no architecture decision content. |
+| 3   | `af04126413fd` (commit `1e334ab`) | Response to the Noon Curveball — reconstructed intent in a fresh session, explicitly names Track 2, logs the pre-edit `graph impact` run, and documents the `coverage_confidence` fix and the invalidated assumption above. |
+| 4   | `9ae11dfa25d3` (commit `6cd3d05`) | Final implementation and verification — the final semantic-diff run, the passing partial-analysis fixture test, and the three-way visual split across all renderers.                                                        |
 
 ---
 
@@ -204,7 +204,7 @@ entire graph verify-intent <checkpoint-id> --config fidelity.config.yaml
 - Reproducible setup — one script builds a tiny sample repo and runs `verify-intent` to a known verdict.
 - Partial-coverage fixture test — the mandatory Curveball test described above.
 
-Test suite result: 🔲 *(fill in — e.g. "12/12 passing as of commit <SHA>")*.
+Test suite result: **all packages passing** (`go test ./...`), including `internal/fidelity`, `internal/cli`, and the full `internal/sem` suite, as of the Databricks-foundation commit. `internal/fidelity` alone: 6-tier reconciliation, coverage-confidence, the mandatory Curveball fixture, dashboard rendering (including the Three.js blast-radius scene), community-clustering wiring, and the new Conformal Risk Control + Databricks client seam — all green.
 
 ---
 
@@ -222,15 +222,36 @@ Test suite result: 🔲 *(fill in — e.g. "12/12 passing as of commit <SHA>")*.
 
 **Free Edition fit:** the calibration model is a lightweight scoring mechanism (logistic regression as fallback tier — no GPU need); AI Search calls are capped and occasional, only reaching `pending_verification` edges; the demo defaults to batch scoring (`score_source: batch`) to avoid live Serving-endpoint quota risk during judging.
 
-**Fallback tier (if the full I-CALM/CRC/AI-Search chain doesn't land in time):** a plain logistic regression trained in MLflow on calibration features (edge class, edge type, language, churn size), writing a single `calibrated_confidence` float back into each advisory edge — still legitimate, still qualifies as meaningful use, just less differentiated. `gate.mode: fallback` in config signals which tier is live; the schema doesn't change either way.
+**Live verification, this session (real workspace, not simulated):**
 
-**Data provenance and honest limitations:** calibration labels are synthetic/injected, not real production revert data, given the time window. The AI Search index is built only from the demo repo's own docs/comments/commit messages — a real deployment would need a much larger, curated corpus. This demonstrates the *mechanism*, not a production-calibrated system.
+| Capability | Result |
+|---|---|
+| Unity Catalog | ✅ `workspace` catalog reachable via `WorkspaceClient` |
+| Lakebase | ✅ Real Postgres instance created (`fidelity-test`, `CU_1`, reached `AVAILABLE`) |
+| Foundation Model serving (I-CALM) | ✅ `databricks-meta-llama-3-1-8b-instruct` returns a clean, parseable `{"confidence": N}` under the exact I-CALM prompt structure |
+| Vector Search / AI Search | ✅ Endpoint `fidelity-corroboration` (`STANDARD`) reached `ONLINE` |
 
-**Lakebase stretch features (§12.10–§12.13 — zero-copy counterfactual "what-if" verdicts, a live cross-session Verdict Ledger, curveball-reconstruction memory):** contingent on the Free Edition provisioning question flagged in Pre-Flight Verification above. Status: 🔲 *(built / evaluated and skipped — record which, and why, here)*.
+This workspace supports the **full I-CALM/CRC/AI-Search chain**, not only the fallback tier — contrary to the Bible's own caution about Free Edition AI Search limits.
 
-**Workspace/app/endpoint URL:** 🔲 `[INSERT LINK]`
-**Relevant repo paths:** 🔲 `[INSERT PATHS]`
-**Reproduction steps:** 🔲 `[INSERT — or point to Setup section above if identical]`
+**What's actually wired in code (`internal/fidelity/calibration.go`, `databricks.go`):**
+- `ConformalThreshold`/`ConformalRiskHolds` (#48) — the real Conformal Risk Control selection procedure, verified to hold its target false-positive rate on a **held-out** slice, not just its training set.
+- `GateAdvisoryEdge` (#50) — deterministic bypass upstream, pass/epistemic-abstention here, never a silent drop.
+- `DatabricksHTTPClient` (#47, #51) — real `ScoreEdge` (I-CALM, verified against the live endpoint above) and `Corroborate` (AI Search query, correctly shaped against the live `ONLINE` endpoint).
+- `CalibrateAdvisoryEdges` / `CorroborateUnverifiableCoverage` (#53, §12.15) — wired and unit-tested against a fake client; `UnavailableDatabricksClient` is the safe fail-closed default when disabled.
+
+**Not yet done:** the AI Search index has no populated Delta table behind it — the docs/comments/commit-message ingestion pipeline (§12.4's source table + embedding + sync) is separate work not completed this session, so `Corroborate` currently reaches a real, `ONLINE`, but *empty* index. `CalibrateAdvisoryEdges` already treats that as "attempted, no evidence" (fails closed, leaves fields null) rather than crashing, so the safety property holds either way. The CLI is not yet wired to select `DatabricksHTTPClient` over `UnavailableDatabricksClient` (needs a `--databricks` flag or a `databricks.calibration_enabled: true` config read in `verify_intent.go`).
+
+**Credential handling:** the workspace host/token were provided in-chat and are treated as compromised — stored only in `~/.databrickscfg` (outside the repo, `chmod 600`), read by Go code only via `DATABRICKS_HOST`/`DATABRICKS_TOKEN` environment variables, never hardcoded or committed. **The token should be rotated after this session.**
+
+**Fallback tier (§12.7, if the full chain is ever disabled):** a plain logistic regression trained in MLflow on calibration features, writing a single `calibrated_confidence` float back into each advisory edge — still legitimate, still qualifies as meaningful use. `gate.mode: fallback` in config signals which tier is live; the schema doesn't change either way. Not built this session since the full chain proved live.
+
+**Data provenance and honest limitations:** calibration labels (`internal/fidelity/calibration_test.go`'s fixture) are synthetic/injected, not real production revert data. The AI Search index exists but is unpopulated. This demonstrates the *mechanism* with real infrastructure, not a production-calibrated system.
+
+**Lakebase stretch features (§12.10–§12.13):** #8 cleared clean (see Pre-Flight table), reopening #58–60. **Status: evaluated and not built** in the time remaining — a real instance was provisioned to prove availability, but the zero-copy counterfactual sandbox, live Verdict Ledger, and curveball-reconstruction memory schemas were not implemented on top of it.
+
+**Workspace/app/endpoint URL:** `https://dbc-d7a9264e-59b4.cloud.databricks.com` (Lakebase instance `fidelity-test`; Vector Search endpoint `fidelity-corroboration`)
+**Relevant repo paths:** `internal/fidelity/calibration.go`, `internal/fidelity/databricks.go`, `internal/fidelity/calibration_test.go`, `internal/fidelity/databricks_test.go`
+**Reproduction steps:** set `DATABRICKS_HOST`/`DATABRICKS_TOKEN`, then construct a `DatabricksHTTPClient` (host, a serving-endpoint name, and a `catalog.schema.index` for corroboration) and pass it to `CalibrateAdvisoryEdges`/`CorroborateUnverifiableCoverage`.
 
 ---
 
@@ -238,11 +259,13 @@ Test suite result: 🔲 *(fill in — e.g. "12/12 passing as of commit <SHA>")*.
 
 **Limitations, stated honestly:**
 - Calibration labels for the Databricks gate are synthetic/injected, not real revert history.
-- The AI Search corroboration index is built only from the small hackathon demo repo's own docs and comments.
-- Community-aware scope-creep clustering (Leiden) needs a graph large and connected enough to produce meaningful architectural boundaries — a small demo repo may not show this convincingly.
-- Coverage-confidence detection beyond Semgrep's pattern packs is still a heuristic where no native "partial/unresolved" marker exists in the graph API.
+- The AI Search endpoint is live and `ONLINE`, but has no populated index behind it yet — the docs/comments/commit-message ingestion pipeline is unbuilt, so `Corroborate` calls currently return "no evidence" rather than a real corroboration.
+- The CLI does not yet select the real `DatabricksHTTPClient` automatically — it exists and is tested, but `verify_intent.go` needs a flag/config read to use it instead of `UnavailableDatabricksClient`.
+- A live workspace host/token were shared in the chat transcript for this session; they were stored only outside the repo and never committed, but should be **rotated** regardless.
+- Community-aware scope-creep clustering (Leiden) needs a graph large and connected enough to produce meaningful architectural boundaries — verified genuinely non-trivial on this repo (149 communities, largest 12.9%), so this concern didn't materialize here, though it may on a smaller demo repo.
+- Coverage-confidence detection beyond Semgrep's pattern packs (Semgrep itself was not built) is still a heuristic where the native completeness signals don't directly say "dynamic dispatch," only "no edge found."
 
-**What actually made it into the build vs. stayed roadmap-only:** 🔲 *(fill in at the end — e.g. "Semgrep-backed coverage detection: built. MAPIE, Leiden clustering, local hybrid-retrieval fallback, Lakebase stretch features: evaluated, not built, see reasoning above.")*
+**What actually made it into the build vs. stayed roadmap-only:** Built — six-tier reconciliation with coverage-confidence (#21-#37), all three renderers including a Three.js radial blast-radius scene (#27, #38-#40), Leiden community clustering (#57, genuinely non-trivial on this repo: 149 communities), the mandatory Curveball fixture test (#42), and the Databricks CRC/gating math plus a live-verified (but not yet fully populated) client (#47-#51, #53). Evaluated and not built: Semgrep (#45, no time after the core chain), MAPIE (#49), local hybrid-retrieval fallback (#52, AI Search proved live so no fallback was needed), Lakebase stretch features (#58-#60, #8 cleared but schemas not implemented on top of it), the AI Search index population pipeline itself.
 
 **Next steps (practical continuation path):**
 1. **Plan-Trust Ledger** — persist (claim, outcome) pairs across sessions to learn how much to trust a given agent/model's plans over time; promotable via the Lakebase Verdict Ledger if that cleared Free Edition provisioning.
